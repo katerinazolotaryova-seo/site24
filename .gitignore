@@ -1,0 +1,17 @@
+# Секрети — ніколи не комітити
+.env
+.env.*
+*credentials*
+*доступ*
+*secrets*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Тимчасові / робочі файли
+*.tmp
+*.bak
+~$*
+.~lock*
