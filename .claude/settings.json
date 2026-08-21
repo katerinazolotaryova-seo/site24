@@ -9,5 +9,11 @@
       "Bash(git log*)",
       "Bash(git remote*)"
     ]
+  },
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Bash(git push*)"
+    ]
   }
 }
