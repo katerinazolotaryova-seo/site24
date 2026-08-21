@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 forms — CTA-банери (compact) + форми (full)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f5f6f8;
+    color: #1a1a1a;
+  }
+  .label {
+    max-width: 1200px;
+    margin: 56px auto 18px;
+    padding: 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+  .label strong { color: #111827; font-weight: 700; }
+  .label .desc { display: block; margin-top: 6px; font-size: 12px; font-weight: 500; text-transform: none; color: #9ca3af; letter-spacing: 0; }
+  .label .ref { display: block; margin-top: 4px; font-size: 11px; text-transform: none; color: #3B82F6; letter-spacing: 0; }
+
+  .group-heading {
+    max-width: 1200px;
+    margin: 80px auto 0;
+    padding: 0 24px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #0a1f3d;
+    letter-spacing: -0.01em;
+  }
+  .group-heading + .label { margin-top: 16px; }
+
+  .divider {
+    max-width: 1200px;
+    margin: 56px auto 0;
+    border-top: 1px dashed #d1d5db;
+  }
+  .footnote {
+    max-width: 1200px;
+    margin: 80px auto 64px;
+    padding: 0 24px;
+    font-size: 12px;
+    color: #9ca3af;
+    text-align: center;
+  }
+
+  :root {
+    --brand-blue: #2966FF;
+    --brand-blue-2: #4F8DFF;
+    --brand-green: #36EF74;
+    --brand-green-2: #94FCB1;
+    --brand-tint: #DAF8FF;
+    --ink: #0a1f3d;
+  }
+
+  /* ===== Спільне для всіх синіх карток (compact + full) ===== */
+  .blue-card {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, var(--brand-blue) 0%, #3D77FF 100%);
+    border-radius: 28px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .wrap-pad { padding: 32px 24px; }
+
+  /* Спільні кнопки */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--brand-green);
+    color: var(--ink);
+    border: none;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(54,239,116,0.4); }
+  .cta::after { content: "→"; font-size: 18px; }
+
+  /* ===== COMPACT — CTA-банери ===== */
+  .compact-band { padding: 36px 56px; }
+  .compact-band .deco { position: absolute; inset: 0; pointer-events: none; }
+  .compact-band h3 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    letter-spacing: -0.01em;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* C1 — центрований */
+  .c1-band { text-align: center; padding: 44px 56px 48px; }
+  .c1-band h3 { max-width: 720px; margin: 0 auto 22px; }
+  .c1-band .deco-dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* C2 — split */
+  .c2-band { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 32px; }
+  .c2-band .deco-curve {
+    position: absolute;
+    top: -20px; right: 30%;
+    width: 460px; height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06));
+    transform: skewX(-18deg);
+    pointer-events: none;
+  }
+
+  /* C3 — текст ліворуч + декоративна крива праворуч */
+  .c3-band {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    align-items: center;
+    gap: 32px;
+    padding: 36px 48px 36px 56px;
+    min-height: 200px;
+  }
+  .c3-band .c3-text { position: relative; z-index: 2; }
+  .c3-band .c3-text h3 { margin-bottom: 22px; }
+  .c3-band .c3-illu { position: relative; height: 200px; z-index: 1; }
+  .c3-band .c3-illu svg { display: block; width: 100%; height: 100%; }
+
+  /* ===== FULL — спільна структура «закруглений блок» ===== */
+  /* Уніфіковані розміри тексту для всіх 4 Full варіантів (F3-стиль). */
+  .f1-card h3,
+  .f2-card h3,
+  .f3-card .left-panel h3,
+  .f4-card h3 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.18;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .f1-card h3 .accent,
+  .f2-card h3 .accent,
+  .f3-card .left-panel h3 .accent,
+  .f4-card h3 .accent {
+    color: var(--brand-green-2);
+  }
+  .f1-card .sub,
+  .f2-card .sub,
+  .f3-card .left-panel .sub,
+  .f4-card .sub {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 14px 0 0;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.5;
+  }
+
+  /* pill-поля — спільні для всіх Full */
+  .pill-form .pill {
+    display: block;
+    width: 100%;
+    background: var(--brand-tint);
+    border: none;
+    outline: none;
+    padding: 18px 26px;
+    border-radius: 50px;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 14px;
+    font-family: inherit;
+  }
+  .pill-form .pill::placeholder { color: #6F9CB8; }
+  .pill-form textarea.pill {
+    min-height: 70px;
+    resize: vertical;
+    border-radius: 28px;
+    padding-top: 16px;
+  }
+  .pill-form .privacy {
+    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+  }
+  .pill-form .privacy .check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-blue);
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* Trust бейджі — спільні для F2/F3/F4 */
+  .trust-row {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.95);
+    padding: 9px 14px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+  }
+  .trust-row img {
+    height: 30px;
+    max-width: 80px;
+    object-fit: contain;
+    display: block;
+  }
+  .trust-row .stars { color: #FFA500; letter-spacing: 1px; font-size: 12px; }
+
+  /* F1 — простий 2-колонковий: текст ліворуч, форма праворуч, без декору */
+  .f1-card {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 56px;
+    align-items: center;
+    padding: 56px 64px;
+  }
+  .f1-card .text-col { display: flex; flex-direction: column; gap: 14px; }
+  .f1-logo { margin-top: 14px; max-width: 220px; }
+  .f1-logo svg { display: block; width: 100%; height: auto; }
+
+  /* F2 — те саме що F1, але з trust-бейджами під заголовком ліворуч */
+  .f2-card {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 56px;
+    align-items: center;
+    padding: 56px 64px;
+  }
+  .f2-card .text-col { display: flex; flex-direction: column; gap: 18px; }
+  .f2-card .trusts {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  /* F3 — 2-колонковий: ліворуч окрема темніша «панель» з trust, праворуч біла форма (внутрішня картка) */
+  .f3-card {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .f3-card .left-panel {
+    background: linear-gradient(180deg, #1F4FE0 0%, #2966FF 100%);
+    padding: 56px 48px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .f3-card .left-panel h3 { font-size: 32px; }
+  .f3-card .right-panel {
+    background: #fff;
+    padding: 56px 52px;
+    border-radius: 0;
+    color: var(--ink);
+  }
+  .f3-card .right-panel .field {
+    display: block;
+    width: 100%;
+    background: var(--brand-tint);
+    border: none;
+    outline: none;
+    padding: 16px 22px;
+    border-radius: 50px;
+    font-size: 15px;
+    margin-bottom: 12px;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .f3-card .right-panel textarea.field { min-height: 70px; resize: vertical; border-radius: 28px; padding-top: 14px; }
+  .f3-card .right-panel .form-h {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+  .f3-card .right-panel .form-sub {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0 0 18px;
+  }
+  .f3-trusts { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+
+  /* F4 — реплікація PPC-стилю + Site24 лого як watermark на бекграунді */
+  .f4-card {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 56px;
+    align-items: stretch;
+    padding: 56px 64px;
+  }
+  .f4-watermark {
+    position: absolute;
+    bottom: -40px;
+    left: -30px;
+    width: 460px;
+    height: 580px;
+    pointer-events: none;
+    opacity: 0.13;
+    z-index: 0;
+  }
+  .f4-watermark svg { display: block; width: 100%; height: 100%; }
+
+  .f4-card .text-col {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    z-index: 2;
+  }
+  .f4-card .form-col {
+    position: relative;
+    z-index: 2;
+  }
+  .f4-trusts {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+
+  /* Адаптивні правки */
+  @media (max-width: 900px) {
+    .f1-card, .f2-card, .f4-card { grid-template-columns: 1fr; gap: 32px; padding: 40px 28px; }
+    .f3-card { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ COMPACT ============================ -->
+<h2 class="group-heading">Compact — CTA-банери з якорем на форму внизу (для inline розміщення)</h2>
+
+<!-- C1 -->
+<div class="label">
+  Compact <strong>1</strong> — центрований мінімалістичний
+  <span class="desc">Заголовок і кнопка по центру, точковий патерн на тлі.</span>
+</div>
+<div class="wrap-pad">
+  <div class="blue-card compact-band c1-band">
+    <div class="deco-dots"></div>
+    <h3>Бажаєте отримати консультацію по просуванню вашого сайту?</h3>
+    <a class="cta" href="#final-form">Дізнатись</a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- C2 -->
+<div class="label">
+  Compact <strong>2</strong> — лівий текст + права кнопка (split)
+  <span class="desc">Заголовок ліворуч, кнопка праворуч.</span>
+</div>
+<div class="wrap-pad">
+  <div class="blue-card compact-band c2-band">
+    <div class="deco-curve"></div>
+    <h3>Бажаєте отримати консультацію по просуванню вашого сайту?</h3>
+    <a class="cta" href="#final-form">Дізнатись</a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- C3 -->
+<div class="label">
+  Compact <strong>3</strong> — текст ліворуч + декоративна крива праворуч
+  <span class="desc">М'які криві графіків замість ракети.</span>
+</div>
+<div class="wrap-pad">
+  <div class="blue-card compact-band c3-band">
+    <div class="c3-text">
+      <h3>Бажаєте отримати консультацію по просуванню вашого сайту?</h3>
+      <a class="cta" href="#final-form">Дізнатись</a>
+    </div>
+    <div class="c3-illu">
+      <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="c3grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.32)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </linearGradient>
+        </defs>
+        <path d="M -10,160 C 60,150 120,135 180,110 C 240,85 300,60 410,40 L 410,210 L -10,210 Z" fill="url(#c3grad)"/>
+        <path d="M -10,160 C 60,150 120,135 180,110 C 240,85 300,60 410,40" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"/>
+        <path d="M -10,180 C 70,170 140,165 200,150 C 280,135 340,125 410,115" stroke="#94FCB1" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
+        <circle cx="180" cy="110" r="6" fill="#fff" stroke="#36EF74" stroke-width="3"/>
+        <circle cx="320" cy="58" r="7" fill="#36EF74"/>
+        <circle cx="60" cy="50" r="3" fill="#fff" opacity="0.5"/>
+        <circle cx="370" cy="120" r="4" fill="#fff" opacity="0.55"/>
+        <circle cx="250" cy="35" r="3" fill="#94FCB1" opacity="0.7"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ FULL ============================ -->
+<h2 class="group-heading">Full — справжні форми внизу сторінки (всі — закруглені блоки на нейтральному тлі)</h2>
+
+<!-- F1 -->
+<div class="label">
+  Full <strong>1</strong> — простий 2-колонковий, без декору, без trust
+  <span class="desc">Базова форма для сторінок де треба тільки конверсія, без trust-доказів.</span>
+</div>
+<div class="wrap-pad">
+  <div class="blue-card f1-card" id="final-form-1">
+    <div class="text-col">
+      <h3>Бажаєте <span class="accent">отримати консультацію</span> по просуванню вашого сайту?</h3>
+      <p class="sub">Ми можемо допомогти</p>
+      <div class="f1-logo">
+        <svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+          <!-- Site24 triangle mark з logo-cut.svg -->
+          <path d="M0 50 L27.5 50 L24.8 45 L8.3 45 L26.4 10.3 L32 22.2 L37.5 22.2 L26.4 0 Z" fill="#fff"/>
+          <!-- SITE24 wordmark -->
+          <text x="55" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#fff" letter-spacing="-1">SITE24</text>
+        </svg>
+      </div>
+    </div>
+    <form class="form-col pill-form" onsubmit="event.preventDefault();">
+      <input class="pill" type="text" placeholder="Ім'я*">
+      <input class="pill" type="tel" placeholder="Телефон*">
+      <input class="pill" type="email" placeholder="Email*">
+      <textarea class="pill" placeholder="Коментар"></textarea>
+      <button class="cta" type="submit">Дізнатись</button>
+      <div class="privacy">
+        <div class="check">✓</div>
+        <span>Я погоджуюсь з умовами обробки та використання моїх персональних даних</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- F2 -->
+<div class="label">
+  Full <strong>2</strong> — той самий 2-колонковий, але з Google Partner + Clutch під заголовком
+  <span class="desc">Trust-бейджі інтегровані поряд із заголовком ліворуч, без виносу на окрему смугу.</span>
+</div>
+<div class="wrap-pad">
+  <div class="blue-card f2-card" id="final-form-2">
+    <div class="text-col">
+      <h3>Бажаєте <span class="accent">отримати консультацію</span> по просуванню вашого сайту?</h3>
+      <p class="sub">Ми можемо допомогти</p>
+      <div class="trusts">
+        <div class="trust-row">
+          <img src="https://site24.sprava1.com/wp-content/uploads/2026/02/a74cb88f779295c8c2a313ead1a687125ff29968.png" alt="Google Partner">
+          <div>Сертифікований<br>Google Partner</div>
+        </div>
+        <div class="trust-row">
+          <img src="https://site24.sprava1.com/wp-content/uploads/2026/04/clutch.jpg" alt="Clutch">
+          <div><span class="stars">★★★★★</span><br>5.0 · 22 відгуки</div>
+        </div>
+      </div>
+    </div>
+    <form class="form-col pill-form" onsubmit="event.preventDefault();">
+      <input class="pill" type="text" placeholder="Ім'я*">
+      <input class="pill" type="tel" placeholder="Телефон*">
+      <input class="pill" type="email" placeholder="Email*">
+      <textarea class="pill" placeholder="Коментар"></textarea>
+      <button class="cta" type="submit">Дізнатись</button>
+      <div class="privacy">
+        <div class="check">✓</div>
+        <span>Я погоджуюсь з умовами обробки та використання моїх персональних даних</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- F3 -->
+<div class="label">
+  Full <strong>3</strong> — 2-колонковий з контрастом: синя панель ліворуч + біла форма праворуч
+  <span class="desc">Trust-докази розташовано вертикальним стеком в нижній частині лівої панелі.</span>
+</div>
+<div class="wrap-pad">
+  <div class="blue-card f3-card" id="final-form-3">
+    <div class="left-panel">
+      <h3>Бажаєте <span class="accent" style="color:var(--brand-green-2)">отримати консультацію</span> по просуванню вашого сайту?</h3>
+      <p class="sub" style="margin:0">Ми можемо допомогти — менеджер зв'яжеться з вами найближчим часом.</p>
+      <div class="f3-trusts">
+        <div class="trust-row">
+          <img src="https://site24.sprava1.com/wp-content/uploads/2026/02/a74cb88f779295c8c2a313ead1a687125ff29968.png" alt="Google Partner">
+          <span>Сертифікований Google Partner</span>
+        </div>
+        <div class="trust-row">
+          <img src="https://site24.sprava1.com/wp-content/uploads/2026/04/clutch.jpg" alt="Clutch">
+          <span><span class="stars">★★★★★</span> 5.0 · 22 відгуки</span>
+        </div>
+      </div>
+    </div>
+    <form class="right-panel" onsubmit="event.preventDefault();">
+      <div class="form-h">Залиште заявку</div>
+      <div class="form-sub">Заповніть форму — і ми зв'яжемось з вами.</div>
+      <input class="field" type="text" placeholder="Ім'я*">
+      <input class="field" type="tel" placeholder="Телефон*">
+      <input class="field" type="email" placeholder="Email*">
+      <textarea class="field" placeholder="Коментар"></textarea>
+      <button class="cta" type="submit" style="margin-top:6px;">Дізнатись</button>
+      <div style="margin-top:14px; font-size:12px; color:#9ca3af; line-height:1.4;">Натискаючи кнопку, ви погоджуєтесь з політикою конфіденційності.</div>
+    </form>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- F4 -->
+<div class="label">
+  Full <strong>4</strong> — реплікація PPC-стилю з Site24-лого як watermark на бекграунді
+  <span class="desc">Той самий лейаут і кольори що на скріні з PPC, замість ракети — велике лого Site24 як watermark (брендовий, не «рандомні криві»). Trust-бейджі ліворуч під заголовком.</span>
+  <span class="ref">Лого з `/wp-content/themes/site24/assets/img/logo-cut.svg` (бренд-блакитний trianglе)</span>
+</div>
+<div class="wrap-pad">
+  <div class="blue-card f4-card" id="final-form-4">
+    <div class="f4-watermark">
+      <svg viewBox="0 0 33 44" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 44H24.1599L21.7895 39.5045H7.29074L23.2224 9.09619L28.1197 19.4857H33L23.2224 0L0 44Z" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="text-col">
+      <h3>Бажаєте <span class="accent">отримати консультацію</span> по просуванню вашого сайту?</h3>
+      <p class="sub">Ми можемо допомогти</p>
+      <div class="f4-trusts">
+        <div class="trust-row">
+          <img src="https://site24.sprava1.com/wp-content/uploads/2026/02/a74cb88f779295c8c2a313ead1a687125ff29968.png" alt="Google Partner">
+          <div>Сертифікований<br>Google Partner</div>
+        </div>
+        <div class="trust-row">
+          <img src="https://site24.sprava1.com/wp-content/uploads/2026/04/clutch.jpg" alt="Clutch">
+          <div><span class="stars">★★★★★</span><br>5.0 · 22 відгуки</div>
+        </div>
+      </div>
+    </div>
+    <form class="form-col pill-form" onsubmit="event.preventDefault();">
+      <input class="pill" type="text" placeholder="Ім'я*">
+      <input class="pill" type="tel" placeholder="Телефон*">
+      <input class="pill" type="email" placeholder="Email*">
+      <textarea class="pill" placeholder="Коментар"></textarea>
+      <button class="cta" type="submit">Дізнатись</button>
+      <div class="privacy">
+        <div class="check">✓</div>
+        <span>Я погоджуюсь з умовами обробки та використання моїх персональних даних</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="footnote">
+  Чорновик · 2026-05-06 · Compact (CTA-банери) і Full (форми) — всі на бренд-синьому, всі закруглені блоки на нейтральному тлі.<br>
+  Текст з головної: «Бажаєте отримати консультацію по просуванню вашого сайту?» + кнопка «Дізнатись».<br>
+  F4 — з логотипом Site24 як watermark замість ракети чи рандомних кривих.
+</div>
+
+</body>
+</html>

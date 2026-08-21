@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 — чисті візуали для скріншотів</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+  }
+
+  .shot {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5BC85C;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+  .section-h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #0a1f3d;
+    margin: 0 0 32px;
+    line-height: 1.15;
+  }
+
+  /* Контейнер карти — вузький, як на місці стокового фото */
+  .map-wrap {
+    max-width: 560px;
+  }
+
+  /* === МАПА === */
+  .map-block {
+    position: relative;
+    background: linear-gradient(180deg, #FAFCFE 0%, #F2F8FC 100%);
+    border-radius: 24px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 24px rgba(20, 60, 120, 0.04);
+  }
+  .map-svg-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 800 / 600;
+  }
+  .map-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+  .country-label {
+    position: absolute;
+    background: #fff;
+    border-radius: 8px;
+    padding: 5px 8px;
+    box-shadow: 0 6px 18px rgba(20, 60, 120, 0.14);
+    font-size: 9.5px;
+    line-height: 1.2;
+    white-space: nowrap;
+    z-index: 2;
+    font-weight: 700;
+    color: #0a1f3d;
+  }
+
+  /* Координати лейблів у % від map-svg-wrap. */
+  .lbl-uk { left: 38%;  top: 4%;  }  /* Велика Британія — над усіма */
+  .lbl-nl { left: 38%;  top: 13%; }  /* Нідерланди — під UK */
+  .lbl-pl { left: 58%;  top: 17%; }  /* Польща — стек над Україною */
+  .lbl-ua { left: 58%;  top: 27%; }  /* Україна — стек під Польщею */
+  .lbl-de { left: 38%;  top: 22%; }  /* Німеччина — піднято */
+  .lbl-cz { left: 46%;  top: 30%; }  /* Чехія — піднято */
+  .lbl-es { left: 32%;  top: 30%; }  /* Іспанія — піднято */
+  .lbl-ae { left: 58%;  top: 42%; }  /* ОАЕ */
+  .lbl-ca { left: 18%;  top: 14%; }  /* Канада */
+  .lbl-us { left: 18%;  top: 36%; }  /* США */
+
+  /* === БУЛЕТИ === */
+  .bullets-col h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #3B82F6;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bullets-col h3::before {
+    content: "";
+    width: 20px; height: 20px;
+    background: #5BC85C;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 4px rgba(91,200,92,0.18);
+  }
+  .bullets-col h3 + p {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0 0 26px 32px;
+    line-height: 1.55;
+  }
+  .bullets-col h3:last-of-type + p { margin-bottom: 0; }
+
+  /* === СІТКА НІШ === */
+  .niches-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-width: 640px;
+  }
+  .niche {
+    background: #fff;
+    border: 1px solid #E5EBF1;
+    border-radius: 14px;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .niche-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: #E8F2FB;
+  }
+  .niche-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0a1f3d;
+    line-height: 1.2;
+  }
+
+  .divider {
+    border-top: 1px dashed #e5e7eb;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ КАРТИНКА 1: КАРТА В МАКЕТІ З БУЛЕТАМИ ============================ -->
+<div class="shot">
+  <div class="eyebrow">Експертні стратегії</div>
+  <h2 class="section-h2">Локальний та міжнародний досвід</h2>
+
+  <div class="map-wrap">
+    <div class="map-block">
+      <div class="map-svg-wrap">
+        <svg class="map-svg" id="dotMap" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="cityGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#5BC85C" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#5BC85C" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <g id="dotsLand"></g>
+          <g id="cities">
+            <!-- Vancouver -->
+            <g><circle cx="126" cy="140" r="14" fill="url(#cityGlow)"/><circle cx="126" cy="140" r="4" fill="#3B82F6"/></g>
+            <!-- Toronto -->
+            <g><circle cx="224" cy="164" r="18" fill="url(#cityGlow)"/><circle cx="224" cy="164" r="6" fill="#3B82F6"/></g>
+            <!-- Chicago -->
+            <g><circle cx="205" cy="172" r="14" fill="url(#cityGlow)"/><circle cx="205" cy="172" r="5" fill="#3B82F6"/></g>
+            <!-- NYC (large) -->
+            <g><circle cx="236" cy="177" r="30" fill="url(#cityGlow)"/><circle cx="236" cy="177" r="9" fill="#3B82F6"/></g>
+            <!-- Miami -->
+            <g><circle cx="222" cy="241" r="12" fill="url(#cityGlow)"/><circle cx="222" cy="241" r="4" fill="#3B82F6"/></g>
+            <!-- London -->
+            <g><circle cx="400" cy="131" r="16" fill="url(#cityGlow)"/><circle cx="400" cy="131" r="6" fill="#3B82F6"/></g>
+            <!-- Amsterdam -->
+            <g><circle cx="411" cy="127" r="13" fill="url(#cityGlow)"/><circle cx="411" cy="127" r="5" fill="#3B82F6"/></g>
+            <!-- Berlin -->
+            <g><circle cx="430" cy="124" r="18" fill="url(#cityGlow)"/><circle cx="430" cy="124" r="6" fill="#3B82F6"/></g>
+            <!-- Prague -->
+            <g><circle cx="432" cy="138" r="13" fill="url(#cityGlow)"/><circle cx="432" cy="138" r="5" fill="#3B82F6"/></g>
+            <!-- Warsaw -->
+            <g><circle cx="447" cy="128" r="20" fill="url(#cityGlow)"/><circle cx="447" cy="128" r="7" fill="#3B82F6"/></g>
+            <!-- Madrid -->
+            <g><circle cx="390" cy="178" r="16" fill="url(#cityGlow)"/><circle cx="390" cy="178" r="6" fill="#3B82F6"/></g>
+            <!-- Lviv -->
+            <g><circle cx="453" cy="138" r="11" fill="url(#cityGlow)"/><circle cx="453" cy="138" r="4" fill="#3B82F6"/></g>
+            <!-- Kyiv (largest) -->
+            <g><circle cx="468" cy="135" r="34" fill="url(#cityGlow)"/><circle cx="468" cy="135" r="11" fill="#3B82F6"/></g>
+            <!-- Odesa -->
+            <g><circle cx="469" cy="153" r="11" fill="url(#cityGlow)"/><circle cx="469" cy="153" r="4" fill="#3B82F6"/></g>
+            <!-- Dubai -->
+            <g><circle cx="523" cy="243" r="20" fill="url(#cityGlow)"/><circle cx="523" cy="243" r="7" fill="#3B82F6"/></g>
+          </g>
+        </svg>
+        <script>
+        (function() {
+          // Континенти — еліпси в lon/lat для isLand-чека
+          const lands = [
+            {cx:-100, cy:50, rx:32, ry:18},
+            {cx:-78, cy:50, rx:14, ry:10},
+            {cx:-130, cy:62, rx:22, ry:12},
+            {cx:-150, cy:65, rx:14, ry:8},
+            {cx:-95, cy:30, rx:10, ry:9},
+            {cx:-85, cy:22, rx:8, ry:6},
+            {cx:-40, cy:73, rx:14, ry:10},
+            {cx:-62, cy:-8, rx:14, ry:14},
+            {cx:-65, cy:-25, rx:10, ry:18},
+            {cx:-70, cy:-45, rx:6, ry:10},
+            {cx:15, cy:50, rx:18, ry:8},
+            {cx:30, cy:60, rx:18, ry:9},
+            {cx:10, cy:42, rx:8, ry:6},
+            {cx:-3, cy:54, rx:5, ry:6},
+            {cx:18, cy:65, rx:10, ry:8},
+            {cx:18, cy:8, rx:18, ry:18},
+            {cx:25, cy:-10, rx:14, ry:14},
+            {cx:25, cy:-28, rx:8, ry:8},
+            {cx:45, cy:30, rx:14, ry:12},
+            {cx:70, cy:60, rx:25, ry:10},
+            {cx:100, cy:62, rx:30, ry:9},
+            {cx:140, cy:62, rx:20, ry:7},
+            {cx:105, cy:38, rx:22, ry:14},
+            {cx:125, cy:43, rx:8, ry:8},
+            {cx:78, cy:22, rx:10, ry:13},
+            {cx:103, cy:13, rx:10, ry:8},
+            {cx:115, cy:0, rx:12, ry:6},
+            {cx:122, cy:-2, rx:10, ry:5},
+            {cx:135, cy:-25, rx:14, ry:10},
+            {cx:138, cy:38, rx:4, ry:8},
+            {cx:172, cy:-42, rx:4, ry:6},
+          ];
+          function isLand(lon, lat) {
+            for (const L of lands) {
+              const dx = (lon - L.cx) / L.rx;
+              const dy = (lat - L.cy) / L.ry;
+              if (dx*dx + dy*dy <= 1) return true;
+            }
+            return false;
+          }
+          const cols = 80, rows = 42;
+          const W = 800, H = 600;
+          const latMax = 82, latMin = -58;
+          const g = document.getElementById("dotsLand");
+          if (!g) return;
+          let frag = "";
+          for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+              const lon = -180 + (i + 0.5) * (360/cols);
+              const lat = latMax - (j + 0.5) * ((latMax-latMin)/rows);
+              if (isLand(lon, lat)) {
+                const x = (i + 0.5) * (W/cols);
+                const y = (j + 0.5) * (H/rows);
+                frag += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#B6D4E8"/>`;
+              }
+            }
+          }
+          g.innerHTML = frag;
+        })();
+        </script>
+
+        <div class="country-label lbl-ca">🇨🇦 Канада</div>
+        <div class="country-label lbl-us">🇺🇸 США</div>
+        <div class="country-label lbl-uk">🇬🇧 Велика Британія</div>
+        <div class="country-label lbl-nl">🇳🇱 Нідерланди</div>
+        <div class="country-label lbl-de">🇩🇪 Німеччина</div>
+        <div class="country-label lbl-cz">🇨🇿 Чехія</div>
+        <div class="country-label lbl-pl">🇵🇱 Польща</div>
+        <div class="country-label lbl-ua">🇺🇦 Україна</div>
+        <div class="country-label lbl-es">🇪🇸 Іспанія</div>
+        <div class="country-label lbl-ae">🇦🇪 Емірати</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================ КАРТИНКА 2: НІШІ ============================ -->
+<div class="shot">
+  <h2 class="section-h2">Експертність у різних нішах</h2>
+
+  <div class="niches-grid">
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 4h18l-2 12H5L3 4zm2 14h14M9 21h6" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="niche-name">E-commerce</div>
+    </div>
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12L12 4l9 8M5 10v10h14V10" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="niche-name">Нерухомість</div>
+    </div>
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M3 12h6m6 0h6M5 5l4 4m6 6l4 4M5 19l4-4m6-6l4-4" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <div class="niche-name">Медицина</div>
+    </div>
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-7h6v7" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="niche-name">Фінанси</div>
+    </div>
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 8l10 5 10-5-10-5zM2 14l10 5 10-5" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="niche-name">Освіта</div>
+    </div>
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm13 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="niche-name">B2B-послуги</div>
+    </div>
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M5 18V8h4v10M11 18V4h4v14M17 18v-6h4v6" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="niche-name">Виробництво</div>
+    </div>
+    <div class="niche">
+      <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C7 7 7 13 12 22c5-9 5-15 0-20zm0 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="niche-name">Туризм</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

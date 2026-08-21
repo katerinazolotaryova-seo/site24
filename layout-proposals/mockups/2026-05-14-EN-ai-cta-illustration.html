@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 — Варіанти ілюстрації для CTA AI-просування</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f5f6f8;
+    color: #0a1f3d;
+    padding: 40px 20px;
+  }
+
+  .label {
+    max-width: 1400px;
+    margin: 30px auto 14px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+  .label strong { color: #111827; font-weight: 700; }
+  .label .desc {
+    display: block; margin-top: 6px;
+    font-size: 12px; font-weight: 500; text-transform: none;
+    color: #6b7280; letter-spacing: 0;
+  }
+
+  /* CTA Banner — same as на сайті */
+  .banner {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #2966FF;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 56px 60px;
+    color: #fff;
+    overflow: hidden;
+    min-height: 280px;
+  }
+  .banner-text {
+    flex: 1 1 50%;
+    max-width: 560px;
+  }
+  .banner-text h2 {
+    font-size: 38px;
+    line-height: 1.18;
+    font-weight: 800;
+    margin: 0 0 18px;
+    color: #fff;
+  }
+  .banner-text p {
+    font-size: 17px;
+    line-height: 1.5;
+    margin: 0 0 28px;
+    opacity: 0.95;
+  }
+  .banner-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #94FCB1;
+    color: #0a1f3d;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 24px;
+    border-radius: 100px;
+    text-decoration: none;
+  }
+  .banner-cta svg { width: 18px; height: 18px; }
+
+  .banner-illu {
+    flex: 1 1 45%;
+    max-width: 540px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* ===== Спільні стилі ілюстрацій ===== */
+  .illu-wrap {
+    width: 100%;
+    aspect-ratio: 540/300;
+    position: relative;
+  }
+
+  /* ===== A: AI-згадки бренду (cards-stack) ===== */
+  .ai-card {
+    position: absolute;
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 16px 36px rgba(0, 20, 80, 0.22);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #0a1f3d;
+    min-width: 320px;
+  }
+  .ai-card .ai-badge {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .ai-card .ai-badge svg {
+    width: 100%; height: 100%;
+  }
+  .ai-card .badge-openai { background: #E6F8F1; }
+  .ai-card .badge-gemini { background: #F0EAFF; }
+  .ai-card .badge-perplexity { background: #E0F2F4; }
+  .ai-card .badge-claude { background: #FFF1EA; }
+
+  .ai-card .ai-meta {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+  }
+  .ai-card .ai-text {
+    font-size: 15px;
+    line-height: 1.3;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+  .ai-card .ai-text .brand { color: #2966FF; font-weight: 800; }
+  .ai-card .ai-check {
+    width: 22px; height: 22px;
+    background: #94FCB1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 6px;
+  }
+  .ai-card .ai-check svg { width: 14px; height: 14px; }
+
+  .ai-a1 { top: 0%;  left: 14%; transform: rotate(-3deg); z-index: 3; }
+  .ai-a2 { top: 36%; left: -4%; transform: rotate(2deg);  z-index: 2; }
+  .ai-a3 { top: 72%; left: 18%; transform: rotate(-2deg); z-index: 4; }
+
+  /* Декор: точки і бренд-«сяйво» */
+  .ai-decor {
+    position: absolute;
+    width: 100%; height: 100%;
+    top: 0; left: 0;
+    z-index: 1;
+  }
+
+  /* ===== B: Дотована мапа + Site24 центр ===== */
+  .b-wrap {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  /* ===== C: SERP/Chat mockup ===== */
+  .serp {
+    position: absolute;
+    top: 8%; left: 8%;
+    width: 88%;
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 16px 40px rgba(0, 20, 80, 0.22);
+    color: #0a1f3d;
+  }
+  .serp-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .serp-header .dot {
+    width: 8px; height: 8px;
+    background: #94FCB1;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(148, 252, 177, 0.3);
+  }
+  .serp-q {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0a1f3d;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #EEF2F6;
+  }
+  .serp-result {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: #F1F7FF;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid #2966FF;
+  }
+  .serp-result.dim {
+    background: transparent;
+    border-left: 3px solid transparent;
+    opacity: 0.45;
+  }
+  .serp-num {
+    width: 22px; height: 22px;
+    background: #2966FF;
+    color: #fff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .serp-result.dim .serp-num {
+    background: #E5EBF1;
+    color: #9CA3AF;
+  }
+  .serp-content { flex: 1; }
+  .serp-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #2966FF;
+    line-height: 1.25;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .serp-result.dim .serp-title { color: #6E8AB4; font-weight: 600; }
+  .serp-url {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+  .serp-badge {
+    background: #94FCB1;
+    color: #0a1f3d;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  /* ===== D: Геометрична композиція з Site24 trikutnyk ===== */
+  .d-wrap { width: 100%; height: 100%; position: relative; }
+
+  /* ===== Лейбли варіантів ===== */
+  .variant-title {
+    max-width: 1400px;
+    margin: 50px auto 6px;
+    padding: 0 20px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0a1f3d;
+  }
+  .variant-title .tag {
+    display: inline-block;
+    background: #2966FF;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-right: 10px;
+    letter-spacing: 0.03em;
+  }
+  .variant-title .ref {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    display: block;
+    margin-top: 4px;
+    margin-left: 60px;
+  }
+</style>
+</head>
+<body>
+
+<div class="label">
+  <strong>5 варіантів ілюстрації</strong> для CTA «Випереджайте конкурентів вже сьогодні» (AI просування).
+  <span class="desc">Без 3D-стокової ракети. Усі варіанти у бренд-стилі Site24 — пласка векторна графіка, сині + зелені, чисті форми.</span>
+</div>
+
+<!-- ============================ ВАРІАНТ A: AI рекомендує ваш бізнес ============================ -->
+<div class="variant-title">
+  <span class="tag">A</span>AI рекомендує ваш бізнес (cards stack)
+  <span class="ref">3 floating-картки показують як ChatGPT/Gemini/Perplexity рекомендують клієнта. Фокус — клієнтський бренд (не Site24).</span>
+</div>
+<div class="banner">
+  <div class="banner-text">
+    <h2>Випереджайте конкурентів вже сьогодні</h2>
+    <p>Запустіть AI просування для вашого бізнесу вже сьогодні</p>
+    <a href="#" class="banner-cta">
+      Отримати план AI просування
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7V16" stroke="#0a1f3d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <div class="banner-illu">
+    <div class="illu-wrap">
+      <!-- Декоративні крапки + сяйво -->
+      <svg class="ai-decor" viewBox="0 0 540 300" preserveAspectRatio="none">
+        <defs>
+          <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"  stop-color="#94FCB1" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#94FCB1" stop-opacity="0"/>
+          </radialGradient>
+          <pattern id="dotsA" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.4" fill="#FFFFFF" fill-opacity="0.18"/>
+          </pattern>
+        </defs>
+        <rect width="540" height="300" fill="url(#dotsA)"/>
+        <circle cx="430" cy="150" r="140" fill="url(#glowA)"/>
+        <circle cx="100" cy="80"  r="80"  fill="url(#glowA)" opacity="0.5"/>
+      </svg>
+
+      <!-- 3 AI-картки з реальними лого -->
+      <div class="ai-card ai-a1">
+        <div class="ai-badge badge-openai">
+          <svg viewBox="-32 -32 64 64">
+            <ellipse cx="0" cy="0" rx="22" ry="9" fill="none" stroke="#10A37F" stroke-width="4.5" stroke-linecap="round"/>
+            <ellipse cx="0" cy="0" rx="22" ry="9" fill="none" stroke="#10A37F" stroke-width="4.5" stroke-linecap="round" transform="rotate(60)"/>
+            <ellipse cx="0" cy="0" rx="22" ry="9" fill="none" stroke="#10A37F" stroke-width="4.5" stroke-linecap="round" transform="rotate(-60)"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ai-meta">ChatGPT · OpenAI</div>
+          <div class="ai-text">Рекомендую <span class="brand">ваш бренд</span></div>
+        </div>
+        <div class="ai-check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12L10 17L19 7" stroke="#0a1f3d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+
+      <div class="ai-card ai-a2">
+        <div class="ai-badge badge-gemini">
+          <svg viewBox="-32 -32 64 64">
+            <defs>
+              <linearGradient id="geminiA" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"  stop-color="#4796E3"/>
+                <stop offset="50%" stop-color="#B66DFF"/>
+                <stop offset="100%" stop-color="#F783AC"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0,-26 C 3,-10 10,-3 26,0 C 10,3 3,10 0,26 C -3,10 -10,-3 -26,0 C -10,-3 -3,-10 0,-26 Z" fill="url(#geminiA)"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ai-meta">Gemini · Google AI</div>
+          <div class="ai-text">Найкращий вибір — <span class="brand">ваш бренд</span></div>
+        </div>
+        <div class="ai-check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12L10 17L19 7" stroke="#0a1f3d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+
+      <div class="ai-card ai-a3">
+        <div class="ai-badge badge-perplexity">
+          <svg viewBox="-32 -32 64 64">
+            <rect x="-22" y="-22" width="44" height="44" rx="6" fill="#20808D"/>
+            <rect x="-22" y="-3" width="44" height="6" fill="#fff"/>
+            <rect x="-3" y="-22" width="6" height="44" fill="#fff"/>
+            <circle cx="0" cy="0" r="7.5" fill="#20808D"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ai-meta">Perplexity · AI Search</div>
+          <div class="ai-text">Топ-результат — <span class="brand">ваш бренд</span></div>
+        </div>
+        <div class="ai-check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12L10 17L19 7" stroke="#0a1f3d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================ ВАРІАНТ B: Дотована мережа AI-джерел → клієнт ============================ -->
+<div class="variant-title">
+  <span class="tag">B</span>AI-мережа що веде до вашого бізнесу
+  <span class="ref">Точкова сітка (як niches-mockup map) — 4 AI-джерела по периметру з'єднані пунктирними лініями з карткою «ваш бізнес» у центрі. Бренд-патерн.</span>
+</div>
+<div class="banner">
+  <div class="banner-text">
+    <h2>Випереджайте конкурентів вже сьогодні</h2>
+    <p>Запустіть AI просування для вашого бізнесу вже сьогодні</p>
+    <a href="#" class="banner-cta">
+      Отримати план AI просування
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7V16" stroke="#0a1f3d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <div class="banner-illu">
+    <div class="illu-wrap">
+      <svg viewBox="0 0 540 300" style="width:100%; height:100%; display:block;">
+        <defs>
+          <radialGradient id="centerGlowB" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"  stop-color="#94FCB1" stop-opacity="0.75"/>
+            <stop offset="100%" stop-color="#94FCB1" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="nodeGlowB" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"  stop-color="#94FCB1" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#94FCB1" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Точкова сітка фону -->
+        <g fill="#FFFFFF" fill-opacity="0.22">
+          <!-- генеруємо 18×10 -->
+          <!-- рядок 1 -->
+          <circle cx="20"  cy="20"  r="1.5"/><circle cx="50"  cy="20"  r="1.5"/><circle cx="80"  cy="20"  r="1.5"/><circle cx="110" cy="20"  r="1.5"/><circle cx="140" cy="20"  r="1.5"/><circle cx="170" cy="20"  r="1.5"/><circle cx="200" cy="20"  r="1.5"/><circle cx="230" cy="20"  r="1.5"/><circle cx="260" cy="20"  r="1.5"/><circle cx="290" cy="20"  r="1.5"/><circle cx="320" cy="20"  r="1.5"/><circle cx="350" cy="20"  r="1.5"/><circle cx="380" cy="20"  r="1.5"/><circle cx="410" cy="20"  r="1.5"/><circle cx="440" cy="20"  r="1.5"/><circle cx="470" cy="20"  r="1.5"/><circle cx="500" cy="20"  r="1.5"/><circle cx="530" cy="20"  r="1.5"/>
+          <!-- рядок 2 -->
+          <circle cx="20"  cy="50"  r="1.5"/><circle cx="50"  cy="50"  r="1.5"/><circle cx="80"  cy="50"  r="1.5"/><circle cx="110" cy="50"  r="1.5"/><circle cx="140" cy="50"  r="1.5"/><circle cx="170" cy="50"  r="1.5"/><circle cx="200" cy="50"  r="1.5"/><circle cx="230" cy="50"  r="1.5"/><circle cx="260" cy="50"  r="1.5"/><circle cx="290" cy="50"  r="1.5"/><circle cx="320" cy="50"  r="1.5"/><circle cx="350" cy="50"  r="1.5"/><circle cx="380" cy="50"  r="1.5"/><circle cx="410" cy="50"  r="1.5"/><circle cx="440" cy="50"  r="1.5"/><circle cx="470" cy="50"  r="1.5"/><circle cx="500" cy="50"  r="1.5"/><circle cx="530" cy="50"  r="1.5"/>
+          <!-- рядок 3 -->
+          <circle cx="20"  cy="80"  r="1.5"/><circle cx="50"  cy="80"  r="1.5"/><circle cx="80"  cy="80"  r="1.5"/><circle cx="110" cy="80"  r="1.5"/><circle cx="140" cy="80"  r="1.5"/><circle cx="170" cy="80"  r="1.5"/><circle cx="200" cy="80"  r="1.5"/><circle cx="230" cy="80"  r="1.5"/><circle cx="260" cy="80"  r="1.5"/><circle cx="290" cy="80"  r="1.5"/><circle cx="320" cy="80"  r="1.5"/><circle cx="350" cy="80"  r="1.5"/><circle cx="380" cy="80"  r="1.5"/><circle cx="410" cy="80"  r="1.5"/><circle cx="440" cy="80"  r="1.5"/><circle cx="470" cy="80"  r="1.5"/><circle cx="500" cy="80"  r="1.5"/><circle cx="530" cy="80"  r="1.5"/>
+          <!-- рядок 4 -->
+          <circle cx="20"  cy="110" r="1.5"/><circle cx="50"  cy="110" r="1.5"/><circle cx="80"  cy="110" r="1.5"/><circle cx="110" cy="110" r="1.5"/><circle cx="140" cy="110" r="1.5"/><circle cx="170" cy="110" r="1.5"/><circle cx="200" cy="110" r="1.5"/><circle cx="230" cy="110" r="1.5"/><circle cx="260" cy="110" r="1.5"/><circle cx="290" cy="110" r="1.5"/><circle cx="320" cy="110" r="1.5"/><circle cx="350" cy="110" r="1.5"/><circle cx="380" cy="110" r="1.5"/><circle cx="410" cy="110" r="1.5"/><circle cx="440" cy="110" r="1.5"/><circle cx="470" cy="110" r="1.5"/><circle cx="500" cy="110" r="1.5"/><circle cx="530" cy="110" r="1.5"/>
+          <!-- рядок 5 -->
+          <circle cx="20"  cy="140" r="1.5"/><circle cx="50"  cy="140" r="1.5"/><circle cx="80"  cy="140" r="1.5"/><circle cx="110" cy="140" r="1.5"/><circle cx="140" cy="140" r="1.5"/><circle cx="170" cy="140" r="1.5"/><circle cx="200" cy="140" r="1.5"/><circle cx="230" cy="140" r="1.5"/><circle cx="260" cy="140" r="1.5"/><circle cx="290" cy="140" r="1.5"/><circle cx="320" cy="140" r="1.5"/><circle cx="350" cy="140" r="1.5"/><circle cx="380" cy="140" r="1.5"/><circle cx="410" cy="140" r="1.5"/><circle cx="440" cy="140" r="1.5"/><circle cx="470" cy="140" r="1.5"/><circle cx="500" cy="140" r="1.5"/><circle cx="530" cy="140" r="1.5"/>
+          <!-- рядок 6 -->
+          <circle cx="20"  cy="170" r="1.5"/><circle cx="50"  cy="170" r="1.5"/><circle cx="80"  cy="170" r="1.5"/><circle cx="110" cy="170" r="1.5"/><circle cx="140" cy="170" r="1.5"/><circle cx="170" cy="170" r="1.5"/><circle cx="200" cy="170" r="1.5"/><circle cx="230" cy="170" r="1.5"/><circle cx="260" cy="170" r="1.5"/><circle cx="290" cy="170" r="1.5"/><circle cx="320" cy="170" r="1.5"/><circle cx="350" cy="170" r="1.5"/><circle cx="380" cy="170" r="1.5"/><circle cx="410" cy="170" r="1.5"/><circle cx="440" cy="170" r="1.5"/><circle cx="470" cy="170" r="1.5"/><circle cx="500" cy="170" r="1.5"/><circle cx="530" cy="170" r="1.5"/>
+          <!-- рядок 7 -->
+          <circle cx="20"  cy="200" r="1.5"/><circle cx="50"  cy="200" r="1.5"/><circle cx="80"  cy="200" r="1.5"/><circle cx="110" cy="200" r="1.5"/><circle cx="140" cy="200" r="1.5"/><circle cx="170" cy="200" r="1.5"/><circle cx="200" cy="200" r="1.5"/><circle cx="230" cy="200" r="1.5"/><circle cx="260" cy="200" r="1.5"/><circle cx="290" cy="200" r="1.5"/><circle cx="320" cy="200" r="1.5"/><circle cx="350" cy="200" r="1.5"/><circle cx="380" cy="200" r="1.5"/><circle cx="410" cy="200" r="1.5"/><circle cx="440" cy="200" r="1.5"/><circle cx="470" cy="200" r="1.5"/><circle cx="500" cy="200" r="1.5"/><circle cx="530" cy="200" r="1.5"/>
+          <!-- рядок 8 -->
+          <circle cx="20"  cy="230" r="1.5"/><circle cx="50"  cy="230" r="1.5"/><circle cx="80"  cy="230" r="1.5"/><circle cx="110" cy="230" r="1.5"/><circle cx="140" cy="230" r="1.5"/><circle cx="170" cy="230" r="1.5"/><circle cx="200" cy="230" r="1.5"/><circle cx="230" cy="230" r="1.5"/><circle cx="260" cy="230" r="1.5"/><circle cx="290" cy="230" r="1.5"/><circle cx="320" cy="230" r="1.5"/><circle cx="350" cy="230" r="1.5"/><circle cx="380" cy="230" r="1.5"/><circle cx="410" cy="230" r="1.5"/><circle cx="440" cy="230" r="1.5"/><circle cx="470" cy="230" r="1.5"/><circle cx="500" cy="230" r="1.5"/><circle cx="530" cy="230" r="1.5"/>
+          <!-- рядок 9 -->
+          <circle cx="20"  cy="260" r="1.5"/><circle cx="50"  cy="260" r="1.5"/><circle cx="80"  cy="260" r="1.5"/><circle cx="110" cy="260" r="1.5"/><circle cx="140" cy="260" r="1.5"/><circle cx="170" cy="260" r="1.5"/><circle cx="200" cy="260" r="1.5"/><circle cx="230" cy="260" r="1.5"/><circle cx="260" cy="260" r="1.5"/><circle cx="290" cy="260" r="1.5"/><circle cx="320" cy="260" r="1.5"/><circle cx="350" cy="260" r="1.5"/><circle cx="380" cy="260" r="1.5"/><circle cx="410" cy="260" r="1.5"/><circle cx="440" cy="260" r="1.5"/><circle cx="470" cy="260" r="1.5"/><circle cx="500" cy="260" r="1.5"/><circle cx="530" cy="260" r="1.5"/>
+        </g>
+
+        <!-- центральне сяйво -->
+        <circle cx="270" cy="150" r="120" fill="url(#centerGlowB)"/>
+
+        <!-- Лінії-зв'язки від AI-нод до центру -->
+        <line x1="60"  y1="60"  x2="270" y2="150" stroke="#94FCB1" stroke-width="1.4" opacity="0.6" stroke-dasharray="4 4"/>
+        <line x1="480" y1="55"  x2="270" y2="150" stroke="#94FCB1" stroke-width="1.4" opacity="0.6" stroke-dasharray="4 4"/>
+        <line x1="80"  y1="240" x2="270" y2="150" stroke="#94FCB1" stroke-width="1.4" opacity="0.6" stroke-dasharray="4 4"/>
+        <line x1="470" y1="245" x2="270" y2="150" stroke="#94FCB1" stroke-width="1.4" opacity="0.6" stroke-dasharray="4 4"/>
+
+        <!-- Зовнішні AI-ноди (4 точки) -->
+        <g>
+          <circle cx="60"  cy="60"  r="22" fill="url(#nodeGlowB)"/>
+          <circle cx="60"  cy="60"  r="14" fill="#fff"/>
+          <text x="60" y="64" text-anchor="middle" font-size="9" font-weight="800" fill="#10A37F">GPT</text>
+        </g>
+        <g>
+          <circle cx="480" cy="55"  r="22" fill="url(#nodeGlowB)"/>
+          <circle cx="480" cy="55"  r="14" fill="#fff"/>
+          <text x="480" y="59" text-anchor="middle" font-size="10" font-weight="800" fill="#4285F4">G</text>
+        </g>
+        <g>
+          <circle cx="80"  cy="240" r="22" fill="url(#nodeGlowB)"/>
+          <circle cx="80"  cy="240" r="14" fill="#fff"/>
+          <text x="80" y="244" text-anchor="middle" font-size="9" font-weight="800" fill="#20808D">PXL</text>
+        </g>
+        <g>
+          <circle cx="470" cy="245" r="22" fill="url(#nodeGlowB)"/>
+          <circle cx="470" cy="245" r="14" fill="#fff"/>
+          <text x="470" y="249" text-anchor="middle" font-size="9" font-weight="800" fill="#0a1f3d">CLD</text>
+        </g>
+
+        <!-- Центр: «Ваш бізнес» — generic browser/site card -->
+        <g transform="translate(195, 95)">
+          <!-- Card background -->
+          <rect x="0" y="0" width="150" height="110" rx="14" fill="#fff"/>
+          <!-- Browser top bar -->
+          <rect x="0" y="0" width="150" height="22" rx="14" fill="#F1F7FF"/>
+          <rect x="0" y="11" width="150" height="11" fill="#F1F7FF"/>
+          <circle cx="12" cy="11" r="3" fill="#FF6B6B"/>
+          <circle cx="22" cy="11" r="3" fill="#FFD93D"/>
+          <circle cx="32" cy="11" r="3" fill="#6BCB77"/>
+          <!-- Page content lines -->
+          <rect x="14" y="36" width="80" height="10" rx="3" fill="#2966FF"/>
+          <rect x="14" y="54" width="120" height="5" rx="2" fill="#DAE3F0"/>
+          <rect x="14" y="65" width="100" height="5" rx="2" fill="#DAE3F0"/>
+          <rect x="14" y="76" width="110" height="5" rx="2" fill="#DAE3F0"/>
+          <!-- Green check -->
+          <circle cx="124" cy="92" r="11" fill="#94FCB1"/>
+          <path d="M119 92 L123 96 L130 88" stroke="#0a1f3d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- Label -->
+          <text x="75" y="128" text-anchor="middle" font-size="11" font-weight="800" fill="#0a1f3d">ВАШ БІЗНЕС</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================ ВАРІАНТ C: SERP / Chat mockup ============================ -->
+<div class="variant-title">
+  <span class="tag">C</span>AI-результат пошуку (chat mockup)
+  <span class="ref">Стилізована відповідь AI: на 1-му місці «ваш бізнес» з бейджем «AI-рекомендація», конкуренти приглушені нижче. Найбільш буквальне «AI знайде вас першими».</span>
+</div>
+<div class="banner">
+  <div class="banner-text">
+    <h2>Випереджайте конкурентів вже сьогодні</h2>
+    <p>Запустіть AI просування для вашого бізнесу вже сьогодні</p>
+    <a href="#" class="banner-cta">
+      Отримати план AI просування
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7V16" stroke="#0a1f3d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <div class="banner-illu">
+    <div class="illu-wrap">
+      <svg class="ai-decor" viewBox="0 0 540 300" preserveAspectRatio="none">
+        <defs>
+          <pattern id="dotsC" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.4" fill="#FFFFFF" fill-opacity="0.18"/>
+          </pattern>
+        </defs>
+        <rect width="540" height="300" fill="url(#dotsC)"/>
+      </svg>
+
+      <div class="serp">
+        <div class="serp-header">
+          <span class="dot"></span>
+          AI-пошук · ChatGPT
+        </div>
+        <div class="serp-q">«Яка найкраща агенція SEO в Україні?»</div>
+        <div class="serp-result">
+          <div class="serp-num">1</div>
+          <div class="serp-content">
+            <div class="serp-title">
+              Ваш бізнес
+              <span class="serp-badge">AI-рекомендація</span>
+            </div>
+            <div class="serp-url">your-site.com · головна рекомендація AI</div>
+          </div>
+        </div>
+        <div class="serp-result dim">
+          <div class="serp-num">2</div>
+          <div class="serp-content">
+            <div class="serp-title">Конкурент</div>
+            <div class="serp-url">— — — — — —</div>
+          </div>
+        </div>
+        <div class="serp-result dim">
+          <div class="serp-num">3</div>
+          <div class="serp-content">
+            <div class="serp-title">Конкурент</div>
+            <div class="serp-url">— — — — — —</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================ ВАРІАНТ D: Геометрична композиція — ваш бізнес у орбіті AI ============================ -->
+<div class="variant-title">
+  <span class="tag">D</span>Ваш бізнес у центрі орбіт AI-платформ
+  <span class="ref">Картка «ваш бізнес» у центрі, 2 пунктирні орбіти, зростаюча крива з timeline, AI-теги по периметру. Тут — клієнт у фокусі, AI обертаються навколо нього.</span>
+</div>
+<div class="banner">
+  <div class="banner-text">
+    <h2>Випереджайте конкурентів вже сьогодні</h2>
+    <p>Запустіть AI просування для вашого бізнесу вже сьогодні</p>
+    <a href="#" class="banner-cta">
+      Отримати план AI просування
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7V16" stroke="#0a1f3d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <div class="banner-illu">
+    <div class="illu-wrap">
+      <svg viewBox="0 0 540 300" style="width:100%; height:100%; display:block;">
+        <defs>
+          <radialGradient id="centerGlowD" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"  stop-color="#94FCB1" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#94FCB1" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="curveD" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"  stop-color="#94FCB1" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#94FCB1" stop-opacity="1"/>
+          </linearGradient>
+          <pattern id="dotsD" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.4" fill="#FFFFFF" fill-opacity="0.18"/>
+          </pattern>
+        </defs>
+
+        <rect width="540" height="300" fill="url(#dotsD)"/>
+        <circle cx="270" cy="150" r="160" fill="url(#centerGlowD)"/>
+
+        <!-- 2 орбіти (еліпси) -->
+        <ellipse cx="270" cy="150" rx="220" ry="90"  fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="3 4"/>
+        <ellipse cx="270" cy="150" rx="160" ry="60"  fill="none" stroke="#FFFFFF" stroke-opacity="0.4"  stroke-width="1" stroke-dasharray="3 4"/>
+
+        <!-- Зростаюча крива (з timeline) -->
+        <path d="M 40,250 C 130,247 175,225 220,210 C 265,190 300,180 330,175 C 370,168 400,148 430,130 C 460,115 480,105 500,102"
+              stroke="url(#curveD)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+        <!-- 2 ключові крапки на кривій -->
+        <g><circle cx="220" cy="210" r="7" fill="#94FCB1"/></g>
+        <g><circle cx="500" cy="102" r="7" fill="#94FCB1"/></g>
+
+        <!-- Центр: «Ваш бізнес» — generic site card + кільце -->
+        <g transform="translate(195, 90)">
+          <circle cx="75" cy="60" r="68" fill="#fff" opacity="0.96"/>
+          <circle cx="75" cy="60" r="68" fill="none" stroke="#94FCB1" stroke-width="2" stroke-dasharray="4 4"/>
+          <!-- Browser/site card -->
+          <rect x="22" y="28" width="106" height="76" rx="10" fill="#F1F7FF"/>
+          <rect x="22" y="28" width="106" height="16" rx="10" fill="#DAE3F0"/>
+          <rect x="22" y="36" width="106" height="8" fill="#DAE3F0"/>
+          <circle cx="32" cy="36" r="2.5" fill="#FF6B6B"/>
+          <circle cx="40" cy="36" r="2.5" fill="#FFD93D"/>
+          <circle cx="48" cy="36" r="2.5" fill="#6BCB77"/>
+          <rect x="32" y="56" width="50" height="7" rx="2" fill="#2966FF"/>
+          <rect x="32" y="70" width="80" height="4" rx="2" fill="#C7D2DD"/>
+          <rect x="32" y="80" width="68" height="4" rx="2" fill="#C7D2DD"/>
+          <rect x="32" y="90" width="76" height="4" rx="2" fill="#C7D2DD"/>
+          <text x="75" y="146" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">ВАШ БІЗНЕС</text>
+        </g>
+
+        <defs>
+          <linearGradient id="geminiD" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stop-color="#4796E3"/>
+            <stop offset="50%" stop-color="#B66DFF"/>
+            <stop offset="100%" stop-color="#F783AC"/>
+          </linearGradient>
+          <filter id="tileShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/>
+          </filter>
+        </defs>
+
+        <!-- Орбітальні AI-плитки з реальними логотипами -->
+        <!-- ChatGPT (top-left) -->
+        <g filter="url(#tileShadow)">
+          <rect x="18" y="50" rx="14" ry="14" width="118" height="44" fill="#fff"/>
+          <g transform="translate(40, 72)">
+            <ellipse cx="0" cy="0" rx="13" ry="5.5" fill="none" stroke="#10A37F" stroke-width="2.6" stroke-linecap="round"/>
+            <ellipse cx="0" cy="0" rx="13" ry="5.5" fill="none" stroke="#10A37F" stroke-width="2.6" stroke-linecap="round" transform="rotate(60 0 0)"/>
+            <ellipse cx="0" cy="0" rx="13" ry="5.5" fill="none" stroke="#10A37F" stroke-width="2.6" stroke-linecap="round" transform="rotate(-60 0 0)"/>
+          </g>
+          <text x="63" y="77" font-size="12.5" font-weight="800" fill="#0a1f3d">ChatGPT</text>
+        </g>
+
+        <!-- Gemini (top-right) -->
+        <g filter="url(#tileShadow)">
+          <rect x="402" y="45" rx="14" ry="14" width="118" height="44" fill="#fff"/>
+          <g transform="translate(424, 67)">
+            <path d="M 0,-15 C 1.7,-6 6,-2 15,0 C 6,2 1.7,6 0,15 C -1.7,6 -6,-2 -15,0 C -6,-2 -1.7,-6 0,-15 Z" fill="url(#geminiD)"/>
+          </g>
+          <text x="447" y="72" font-size="12.5" font-weight="800" fill="#0a1f3d">Gemini</text>
+        </g>
+
+        <!-- Perplexity (bottom-left) -->
+        <g filter="url(#tileShadow)">
+          <rect x="14" y="215" rx="14" ry="14" width="130" height="44" fill="#fff"/>
+          <g transform="translate(36, 237)">
+            <rect x="-13" y="-13" width="26" height="26" rx="4" fill="#20808D"/>
+            <rect x="-13" y="-2" width="26" height="4" fill="#fff"/>
+            <rect x="-2" y="-13" width="4" height="26" fill="#fff"/>
+            <circle cx="0" cy="0" r="4" fill="#20808D"/>
+          </g>
+          <text x="59" y="242" font-size="12.5" font-weight="800" fill="#0a1f3d">Perplexity</text>
+        </g>
+
+        <!-- Claude (bottom-right) -->
+        <g filter="url(#tileShadow)">
+          <rect x="402" y="215" rx="14" ry="14" width="118" height="44" fill="#fff"/>
+          <g transform="translate(424, 237)" fill="#D97757">
+            <ellipse cx="0" cy="0" rx="1.8" ry="14"/>
+            <ellipse cx="0" cy="0" rx="1.8" ry="14" transform="rotate(45 0 0)"/>
+            <ellipse cx="0" cy="0" rx="1.8" ry="14" transform="rotate(90 0 0)"/>
+            <ellipse cx="0" cy="0" rx="1.8" ry="14" transform="rotate(135 0 0)"/>
+            <ellipse cx="0" cy="0" rx="1.8" ry="7" transform="rotate(22.5 0 0)"/>
+            <ellipse cx="0" cy="0" rx="1.8" ry="7" transform="rotate(67.5 0 0)"/>
+            <ellipse cx="0" cy="0" rx="1.8" ry="7" transform="rotate(112.5 0 0)"/>
+            <ellipse cx="0" cy="0" rx="1.8" ry="7" transform="rotate(157.5 0 0)"/>
+          </g>
+          <text x="447" y="242" font-size="12.5" font-weight="800" fill="#0a1f3d">Claude</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ ВАРІАНТ E: Великі лого AI-платформ ============================ -->
+<div class="variant-title">
+  <span class="tag">E</span>Великі лого AI-платформ
+  <span class="ref">4 великі впізнавані логотипи AI-сервісів (ChatGPT, Gemini, Claude, Perplexity) як головна графіка. Меседж: «вас знайдуть в усіх цих AI». Без Site24, фокус — канали для клієнта.</span>
+</div>
+<div class="banner">
+  <div class="banner-text">
+    <h2>Випереджайте конкурентів вже сьогодні</h2>
+    <p>Запустіть AI просування для вашого бізнесу вже сьогодні</p>
+    <a href="#" class="banner-cta">
+      Отримати план AI просування
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7V16" stroke="#0a1f3d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <div class="banner-illu">
+    <div class="illu-wrap">
+      <svg viewBox="0 0 540 300" style="width:100%; height:100%; display:block;">
+        <defs>
+          <pattern id="dotsE" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.4" fill="#FFFFFF" fill-opacity="0.18"/>
+          </pattern>
+          <linearGradient id="geminiGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stop-color="#4796E3"/>
+            <stop offset="50%" stop-color="#B66DFF"/>
+            <stop offset="100%" stop-color="#F783AC"/>
+          </linearGradient>
+          <radialGradient id="tileGlowE" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"  stop-color="#94FCB1" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#94FCB1" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <rect width="540" height="300" fill="url(#dotsE)"/>
+
+        <!-- ===== TILE 1: ChatGPT (top-left) ===== -->
+        <g transform="translate(50,40) rotate(-4)">
+          <ellipse cx="65" cy="180" rx="55" ry="10" fill="url(#tileGlowE)"/>
+          <rect x="0" y="0" width="130" height="150" rx="20" fill="#fff"/>
+          <!-- OpenAI knot — 3 overlapping ellipses -->
+          <g transform="translate(65, 60)">
+            <ellipse cx="0" cy="0" rx="32" ry="14" fill="none" stroke="#10A37F" stroke-width="6" stroke-linecap="round"/>
+            <ellipse cx="0" cy="0" rx="32" ry="14" fill="none" stroke="#10A37F" stroke-width="6" stroke-linecap="round" transform="rotate(60)"/>
+            <ellipse cx="0" cy="0" rx="32" ry="14" fill="none" stroke="#10A37F" stroke-width="6" stroke-linecap="round" transform="rotate(-60)"/>
+          </g>
+          <text x="65" y="120" text-anchor="middle" font-size="16" font-weight="800" fill="#0a1f3d">ChatGPT</text>
+          <text x="65" y="138" text-anchor="middle" font-size="10" font-weight="600" fill="#6b7280">OpenAI · GPT-4o</text>
+        </g>
+
+        <!-- ===== TILE 2: Gemini (top-right) ===== -->
+        <g transform="translate(360,30) rotate(3)">
+          <ellipse cx="65" cy="180" rx="55" ry="10" fill="url(#tileGlowE)"/>
+          <rect x="0" y="0" width="130" height="150" rx="20" fill="#fff"/>
+          <!-- Gemini 4-point sparkle -->
+          <g transform="translate(65, 60)">
+            <path d="M 0,-32 C 4,-12 12,-4 32,0 C 12,4 4,12 0,32 C -4,12 -12,4 -32,0 C -12,-4 -4,-12 0,-32 Z" fill="url(#geminiGrad)"/>
+          </g>
+          <text x="65" y="120" text-anchor="middle" font-size="16" font-weight="800" fill="#0a1f3d">Gemini</text>
+          <text x="65" y="138" text-anchor="middle" font-size="10" font-weight="600" fill="#6b7280">Google AI</text>
+        </g>
+
+        <!-- ===== TILE 3: Claude (bottom-left) ===== -->
+        <g transform="translate(75,155) rotate(2)">
+          <ellipse cx="65" cy="180" rx="55" ry="10" fill="url(#tileGlowE)"/>
+          <rect x="0" y="0" width="130" height="135" rx="20" fill="#fff"/>
+          <!-- Claude asterisk burst — 8-point -->
+          <g transform="translate(65, 55)" fill="#D97757">
+            <ellipse cx="0" cy="0" rx="3.5" ry="28"/>
+            <ellipse cx="0" cy="0" rx="3.5" ry="28" transform="rotate(45)"/>
+            <ellipse cx="0" cy="0" rx="3.5" ry="28" transform="rotate(90)"/>
+            <ellipse cx="0" cy="0" rx="3.5" ry="28" transform="rotate(135)"/>
+            <ellipse cx="0" cy="0" rx="3.5" ry="14" transform="rotate(22.5)"/>
+            <ellipse cx="0" cy="0" rx="3.5" ry="14" transform="rotate(67.5)"/>
+            <ellipse cx="0" cy="0" rx="3.5" ry="14" transform="rotate(112.5)"/>
+            <ellipse cx="0" cy="0" rx="3.5" ry="14" transform="rotate(157.5)"/>
+          </g>
+          <text x="65" y="108" text-anchor="middle" font-size="16" font-weight="800" fill="#0a1f3d">Claude</text>
+          <text x="65" y="124" text-anchor="middle" font-size="10" font-weight="600" fill="#6b7280">Anthropic</text>
+        </g>
+
+        <!-- ===== TILE 4: Perplexity (bottom-right) ===== -->
+        <g transform="translate(370,150) rotate(-3)">
+          <ellipse cx="65" cy="180" rx="55" ry="10" fill="url(#tileGlowE)"/>
+          <rect x="0" y="0" width="130" height="135" rx="20" fill="#fff"/>
+          <!-- Perplexity stylized mark — concentric squares -->
+          <g transform="translate(65, 55)">
+            <rect x="-26" y="-26" width="52" height="52" rx="8" fill="#20808D"/>
+            <rect x="-26" y="-4" width="52" height="8" fill="#fff"/>
+            <rect x="-4" y="-26" width="8" height="52" fill="#fff"/>
+            <circle cx="0" cy="0" r="9" fill="#20808D"/>
+          </g>
+          <text x="65" y="108" text-anchor="middle" font-size="16" font-weight="800" fill="#0a1f3d">Perplexity</text>
+          <text x="65" y="124" text-anchor="middle" font-size="10" font-weight="600" fill="#6b7280">AI Search</text>
+        </g>
+
+        <!-- Декор: маленькі сяйва навколо -->
+        <g fill="#94FCB1" opacity="0.9">
+          <circle cx="20" cy="20" r="3"/>
+          <circle cx="525" cy="280" r="3"/>
+          <circle cx="270" cy="15" r="2.5"/>
+          <circle cx="270" cy="285" r="2.5"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

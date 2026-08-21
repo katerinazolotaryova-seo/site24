@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 — Що бізнес отримає від SEO (2 формати)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f5f6f8;
+    color: #0a1f3d;
+    padding: 40px 20px;
+  }
+
+  .label {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7280;
+    text-align: center;
+  }
+  .label strong { color: #111827; font-weight: 700; }
+  .label .desc {
+    display: block; margin-top: 6px;
+    font-size: 12px; font-weight: 500; text-transform: none;
+    color: #9ca3af; letter-spacing: 0;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px 22px;
+    border: 1px solid #E5EBF1;
+    box-shadow: 0 6px 24px rgba(20, 60, 120, 0.06);
+    margin: 0 auto;
+  }
+  .card-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+  }
+
+  /* Спільні стилі тултіпів */
+  .tip {
+    position: absolute;
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 22px rgba(20, 60, 120, 0.14);
+    white-space: nowrap;
+    z-index: 2;
+    line-height: 1.2;
+  }
+  .tip.green-bg { background: #DCFCE7; }
+  .tip.blue-bg  { background: #DAF8FF; }
+
+  .tip-multi-line {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0a1f3d;
+    line-height: 1.3;
+  }
+  .tip-multi-line .accent { color: #2966FF; }
+
+  .tip-after {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+  .tip-after-text {
+    font-size: 11px;
+    color: #4b5563;
+    font-weight: 600;
+  }
+  .tip-site24-logo {
+    display: inline-flex;
+    align-items: center;
+  }
+  .site24-logo {
+    height: 22px;
+    width: auto;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .tip-num {
+    font-size: 20px;
+    font-weight: 800;
+    color: #2966FF;
+    line-height: 1;
+  }
+  .tip-num .small { font-size: 16px; font-weight: 700; }
+  .tip-sub {
+    font-size: 11px;
+    color: #6E8AB4;
+    margin-top: 5px;
+    font-weight: 500;
+  }
+
+  /* === ГОРИЗОНТАЛЬНО ВУЗЬКА (1200×160, дуже широка і низька) === */
+  .horiz-card {
+    width: 1240px;
+    padding: 16px 20px;
+  }
+  .horiz-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1200 / 160;
+  }
+  .horiz-svg { width: 100%; height: 100%; display: block; }
+
+  /* компактніші тултіпи для коротшої версії */
+  .horiz-card .tip { padding: 6px 10px; border-radius: 10px; }
+  .horiz-card .tip-multi-line { font-size: 11px; }
+  .horiz-card .tip-num { font-size: 15px; }
+  .horiz-card .tip-num .small { font-size: 12px; }
+  .horiz-card .tip-sub { font-size: 9.5px; margin-top: 3px; }
+  .horiz-card .tip-after-text { font-size: 10px; }
+  .horiz-card .tip-after { gap: 3px; }
+  .horiz-card .site24-logo { height: 18px; }
+
+  .ht1 { top: 52%; left: 0%; }
+  .ht2 { top: 38%; left: 18%; }
+  .ht3 { top: 24%; left: 38%; }
+  .ht4 { top: 12%; left: 55%; }
+  .ht5 { top: 0%;  left: 77%; }
+
+  /* === КВАДРАТНА === */
+  .square-card {
+    width: 560px;
+    padding: 28px 24px;
+  }
+  .square-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+  .square-svg { width: 100%; height: 100%; display: block; }
+
+  .st1 { top: 12%; left: 0%;  }
+  .st2 { top: 0%;  left: 30%; }
+  .st3 { top: 0%;  left: 66%; }
+  .st4 { top: 58%; left: 70%; }
+  .st5 { top: 80%; left: 26%; }
+
+  /* === МОБІЛЬНА (landscape 520×260, аспект 2:1) === */
+  .mobile-card {
+    width: 560px;
+    padding: 20px 20px;
+  }
+  .mobile-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 520 / 260;
+  }
+  .mobile-svg { width: 100%; height: 100%; display: block; }
+
+  /* компактніші тултіпи */
+  .mobile-card .tip { padding: 6px 10px; border-radius: 10px; }
+  .mobile-card .tip-multi-line { font-size: 11px; }
+  .mobile-card .tip-num { font-size: 15px; }
+  .mobile-card .tip-num .small { font-size: 12px; }
+  .mobile-card .tip-sub { font-size: 9.5px; margin-top: 3px; }
+  .mobile-card .tip-after-text { font-size: 10px; }
+  .mobile-card .tip-after { gap: 3px; }
+  .mobile-card .site24-logo { height: 18px; }
+
+  /* Усі картки ВИЩЕ кривої, лідер-лінії йдуть ВНИЗ від кожної картки */
+  .mt1 { top: 54%; left: 0%;  }   /* Старт — над D1 */
+  .mt2 { top: 35%; left: 18%; }   /* Site24 — над ракетою (без лідер-лінії) */
+  .mt3 { top: 4%;  left: 42%; }   /* 2500+ — над D2 (без лідер-лінії) */
+  .mt4 { top: 65%; left: 58%; }   /* ×5 — ПІД кривою посередині між D2 і D3 */
+  .mt5 { top: 0%;  left: 78%; }   /* 380% ROI — над D3 (top-right) */
+</style>
+</head>
+<body>
+
+<!-- ============================ ГОРИЗОНТАЛЬНО ВУЗЬКА ============================ -->
+<div class="label">
+  Формат <strong>1</strong> — горизонтально вузька (вдвічі вужча за оригінал)
+  <span class="desc">Landscape, але впиниться приблизно на пів-екрану. 5 крапок, тултіпи сходинкою зверху вгору-направо. Ракети збільшені.</span>
+</div>
+
+<div class="card-row">
+<div class="card horiz-card">
+  <div class="horiz-wrap">
+    <svg class="horiz-svg" viewBox="0 0 1200 160" preserveAspectRatio="none">
+      <defs>
+        <radialGradient id="dotGlowH" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#5BC85C" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- 3 горизонтальні гайди -->
+      <line x1="0" y1="20"  x2="1200" y2="20"  stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="85"  x2="1200" y2="85"  stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="150" x2="1200" y2="150" stroke="#EEF2F6" stroke-width="1"/>
+
+      <!-- gradient для плавного fade-in кривої -->
+      <defs>
+        <linearGradient id="curveStrokeH" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"  stop-color="#A8C8FF" stop-opacity="0.55"/>
+          <stop offset="35%" stop-color="#7AA7F0" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#2966FF" stop-opacity="1"/>
+        </linearGradient>
+      </defs>
+
+      <!-- слабкий плоский «нульовий» відрізок (хвилястий) -->
+      <path d="M 20,150 C 40,150 50,148 80,140"
+            stroke="#CDD8E8" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-dasharray="2 4"/>
+
+      <!-- хвиляста крива з плато між крапками -->
+      <path d="M 80,140
+               C 195,140 215,116 320,116
+               C 450,116 470,88 580,88
+               C 700,88 720,58 840,58
+               C 975,58 995,25 1120,25"
+            stroke="url(#curveStrokeH)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- 4 ракети у стилі референсу: тіло+ніс, 2 фіни, ілюмінатор, слід -->
+      <g transform="translate(200,128) rotate(-7)">
+        <!-- слід руху позаду -->
+        <line x1="-22" y1="-3" x2="-32" y2="-3" stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-22" y1="3"  x2="-32" y2="3"  stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-20" y1="0"  x2="-34" y2="0"  stroke="#A8C8FF" stroke-width="1.6" opacity="0.55" stroke-linecap="round"/>
+        <!-- фіни -->
+        <path d="M -12,-5 L -19,-11 L -8,-3 Z" fill="#7BA6E8"/>
+        <path d="M -12,5 L -19,11 L -8,3 Z" fill="#7BA6E8"/>
+        <!-- тіло з округлим носом -->
+        <path d="M -14,-5 L 8,-5 Q 18,-5 21,0 Q 18,5 8,5 L -14,5 Z" fill="#A8C8FF"/>
+        <!-- ілюмінатор -->
+        <circle cx="6" cy="0" r="3.2" fill="#FFFFFF"/>
+        <circle cx="6" cy="0" r="2.2" fill="#DAF8FF"/>
+        <!-- деталь на тілі -->
+        <line x1="-9" y1="-3" x2="-9" y2="3" stroke="#8AB4F8" stroke-width="0.8" opacity="0.7"/>
+      </g>
+
+      <g transform="translate(450,102) rotate(-10)">
+        <line x1="-22" y1="-3" x2="-32" y2="-3" stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-22" y1="3"  x2="-32" y2="3"  stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-20" y1="0"  x2="-34" y2="0"  stroke="#A8C8FF" stroke-width="1.6" opacity="0.55" stroke-linecap="round"/>
+        <path d="M -12,-5 L -19,-11 L -8,-3 Z" fill="#7BA6E8"/>
+        <path d="M -12,5 L -19,11 L -8,3 Z" fill="#7BA6E8"/>
+        <path d="M -14,-5 L 8,-5 Q 18,-5 21,0 Q 18,5 8,5 L -14,5 Z" fill="#A8C8FF"/>
+        <circle cx="6" cy="0" r="3.2" fill="#FFFFFF"/>
+        <circle cx="6" cy="0" r="2.2" fill="#DAF8FF"/>
+        <line x1="-9" y1="-3" x2="-9" y2="3" stroke="#8AB4F8" stroke-width="0.8" opacity="0.7"/>
+      </g>
+
+      <g transform="translate(710,73) rotate(-11)">
+        <line x1="-22" y1="-3" x2="-32" y2="-3" stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-22" y1="3"  x2="-32" y2="3"  stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-20" y1="0"  x2="-34" y2="0"  stroke="#A8C8FF" stroke-width="1.6" opacity="0.55" stroke-linecap="round"/>
+        <path d="M -12,-5 L -19,-11 L -8,-3 Z" fill="#7BA6E8"/>
+        <path d="M -12,5 L -19,11 L -8,3 Z" fill="#7BA6E8"/>
+        <path d="M -14,-5 L 8,-5 Q 18,-5 21,0 Q 18,5 8,5 L -14,5 Z" fill="#A8C8FF"/>
+        <circle cx="6" cy="0" r="3.2" fill="#FFFFFF"/>
+        <circle cx="6" cy="0" r="2.2" fill="#DAF8FF"/>
+        <line x1="-9" y1="-3" x2="-9" y2="3" stroke="#8AB4F8" stroke-width="0.8" opacity="0.7"/>
+      </g>
+
+      <g transform="translate(980,42) rotate(-12)">
+        <line x1="-22" y1="-3" x2="-32" y2="-3" stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-22" y1="3"  x2="-32" y2="3"  stroke="#A8C8FF" stroke-width="1.4" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-20" y1="0"  x2="-34" y2="0"  stroke="#A8C8FF" stroke-width="1.6" opacity="0.55" stroke-linecap="round"/>
+        <path d="M -12,-5 L -19,-11 L -8,-3 Z" fill="#7BA6E8"/>
+        <path d="M -12,5 L -19,11 L -8,3 Z" fill="#7BA6E8"/>
+        <path d="M -14,-5 L 8,-5 Q 18,-5 21,0 Q 18,5 8,5 L -14,5 Z" fill="#A8C8FF"/>
+        <circle cx="6" cy="0" r="3.2" fill="#FFFFFF"/>
+        <circle cx="6" cy="0" r="2.2" fill="#DAF8FF"/>
+        <line x1="-9" y1="-3" x2="-9" y2="3" stroke="#8AB4F8" stroke-width="0.8" opacity="0.7"/>
+      </g>
+
+      <!-- 5 крапок -->
+      <g><circle cx="80"   cy="140" r="14" fill="url(#dotGlowH)"/><circle cx="80"   cy="140" r="6" fill="#5BC85C"/></g>
+      <g><circle cx="320"  cy="116" r="14" fill="url(#dotGlowH)"/><circle cx="320"  cy="116" r="6" fill="#5BC85C"/></g>
+      <g><circle cx="580"  cy="88"  r="14" fill="url(#dotGlowH)"/><circle cx="580"  cy="88"  r="6" fill="#5BC85C"/></g>
+      <g><circle cx="840"  cy="58"  r="14" fill="url(#dotGlowH)"/><circle cx="840"  cy="58"  r="6" fill="#5BC85C"/></g>
+      <g><circle cx="1120" cy="25"  r="14" fill="url(#dotGlowH)"/><circle cx="1120" cy="25"  r="6" fill="#5BC85C"/></g>
+
+      <!-- лідер-лінії від тултіпа вниз до крапки -->
+      <line x1="80"   y1="120" x2="80"   y2="132" stroke="#5BC85C" stroke-width="1.5"/>
+      <line x1="320"  y1="98"  x2="320"  y2="108" stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <line x1="580"  y1="72"  x2="580"  y2="80"  stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <line x1="840"  y1="42"  x2="840"  y2="50"  stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <line x1="1120" y1="10"  x2="1120" y2="17"  stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+    </svg>
+
+    <!-- Тултіпи сходинкою -->
+    <div class="tip ht1 green-bg">
+      <div class="tip-multi-line">Ваш бізнес<br>на <span class="accent">старті</span></div>
+    </div>
+    <div class="tip ht2 blue-bg">
+      <div class="tip-after">
+        <span class="tip-after-text">Після співпраці з</span>
+        <span class="tip-site24-logo">
+          <svg class="site24-logo" viewBox="0 0 182 41" xmlns="http://www.w3.org/2000/svg" fill="none"><path d="M45.9551 30.9609C45.5587 30.0962 45.022 29.3311 44.3625 28.6876C43.7021 28.0432 42.9285 27.5314 42.0614 27.1675C41.193 26.8003 40.2787 26.6153 39.3443 26.6153H27.8101C26.9801 26.6153 26.2992 26.3386 25.7293 25.7727C25.1668 25.2127 24.8923 24.5477 24.8923 23.7422C24.8923 22.9326 25.1668 22.268 25.7293 21.7076C26.2992 21.1426 26.9797 20.8667 27.8101 20.8667H44.4302L42.168 16.5404H27.8101C26.8083 16.5404 25.8538 16.7401 24.9767 17.1367C24.1047 17.5286 23.3351 18.0601 22.6874 18.716C22.0379 19.3737 21.5222 20.1402 21.1542 20.9934C20.7823 21.8567 20.5948 22.7802 20.5948 23.7417C20.5948 24.7459 20.7888 25.7011 21.1713 26.5795C21.5532 27.453 22.0825 28.2222 22.7451 28.862C23.4033 29.5014 24.1795 30.0122 25.0505 30.3821C25.9259 30.7548 26.8547 30.9407 27.8101 30.9407H39.3451C40.1755 30.9407 40.8569 31.2138 41.4272 31.7769C41.9889 32.3309 42.2629 32.9923 42.2629 33.7996C42.2629 34.6074 41.9889 35.2734 41.4259 35.8329C40.8551 36.3983 40.176 36.6751 39.3451 36.6751H20.972L23.2333 41H39.3447C40.3499 41 41.3009 40.7994 42.172 40.4029C43.0373 40.0109 43.8026 39.4831 44.4486 38.8359C45.0972 38.1851 45.6177 37.4182 45.9922 36.5562C46.3699 35.6888 46.5608 34.7621 46.5608 33.7996C46.5608 32.7917 46.3567 31.838 45.9551 30.9609Z" fill="#0E0E3A"/><path d="M59.2886 16.5409H54.467V41H59.2886V16.5409Z" fill="#0E0E3A"/><path d="M64.2741 20.8667H74.034V41H78.8576V20.8667H88.6356V16.5409H64.2741V20.8667Z" fill="#0E0E3A"/><path d="M93.9965 41H117.882V36.6751H98.8205V30.9407H114.094V26.6153H98.8205V20.8667H117.882V16.5409H93.9965V41Z" fill="#0E0E3A"/><path d="M178.211 33.315V16.5409H173.699L154.459 33.5913V37.6422H173.388V40.9995H178.211V37.6422H182V33.315H178.211ZM173.389 33.315H161.613L173.389 22.8825V33.315Z" fill="#0E0E3A"/><path d="M0 40.9178H21.8225L19.3713 36.737H7.53863L24.0129 8.45931L27.8126 15.0873H32.8593L24.0129 0L0 40.9178Z" fill="#2966FF"/><path d="M147.104 18.5249C146.364 17.8888 145.498 17.3779 144.527 17.008C143.551 16.6353 142.524 16.448 141.475 16.448H130.966C129.842 16.448 128.772 16.6477 127.786 17.0438C126.808 17.438 125.945 17.9686 125.217 18.6245C124.487 19.2827 123.908 20.0491 123.496 20.9024C123.079 21.7662 122.867 22.6905 122.867 23.6521V25.4921H127.693V23.6521C127.693 22.8434 128.001 22.1765 128.632 21.6179C129.272 21.0511 130.036 20.7757 130.966 20.7757H141.476C142.408 20.7757 143.171 21.0511 143.809 21.6179C144.441 22.1765 144.749 22.8434 144.749 23.6521V24.509C144.749 25.3186 144.33 26.3265 142.638 26.9255C141.814 27.2164 128.77 29.5875 127.786 29.9822C126.81 30.3737 125.948 30.9015 125.219 31.5524C124.489 32.2059 123.91 32.9733 123.497 33.8348C123.079 34.7014 122.867 35.6303 122.867 36.591V40.9177H149.575V36.591H127.693C127.693 35.7804 128.073 35.181 128.632 34.5563C130.046 32.9733 141.798 31.7112 144.55 30.7941C145.546 30.4623 146.479 30.1956 147.203 29.5453C147.931 28.8972 148.514 28.1289 148.935 27.2669C149.361 26.3981 149.575 25.471 149.575 24.509V23.6521C149.575 22.6423 149.346 21.6835 148.894 20.8046C148.449 19.9326 147.848 19.1661 147.104 18.5249Z" fill="#0E0E3A"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="tip ht3">
+      <div class="tip-num">2500+</div>
+      <div class="tip-sub">запитів у топі</div>
+    </div>
+    <div class="tip ht4">
+      <div class="tip-num"><span class="small">×</span>5 ріст</div>
+      <div class="tip-sub">трафіку за рік</div>
+    </div>
+    <div class="tip ht5">
+      <div class="tip-num">380%</div>
+      <div class="tip-sub">ROI за рік</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================ КВАДРАТНА ============================ -->
+<div class="label">
+  Формат <strong>2</strong> — квадратна (тултіпи розташовані навколо кривої)
+  <span class="desc">За твоїм прикладом — тултіпи зверху рядом, один праворуч-середина, один знизу. Велика ракета на кривій. 2 ключові крапки.</span>
+</div>
+
+<div class="card-row">
+<div class="card square-card">
+  <div class="square-wrap">
+    <svg class="square-svg" viewBox="0 0 500 500" preserveAspectRatio="none">
+      <defs>
+        <radialGradient id="dotGlowS" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#5BC85C" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- горизонтальні гайди -->
+      <line x1="0" y1="120" x2="500" y2="120" stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="220" x2="500" y2="220" stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="320" x2="500" y2="320" stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="420" x2="500" y2="420" stroke="#EEF2F6" stroke-width="1"/>
+
+      <!-- крива посередині — bottom-left → middle (через центр) → middle-right -->
+      <path d="M 30,395
+               L 80,380
+               C 130,375 170,360 215,335
+               C 245,318 265,300 290,285
+               C 320,268 350,250 380,240
+               C 410,232 440,210 470,180"
+            stroke="#2966FF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+      <!-- велика яскрава ракета посеред кривої -->
+      <g transform="translate(232,320) rotate(-23)">
+        <!-- exhaust -->
+        <circle cx="-32" cy="0" r="2.5" fill="#A8C8FF" opacity="0.28"/>
+        <circle cx="-26" cy="0" r="3.5" fill="#A8C8FF" opacity="0.45"/>
+        <!-- body -->
+        <path d="M -18,-7 Q 10,-9 24,0 Q 10,9 -18,7 Z" fill="#A8C8FF"/>
+        <circle cx="8" cy="0" r="4" fill="#fff"/>
+        <circle cx="8" cy="0" r="2.5" fill="#DAF8FF"/>
+        <!-- fins -->
+        <path d="M -18,-7 L -28,-14 L -18,-2 Z" fill="#8AB4F8"/>
+        <path d="M -18,7 L -28,14 L -18,2 Z" fill="#8AB4F8"/>
+      </g>
+
+      <!-- 2 ключові крапки (D1 bottom-left, D2 middle-right) -->
+      <g><circle cx="80"  cy="380" r="18" fill="url(#dotGlowS)"/><circle cx="80"  cy="380" r="8" fill="#5BC85C"/></g>
+      <g><circle cx="380" cy="240" r="18" fill="url(#dotGlowS)"/><circle cx="380" cy="240" r="8" fill="#5BC85C"/></g>
+
+      <!-- лідер-лінії: 3 ВНИЗ від верхніх карток, 2 ВВЕРХ від нижніх -->
+      <!-- T1 (top-left) → D1 -->
+      <line x1="80"  y1="380" x2="80"  y2="170" stroke="#5BC85C" stroke-width="1.5"/>
+      <!-- T2 (top-center) → ракета -->
+      <line x1="232" y1="312" x2="232" y2="80"  stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <!-- T3 (top-right) → D2 -->
+      <line x1="380" y1="240" x2="380" y2="80"  stroke="#5BC85C" stroke-width="1.5"/>
+      <!-- T4 (middle-right, under D2) → D2 -->
+      <line x1="380" y1="240" x2="380" y2="320" stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <!-- T5 (bottom-center) → крива -->
+      <line x1="200" y1="340" x2="200" y2="430" stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+    </svg>
+
+    <!-- тултіпи навколо кривої -->
+    <div class="tip st1 green-bg">
+      <div class="tip-multi-line">Ваш бізнес<br>на <span class="accent">старті</span></div>
+    </div>
+    <div class="tip st2 blue-bg">
+      <div class="tip-after">
+        <span class="tip-after-text">Після співпраці з</span>
+        <span class="tip-site24-logo">
+          <svg class="site24-logo" viewBox="0 0 182 41" xmlns="http://www.w3.org/2000/svg" fill="none"><path d="M45.9551 30.9609C45.5587 30.0962 45.022 29.3311 44.3625 28.6876C43.7021 28.0432 42.9285 27.5314 42.0614 27.1675C41.193 26.8003 40.2787 26.6153 39.3443 26.6153H27.8101C26.9801 26.6153 26.2992 26.3386 25.7293 25.7727C25.1668 25.2127 24.8923 24.5477 24.8923 23.7422C24.8923 22.9326 25.1668 22.268 25.7293 21.7076C26.2992 21.1426 26.9797 20.8667 27.8101 20.8667H44.4302L42.168 16.5404H27.8101C26.8083 16.5404 25.8538 16.7401 24.9767 17.1367C24.1047 17.5286 23.3351 18.0601 22.6874 18.716C22.0379 19.3737 21.5222 20.1402 21.1542 20.9934C20.7823 21.8567 20.5948 22.7802 20.5948 23.7417C20.5948 24.7459 20.7888 25.7011 21.1713 26.5795C21.5532 27.453 22.0825 28.2222 22.7451 28.862C23.4033 29.5014 24.1795 30.0122 25.0505 30.3821C25.9259 30.7548 26.8547 30.9407 27.8101 30.9407H39.3451C40.1755 30.9407 40.8569 31.2138 41.4272 31.7769C41.9889 32.3309 42.2629 32.9923 42.2629 33.7996C42.2629 34.6074 41.9889 35.2734 41.4259 35.8329C40.8551 36.3983 40.176 36.6751 39.3451 36.6751H20.972L23.2333 41H39.3447C40.3499 41 41.3009 40.7994 42.172 40.4029C43.0373 40.0109 43.8026 39.4831 44.4486 38.8359C45.0972 38.1851 45.6177 37.4182 45.9922 36.5562C46.3699 35.6888 46.5608 34.7621 46.5608 33.7996C46.5608 32.7917 46.3567 31.838 45.9551 30.9609Z" fill="#0E0E3A"/><path d="M59.2886 16.5409H54.467V41H59.2886V16.5409Z" fill="#0E0E3A"/><path d="M64.2741 20.8667H74.034V41H78.8576V20.8667H88.6356V16.5409H64.2741V20.8667Z" fill="#0E0E3A"/><path d="M93.9965 41H117.882V36.6751H98.8205V30.9407H114.094V26.6153H98.8205V20.8667H117.882V16.5409H93.9965V41Z" fill="#0E0E3A"/><path d="M178.211 33.315V16.5409H173.699L154.459 33.5913V37.6422H173.388V40.9995H178.211V37.6422H182V33.315H178.211ZM173.389 33.315H161.613L173.389 22.8825V33.315Z" fill="#0E0E3A"/><path d="M0 40.9178H21.8225L19.3713 36.737H7.53863L24.0129 8.45931L27.8126 15.0873H32.8593L24.0129 0L0 40.9178Z" fill="#2966FF"/><path d="M147.104 18.5249C146.364 17.8888 145.498 17.3779 144.527 17.008C143.551 16.6353 142.524 16.448 141.475 16.448H130.966C129.842 16.448 128.772 16.6477 127.786 17.0438C126.808 17.438 125.945 17.9686 125.217 18.6245C124.487 19.2827 123.908 20.0491 123.496 20.9024C123.079 21.7662 122.867 22.6905 122.867 23.6521V25.4921H127.693V23.6521C127.693 22.8434 128.001 22.1765 128.632 21.6179C129.272 21.0511 130.036 20.7757 130.966 20.7757H141.476C142.408 20.7757 143.171 21.0511 143.809 21.6179C144.441 22.1765 144.749 22.8434 144.749 23.6521V24.509C144.749 25.3186 144.33 26.3265 142.638 26.9255C141.814 27.2164 128.77 29.5875 127.786 29.9822C126.81 30.3737 125.948 30.9015 125.219 31.5524C124.489 32.2059 123.91 32.9733 123.497 33.8348C123.079 34.7014 122.867 35.6303 122.867 36.591V40.9177H149.575V36.591H127.693C127.693 35.7804 128.073 35.181 128.632 34.5563C130.046 32.9733 141.798 31.7112 144.55 30.7941C145.546 30.4623 146.479 30.1956 147.203 29.5453C147.931 28.8972 148.514 28.1289 148.935 27.2669C149.361 26.3981 149.575 25.471 149.575 24.509V23.6521C149.575 22.6423 149.346 21.6835 148.894 20.8046C148.449 19.9326 147.848 19.1661 147.104 18.5249Z" fill="#0E0E3A"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="tip st3">
+      <div class="tip-num">2500+</div>
+      <div class="tip-sub">запитів у топі</div>
+    </div>
+    <div class="tip st4">
+      <div class="tip-num">380%</div>
+      <div class="tip-sub">ROI за рік</div>
+    </div>
+    <div class="tip st5">
+      <div class="tip-num"><span class="small">×</span>5 ріст</div>
+      <div class="tip-sub">трафіку за рік</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================ МОБІЛЬНА (520×260, landscape) ============================ -->
+<div class="label">
+  Формат <strong>3</strong> — мобільна (520×260, аспект 2:1)
+  <span class="desc">Той самий горизонтальний layout як у Форматі 1, але компактніший — 520 ширина / 260 висота. Хвиляста крива зліва-направо, 4 ракети, 5 тултіпів сходинкою.</span>
+</div>
+
+<div class="card-row">
+<div class="card mobile-card">
+  <div class="mobile-wrap">
+    <svg class="mobile-svg" viewBox="0 0 520 260" preserveAspectRatio="none">
+      <defs>
+        <radialGradient id="dotGlowM" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#5BC85C" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="curveStrokeM" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"  stop-color="#A8C8FF" stop-opacity="0.55"/>
+          <stop offset="35%" stop-color="#7AA7F0" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#2966FF" stop-opacity="1"/>
+        </linearGradient>
+      </defs>
+
+      <!-- 4 тонкі горизонтальні гайди -->
+      <line x1="0" y1="50"  x2="520" y2="50"  stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="110" x2="520" y2="110" stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="170" x2="520" y2="170" stroke="#EEF2F6" stroke-width="1"/>
+      <line x1="0" y1="230" x2="520" y2="230" stroke="#EEF2F6" stroke-width="1"/>
+
+      <!-- слабкий плоский «нульовий» відрізок -->
+      <path d="M 10,235 C 20,235 30,228 50,220"
+            stroke="#CDD8E8" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-dasharray="2 4"/>
+
+      <!-- крива через D1 → D2 → D3 (фінал) -->
+      <path d="M 50,220
+               C 120,217 165,195 200,180
+               C 245,160 280,150 310,145
+               C 350,138 380,118 410,100
+               C 440,85 460,75 480,72"
+            stroke="url(#curveStrokeM)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- 1 велика ракета між D1 та D2 (на ділянці «Після співпраці з Site24») -->
+      <g transform="translate(225,160) rotate(-21)">
+        <line x1="-26" y1="-3" x2="-38" y2="-3" stroke="#A8C8FF" stroke-width="1.6" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-26" y1="3"  x2="-38" y2="3"  stroke="#A8C8FF" stroke-width="1.6" opacity="0.35" stroke-linecap="round"/>
+        <line x1="-22" y1="0"  x2="-40" y2="0"  stroke="#A8C8FF" stroke-width="1.8" opacity="0.55" stroke-linecap="round"/>
+        <path d="M -14,-6 L -22,-13 L -9,-3 Z" fill="#7BA6E8"/>
+        <path d="M -14,6 L -22,13 L -9,3 Z" fill="#7BA6E8"/>
+        <path d="M -16,-6 L 10,-6 Q 22,-6 25,0 Q 22,6 10,6 L -16,6 Z" fill="#A8C8FF"/>
+        <circle cx="7" cy="0" r="3.8" fill="#FFFFFF"/>
+        <circle cx="7" cy="0" r="2.6" fill="#DAF8FF"/>
+        <line x1="-10" y1="-3" x2="-10" y2="3" stroke="#8AB4F8" stroke-width="0.9" opacity="0.7"/>
+      </g>
+
+      <!-- 3 ключові крапки: D1 старт, D2 «2500+», D3 «380% ROI» (фінал) -->
+      <g><circle cx="50"  cy="220" r="14" fill="url(#dotGlowM)"/><circle cx="50"  cy="220" r="6.5" fill="#5BC85C"/></g>
+      <g><circle cx="310" cy="145" r="14" fill="url(#dotGlowM)"/><circle cx="310" cy="145" r="6.5" fill="#5BC85C"/></g>
+      <g><circle cx="480" cy="72"  r="14" fill="url(#dotGlowM)"/><circle cx="480" cy="72"  r="6.5" fill="#5BC85C"/></g>
+
+      <!-- Лідер-лінії: mt1/mt5 — короткі зелені до D1/D3, mt2/mt3 — пунктирні сині вниз до кривої,
+           mt4 — пунктирна синя вгору від картки під кривою до кривої. -->
+      <line x1="50"  y1="192" x2="50"  y2="206" stroke="#5BC85C" stroke-width="1.5"/>
+      <line x1="149" y1="136" x2="149" y2="194" stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <line x1="268" y1="52"  x2="268" y2="150" stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <line x1="345" y1="165" x2="345" y2="142" stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+      <line x1="480" y1="42"  x2="480" y2="66"  stroke="#2966FF" stroke-width="1" stroke-dasharray="3 4"/>
+    </svg>
+
+    <!-- 5 тултіпів -->
+    <div class="tip mt1 green-bg">
+      <div class="tip-multi-line">Ваш бізнес<br>на <span class="accent">старті</span></div>
+    </div>
+    <div class="tip mt2 blue-bg">
+      <div class="tip-after">
+        <span class="tip-after-text">Після співпраці з</span>
+        <svg class="site24-logo" viewBox="0 0 182 41" xmlns="http://www.w3.org/2000/svg" fill="none"><path d="M45.9551 30.9609C45.5587 30.0962 45.022 29.3311 44.3625 28.6876C43.7021 28.0432 42.9285 27.5314 42.0614 27.1675C41.193 26.8003 40.2787 26.6153 39.3443 26.6153H27.8101C26.9801 26.6153 26.2992 26.3386 25.7293 25.7727C25.1668 25.2127 24.8923 24.5477 24.8923 23.7422C24.8923 22.9326 25.1668 22.268 25.7293 21.7076C26.2992 21.1426 26.9797 20.8667 27.8101 20.8667H44.4302L42.168 16.5404H27.8101C26.8083 16.5404 25.8538 16.7401 24.9767 17.1367C24.1047 17.5286 23.3351 18.0601 22.6874 18.716C22.0379 19.3737 21.5222 20.1402 21.1542 20.9934C20.7823 21.8567 20.5948 22.7802 20.5948 23.7417C20.5948 24.7459 20.7888 25.7011 21.1713 26.5795C21.5532 27.453 22.0825 28.2222 22.7451 28.862C23.4033 29.5014 24.1795 30.0122 25.0505 30.3821C25.9259 30.7548 26.8547 30.9407 27.8101 30.9407H39.3451C40.1755 30.9407 40.8569 31.2138 41.4272 31.7769C41.9889 32.3309 42.2629 32.9923 42.2629 33.7996C42.2629 34.6074 41.9889 35.2734 41.4259 35.8329C40.8551 36.3983 40.176 36.6751 39.3451 36.6751H20.972L23.2333 41H39.3447C40.3499 41 41.3009 40.7994 42.172 40.4029C43.0373 40.0109 43.8026 39.4831 44.4486 38.8359C45.0972 38.1851 45.6177 37.4182 45.9922 36.5562C46.3699 35.6888 46.5608 34.7621 46.5608 33.7996C46.5608 32.7917 46.3567 31.838 45.9551 30.9609Z" fill="#0E0E3A"/><path d="M59.2886 16.5409H54.467V41H59.2886V16.5409Z" fill="#0E0E3A"/><path d="M64.2741 20.8667H74.034V41H78.8576V20.8667H88.6356V16.5409H64.2741V20.8667Z" fill="#0E0E3A"/><path d="M93.9965 41H117.882V36.6751H98.8205V30.9407H114.094V26.6153H98.8205V20.8667H117.882V16.5409H93.9965V41Z" fill="#0E0E3A"/><path d="M178.211 33.315V16.5409H173.699L154.459 33.5913V37.6422H173.388V40.9995H178.211V37.6422H182V33.315H178.211ZM173.389 33.315H161.613L173.389 22.8825V33.315Z" fill="#0E0E3A"/><path d="M0 40.9178H21.8225L19.3713 36.737H7.53863L24.0129 8.45931L27.8126 15.0873H32.8593L24.0129 0L0 40.9178Z" fill="#2966FF"/><path d="M147.104 18.5249C146.364 17.8888 145.498 17.3779 144.527 17.008C143.551 16.6353 142.524 16.448 141.475 16.448H130.966C129.842 16.448 128.772 16.6477 127.786 17.0438C126.808 17.438 125.945 17.9686 125.217 18.6245C124.487 19.2827 123.908 20.0491 123.496 20.9024C123.079 21.7662 122.867 22.6905 122.867 23.6521V25.4921H127.693V23.6521C127.693 22.8434 128.001 22.1765 128.632 21.6179C129.272 21.0511 130.036 20.7757 130.966 20.7757H141.476C142.408 20.7757 143.171 21.0511 143.809 21.6179C144.441 22.1765 144.749 22.8434 144.749 23.6521V24.509C144.749 25.3186 144.33 26.3265 142.638 26.9255C141.814 27.2164 128.77 29.5875 127.786 29.9822C126.81 30.3737 125.948 30.9015 125.219 31.5524C124.489 32.2059 123.91 32.9733 123.497 33.8348C123.079 34.7014 122.867 35.6303 122.867 36.591V40.9177H149.575V36.591H127.693C127.693 35.7804 128.073 35.181 128.632 34.5563C130.046 32.9733 141.798 31.7112 144.55 30.7941C145.546 30.4623 146.479 30.1956 147.203 29.5453C147.931 28.8972 148.514 28.1289 148.935 27.2669C149.361 26.3981 149.575 25.471 149.575 24.509V23.6521C149.575 22.6423 149.346 21.6835 148.894 20.8046C148.449 19.9326 147.848 19.1661 147.104 18.5249Z" fill="#0E0E3A"/></svg>
+      </div>
+    </div>
+    <div class="tip mt3">
+      <div class="tip-num">2500+</div>
+      <div class="tip-sub">запитів у топі</div>
+    </div>
+    <div class="tip mt4">
+      <div class="tip-num"><span class="small">×</span>5 ріст</div>
+      <div class="tip-sub">трафіку за рік</div>
+    </div>
+    <div class="tip mt5">
+      <div class="tip-num">380%</div>
+      <div class="tip-sub">ROI за рік</div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>

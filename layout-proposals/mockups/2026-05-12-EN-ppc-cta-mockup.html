@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 — PPC CTA-банер: 3 варіанти заміни стокової ілюстрації</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f5f6f8;
+    color: #0a1f3d;
+  }
+
+  .label {
+    max-width: 1200px;
+    margin: 40px auto 12px;
+    padding: 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+  .label strong { color: #111827; font-weight: 700; }
+  .label .desc {
+    display: block; margin-top: 6px;
+    font-size: 12px; font-weight: 500; text-transform: none;
+    color: #9ca3af; letter-spacing: 0;
+  }
+
+  /* === Banner shell === */
+  .banner-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 30px;
+  }
+  .banner {
+    background: #2966FF;
+    border-radius: 28px;
+    padding: 56px 64px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: 60px;
+    min-height: 380px;
+    position: relative;
+    overflow: hidden;
+  }
+  .banner-text {
+    color: #fff;
+    font-size: 22px;
+    line-height: 1.45;
+    margin: 0 0 32px;
+    font-weight: 400;
+  }
+  .banner-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #5BC85C;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 14px 26px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  .banner-btn svg { width: 18px; height: 18px; }
+
+  .banner-right {
+    position: relative;
+    height: 320px;
+  }
+
+  /* === Decorative background patterns === */
+  .bg-dots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.18;
+  }
+
+  /* === Variant A: floating KPI cards === */
+  .fcard {
+    position: absolute;
+    background: #fff;
+    border-radius: 14px;
+    padding: 12px 16px;
+    box-shadow: 0 10px 30px rgba(0, 20, 60, 0.18);
+    min-width: 130px;
+  }
+  .fcard.accent-green { border-left: 4px solid #5BC85C; }
+  .fcard.accent-blue  { border-left: 4px solid #2966FF; }
+  .fcard-label {
+    font-size: 10px;
+    color: #6E8AB4;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+  .fcard-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0a1f3d;
+    line-height: 1.05;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .fcard-value .accent-g { color: #16A34A; }
+  .fcard-value .accent-b { color: #2966FF; }
+  .fcard-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #166534;
+    background: #DCFCE7;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+  .fcard-delta.down { color: #16A34A; }
+  .fcard-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #DBEAFE;
+    color: #1D4ED8;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .fcard-pill::before { content:""; width:6px; height:6px; border-radius:50%; background:#2966FF;}
+
+  .va-1 { top: 8%;  left: 4%;   transform: rotate(-3deg); }
+  .va-2 { top: 0;   right: 4%;  transform: rotate(2deg); }
+  .va-3 { bottom: 8%; left: 16%; transform: rotate(2deg); }
+  .va-4 { bottom: 4%; right: 8%; transform: rotate(-2deg); }
+
+  /* === Variant B: dashboard mock === */
+  .dashboard {
+    position: absolute;
+    inset: 6% 4%;
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 16px 50px rgba(0, 20, 60, 0.22);
+    transform: rotate(-1.5deg);
+  }
+  .dash-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5EBF1;
+  }
+  .dash-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0a1f3d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dash-title .gicon {
+    width: 16px; height: 16px;
+    background: linear-gradient(135deg, #4285F4 0%, #34A853 50%, #FBBC05 75%, #EA4335 100%);
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .dash-date { font-size: 11px; color: #6E8AB4; font-weight: 600; }
+  .dash-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .dash-tile {
+    background: #F4F8FD;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .dash-tile-label {
+    font-size: 9.5px;
+    color: #6E8AB4;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+  .dash-tile-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0a1f3d;
+    margin-top: 2px;
+    line-height: 1;
+  }
+  .dash-tile-delta {
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 3px;
+  }
+  .dash-tile-delta.up   { color: #16A34A; }
+  .dash-tile-delta.down { color: #16A34A; }
+  .dash-chart {
+    height: 70px;
+    position: relative;
+  }
+  .dash-chart svg { width: 100%; height: 100%; display: block; }
+
+  /* === Variant C: search result + ad === */
+  .search-mock {
+    position: absolute;
+    inset: 10% 6%;
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px 26px;
+    box-shadow: 0 16px 50px rgba(0, 20, 60, 0.22);
+  }
+  .sm-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F4F8FD;
+    border: 1px solid #E5EBF1;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #6E8AB4;
+    margin-bottom: 18px;
+  }
+  .sm-bar .sm-search-icon {
+    width: 14px; height: 14px;
+  }
+  .sm-ad {
+    border-left: 3px solid #5BC85C;
+    padding: 6px 0 6px 12px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .sm-ad-tag {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #166534;
+    background: #DCFCE7;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .sm-ad-url {
+    font-size: 11px;
+    color: #6E8AB4;
+    margin-bottom: 4px;
+  }
+  .sm-ad-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1D4ED8;
+    line-height: 1.25;
+    margin-bottom: 3px;
+  }
+  .sm-ad-snippet {
+    font-size: 11px;
+    color: #4b5563;
+    line-height: 1.4;
+  }
+  .sm-pos-pill {
+    position: absolute;
+    right: -10px;
+    top: -4px;
+    background: #2966FF;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(41, 102, 255, 0.4);
+  }
+  .sm-organic {
+    opacity: 0.45;
+    padding: 6px 0 6px 12px;
+  }
+  .sm-organic-title {
+    font-size: 13px;
+    color: #6E8AB4;
+    margin-bottom: 2px;
+  }
+  .sm-organic-snippet {
+    height: 6px;
+    background: #E5EBF1;
+    border-radius: 3px;
+    width: 80%;
+  }
+  .sm-stat {
+    position: absolute;
+    bottom: -16px;
+    right: -10px;
+    background: #fff;
+    border: 1px solid #E5EBF1;
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 6px 20px rgba(0, 20, 60, 0.16);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sm-stat-label {
+    font-size: 9.5px;
+    color: #6E8AB4;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .sm-stat-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #16A34A;
+    line-height: 1;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ ВАРІАНТ A: floating KPI cards ============================ -->
+<div class="label">
+  Варіант <strong>A</strong> — floating KPI cards (PPC-метрики як «живі дані»)
+  <span class="desc">Шар з 4 карток метрик з легким нахилом — стиль як у niches-mockup. Найбільше підкреслює суть тексту банера: вартість кліка ↓ + ROI ↑.</span>
+</div>
+<div class="banner-wrap">
+  <div class="banner">
+    <!-- ліва частина — текст + кнопка (така ж як в оригіналі) -->
+    <div>
+      <p class="banner-text">Завдяки постійній оптимізації ми знижуємо вартість кліка і підвищуємо рентабельність інвестицій уже в перші місяці роботи.</p>
+      <button class="banner-btn">
+        Обговорити проект
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- права частина — Варіант A -->
+    <div class="banner-right">
+      <!-- декоративні точки на бекграунді -->
+      <svg class="bg-dots" viewBox="0 0 400 320" preserveAspectRatio="none">
+        <g fill="#fff">
+          <circle cx="20"  cy="40"  r="2"/>
+          <circle cx="60"  cy="20"  r="2"/>
+          <circle cx="100" cy="60"  r="2"/>
+          <circle cx="350" cy="280" r="2"/>
+          <circle cx="380" cy="100" r="2"/>
+          <circle cx="320" cy="40"  r="2"/>
+          <circle cx="40"  cy="280" r="2"/>
+          <circle cx="200" cy="10"  r="2"/>
+          <circle cx="200" cy="300" r="2"/>
+        </g>
+      </svg>
+
+      <div class="fcard va-1 accent-green">
+        <div class="fcard-label">Вартість кліка</div>
+        <div class="fcard-value">−42%</div>
+        <div class="fcard-delta down">↓ з 0,72 ₴ до 0,42 ₴</div>
+      </div>
+
+      <div class="fcard va-2 accent-blue">
+        <div class="fcard-label">ROAS</div>
+        <div class="fcard-value"><span class="accent-b">4,2</span>×</div>
+        <div class="fcard-delta">+186% до старту</div>
+      </div>
+
+      <div class="fcard va-3 accent-green">
+        <div class="fcard-label">Конверсії / міс.</div>
+        <div class="fcard-value">+312</div>
+        <svg width="100" height="22" viewBox="0 0 100 22" style="margin-top: 4px;">
+          <path d="M 0,18 C 20,16 35,12 55,8 C 75,4 90,3 100,2" stroke="#5BC85C" fill="none" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="fcard va-4">
+        <div class="fcard-pill">Google Partner</div>
+        <div class="fcard-value" style="font-size: 14px; margin-top: 8px;">ТОП-3 Google Ads</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ ВАРІАНТ B: dashboard mock ============================ -->
+<div class="label">
+  Варіант <strong>B</strong> — мокап Google Ads дашборду (наче скріншот зі звіту клієнта)
+  <span class="desc">Одна велика «картка-скрін» з трендом і двома KPI. Виглядає як preview Site24-звітності — натяк на «прозору звітність» (один з ваших фішок з PPC-сторінки).</span>
+</div>
+<div class="banner-wrap">
+  <div class="banner">
+    <div>
+      <p class="banner-text">Завдяки постійній оптимізації ми знижуємо вартість кліка і підвищуємо рентабельність інвестицій уже в перші місяці роботи.</p>
+      <button class="banner-btn">
+        Обговорити проект
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="banner-right">
+      <svg class="bg-dots" viewBox="0 0 400 320" preserveAspectRatio="none">
+        <g fill="#fff">
+          <circle cx="20"  cy="40"  r="2"/>
+          <circle cx="380" cy="280" r="2"/>
+          <circle cx="60"  cy="290" r="2"/>
+          <circle cx="350" cy="40"  r="2"/>
+        </g>
+      </svg>
+
+      <div class="dashboard">
+        <div class="dash-head">
+          <div class="dash-title"><span class="gicon"></span> Google Ads · Кампанія</div>
+          <div class="dash-date">Остання доба</div>
+        </div>
+
+        <div class="dash-tiles">
+          <div class="dash-tile">
+            <div class="dash-tile-label">CPC, ₴</div>
+            <div class="dash-tile-value">0,42</div>
+            <div class="dash-tile-delta down">↓ −42% за міс.</div>
+          </div>
+          <div class="dash-tile">
+            <div class="dash-tile-label">ROAS</div>
+            <div class="dash-tile-value">4,2×</div>
+            <div class="dash-tile-delta up">↑ +186%</div>
+          </div>
+        </div>
+
+        <div class="dash-chart">
+          <svg viewBox="0 0 280 70" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="dashFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#5BC85C" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0,55 C 40,50 70,45 110,32 C 150,20 180,15 220,10 C 250,7 270,5 280,4 L 280,70 L 0,70 Z" fill="url(#dashFill)"/>
+            <path d="M 0,55 C 40,50 70,45 110,32 C 150,20 180,15 220,10 C 250,7 270,5 280,4"
+                  stroke="#2966FF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <circle cx="280" cy="4" r="4" fill="#5BC85C"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ ВАРІАНТ C: search result + ad ============================ -->
+<div class="label">
+  Варіант <strong>C</strong> — mock Google пошуку з рекламним оголошенням
+  <span class="desc">Найвпізнаваніший PPC-візуал — пошуковий результат з рекламою на №1. Чітко передає продукт: «ми ставимо вас у топ платної видачі». Має невелику бейдж-картку зі статистикою CTR.</span>
+</div>
+<div class="banner-wrap">
+  <div class="banner">
+    <div>
+      <p class="banner-text">Завдяки постійній оптимізації ми знижуємо вартість кліка і підвищуємо рентабельність інвестицій уже в перші місяці роботи.</p>
+      <button class="banner-btn">
+        Обговорити проект
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="banner-right">
+      <svg class="bg-dots" viewBox="0 0 400 320" preserveAspectRatio="none">
+        <g fill="#fff">
+          <circle cx="20"  cy="40"  r="2"/>
+          <circle cx="380" cy="280" r="2"/>
+          <circle cx="350" cy="40"  r="2"/>
+          <circle cx="40"  cy="280" r="2"/>
+        </g>
+      </svg>
+
+      <div class="search-mock">
+        <div class="sm-bar">
+          <svg class="sm-search-icon" viewBox="0 0 24 24" fill="none" stroke="#6E8AB4" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+          просування сайту київ
+        </div>
+
+        <div class="sm-ad">
+          <span class="sm-pos-pill">№1</span>
+          <div class="sm-ad-tag">РЕКЛАМА</div>
+          <div class="sm-ad-url">site24.com.ua › просування</div>
+          <div class="sm-ad-title">Просування сайту в Google · Site24</div>
+          <div class="sm-ad-snippet">Результат у перші 3 місяці. Прозора звітність, Google Partner.</div>
+        </div>
+
+        <div class="sm-organic">
+          <div class="sm-organic-title">Інший конкурент — звичайна видача</div>
+          <div class="sm-organic-snippet"></div>
+        </div>
+
+        <div class="sm-stat">
+          <div>
+            <div class="sm-stat-label">CTR</div>
+            <div class="sm-stat-value">8,4%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

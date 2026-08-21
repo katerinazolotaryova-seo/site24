@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 — Терміни результатів (2 варіанти)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #ffffff;
+    color: #0a1f3d;
+  }
+
+  .label-strip {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    padding: 0 40px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+  .label-strip strong { color: #111827; font-weight: 700; }
+  .label-strip .desc {
+    display: block; margin-top: 6px;
+    font-size: 12px; font-weight: 500; text-transform: none;
+    color: #9ca3af; letter-spacing: 0;
+  }
+
+  .chart-container {
+    max-width: 1000px;
+    margin: 20px auto 0;
+    padding: 30px 40px 60px;
+  }
+
+  /* === Header row === */
+  .header-row {
+    display: grid;
+    grid-template-columns: 16% repeat(4, 1fr);
+    align-items: start;
+    margin-bottom: 36px;
+  }
+  .header-title {
+    font-size: 22px;
+    color: #0a1f3d;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .month-col { text-align: center; }
+  .month-num {
+    font-size: 30px;
+    font-weight: 800;
+    color: #0a1f3d;
+    line-height: 1;
+  }
+  .month-label {
+    font-size: 18px;
+    color: #6E8AB4;
+    margin-top: 6px;
+  }
+
+  /* === Chart === */
+  .chart-area {
+    display: grid;
+    grid-template-columns: 16% 84%;
+    align-items: stretch;
+  }
+  .y-axis {
+    display: flex;
+    flex-direction: column;
+    padding-right: 18px;
+    position: relative;
+  }
+  .y-label {
+    position: absolute;
+    right: 18px;
+    font-size: 18px;
+    color: #6E8AB4;
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  .chart-svg-wrap {
+    position: relative;
+    height: 440px;
+  }
+  .chart-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* === Tooltips === */
+  .tooltip {
+    position: absolute;
+    display: flex;
+    align-items: stretch;
+    z-index: 2;
+    filter: drop-shadow(0 4px 14px rgba(20, 60, 120, 0.10));
+  }
+  .tip-bar {
+    width: 6px;
+    background: #2966FF;
+    border-radius: 4px 0 0 4px;
+  }
+  .tip-content {
+    background: #DAF8FF;
+    padding: 14px 18px 14px 16px;
+    border-radius: 0 10px 10px 0;
+    min-width: 170px;
+  }
+  .tip-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0a1f3d;
+    line-height: 1.2;
+  }
+  .tip-meta {
+    font-size: 13px;
+    color: #6E8AB4;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .clock-ico { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* === Divider між варіантами === */
+  .divider {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    border-top: 1px dashed #d1d5db;
+  }
+
+  /* === Мобільна квадратна версія === */
+  .m-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 30px 16px 60px;
+  }
+  .m-chart-container {
+    width: 380px;
+    aspect-ratio: 1;
+    background: #fff;
+    border: 1px solid #E5EBF1;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(20, 60, 120, 0.06);
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .m-header-row {
+    display: grid;
+    grid-template-columns: 22% repeat(4, 1fr);
+    align-items: start;
+    margin-bottom: 14px;
+  }
+  .m-header-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0a1f3d;
+    line-height: 1.2;
+  }
+  .m-month-col { text-align: center; }
+  .m-month-num {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0a1f3d;
+    line-height: 1;
+  }
+  .m-month-label {
+    font-size: 10px;
+    color: #6E8AB4;
+    margin-top: 3px;
+  }
+  .m-chart-area {
+    display: grid;
+    grid-template-columns: 22% 78%;
+    flex: 1;
+  }
+  .m-y-axis { position: relative; padding-right: 6px; }
+  .m-y-axis span {
+    position: absolute;
+    right: 6px;
+    font-size: 10px;
+    color: #6E8AB4;
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  .m-chart-svg-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .m-chart-svg { width: 100%; height: 100%; display: block; }
+
+  .m-tooltip {
+    position: absolute;
+    display: flex;
+    align-items: stretch;
+    z-index: 2;
+    filter: drop-shadow(0 2px 6px rgba(20, 60, 120, 0.10));
+  }
+  .m-tip-bar {
+    width: 3px;
+    background: #2966FF;
+    border-radius: 2px 0 0 2px;
+  }
+  .m-tip-content {
+    background: #DAF8FF;
+    padding: 4px 8px;
+    border-radius: 0 5px 5px 0;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #0a1f3d;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ ВАРІАНТ 1: тільки правка тексту ============================ -->
+<div class="label-strip">
+  Варіант <strong>1</strong> — тільки виправлення помилок у тексті
+  <span class="desc">Все як в оригіналі. Виправлено лише «Потчаток просквання» → «Початок просування».</span>
+</div>
+
+<div class="chart-container">
+  <div class="header-row">
+    <div class="header-title">Терміни<br>результатів</div>
+    <div class="month-col"><div class="month-num">01</div><div class="month-label">Місяць</div></div>
+    <div class="month-col"><div class="month-num">02</div><div class="month-label">Місяць</div></div>
+    <div class="month-col"><div class="month-num">03</div><div class="month-label">Місяць</div></div>
+    <div class="month-col"><div class="month-num">04</div><div class="month-label">Місяць</div></div>
+  </div>
+
+  <div class="chart-area">
+    <div class="y-axis">
+      <span class="y-label" style="top: 30px;">150к</span>
+      <span class="y-label" style="top: 135px;">100к</span>
+      <span class="y-label" style="top: 245px;">50к</span>
+      <span class="y-label" style="top: 335px;">20к</span>
+      <span class="y-label" style="top: 410px;">0к</span>
+    </div>
+
+    <div class="chart-svg-wrap">
+      <svg class="chart-svg" viewBox="0 0 900 440" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="curveFill1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.32"/>
+            <stop offset="100%" stop-color="#5BC85C" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+
+        <!-- gridlines -->
+        <line x1="0" y1="30"  x2="900" y2="30"  stroke="#E5EBF1" stroke-width="1"/>
+        <line x1="0" y1="135" x2="900" y2="135" stroke="#E5EBF1" stroke-width="1"/>
+        <line x1="0" y1="245" x2="900" y2="245" stroke="#E5EBF1" stroke-width="1"/>
+        <line x1="0" y1="335" x2="900" y2="335" stroke="#E5EBF1" stroke-width="1"/>
+        <line x1="0" y1="410" x2="900" y2="410" stroke="#E5EBF1" stroke-width="1"/>
+
+        <!-- крива стартує лівіше за 01 місяць (як в оригіналі) -->
+        <path d="
+          M 30,410
+          C 90,408 140,402 200,360
+          C 250,320 295,260 337,245
+          C 400,225 460,210 540,195
+          C 590,185 625,180 660,180
+          C 720,178 760,120 820,70
+          C 850,50 870,40 900,30
+          L 900,410 L 30,410 Z" fill="url(#curveFill1)"/>
+
+        <path d="
+          M 30,410
+          C 90,408 140,402 200,360
+          C 250,320 295,260 337,245
+          C 400,225 460,210 540,195
+          C 590,185 625,180 660,180
+          C 720,178 760,120 820,70
+          C 850,50 870,40 900,30"
+          stroke="#3B82F6" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <!-- точки: 01 і 02 (зелена «Перший результат») -->
+        <circle cx="120" cy="397" r="10" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+        <circle cx="337" cy="245" r="14" fill="#fff"/>
+        <circle cx="337" cy="245" r="11" fill="#5BC85C"/>
+      </svg>
+
+      <!-- Тултіпи -->
+      <div class="tooltip" style="left: 13%; top: 60%;">
+        <div class="tip-bar"></div>
+        <div class="tip-content">
+          <div class="tip-title">Початок просування</div>
+          <div class="tip-meta">
+            <svg class="clock-ico" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#6E8AB4" stroke-width="2"/>
+              <path d="M12 7v5l3 2" stroke="#6E8AB4" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            01 місяць
+          </div>
+        </div>
+      </div>
+
+      <div class="tooltip" style="left: 32%; top: 28%;">
+        <div class="tip-bar"></div>
+        <div class="tip-content">
+          <div class="tip-title">Перший результат</div>
+          <div class="tip-meta">
+            <svg class="clock-ico" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#6E8AB4" stroke-width="2"/>
+              <path d="M12 7v5l3 2" stroke="#6E8AB4" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            02 місяць
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================ ВАРІАНТ 2: усі покращення ============================ -->
+<div class="label-strip">
+  Варіант <strong>2</strong> — усі покращення
+  <span class="desc">4 крапки (всі місяці підписані) · крива стартує точно з 01 · вертикальні гайди до крапок · вісь 0/50/100/150 · мета-стрічки з конкретикою (днів) замість дублю місяця.</span>
+</div>
+
+<div class="chart-container">
+  <div class="header-row">
+    <div class="header-title">Терміни<br>результатів</div>
+    <div class="month-col"><div class="month-num">01</div><div class="month-label">Місяць</div></div>
+    <div class="month-col"><div class="month-num">02</div><div class="month-label">Місяць</div></div>
+    <div class="month-col"><div class="month-num">03</div><div class="month-label">Місяць</div></div>
+    <div class="month-col"><div class="month-num">04</div><div class="month-label">Місяць</div></div>
+  </div>
+
+  <div class="chart-area">
+    <div class="y-axis">
+      <span class="y-label" style="top: 30px;">150к</span>
+      <span class="y-label" style="top: 158px;">100к</span>
+      <span class="y-label" style="top: 285px;">50к</span>
+      <span class="y-label" style="top: 410px;">0к</span>
+    </div>
+
+    <div class="chart-svg-wrap">
+      <svg class="chart-svg" viewBox="0 0 900 440" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="curveFill2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.32"/>
+            <stop offset="100%" stop-color="#5BC85C" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+
+        <!-- gridlines (0/50/100/150) -->
+        <line x1="0" y1="30"  x2="900" y2="30"  stroke="#E5EBF1" stroke-width="1"/>
+        <line x1="0" y1="158" x2="900" y2="158" stroke="#E5EBF1" stroke-width="1"/>
+        <line x1="0" y1="285" x2="900" y2="285" stroke="#E5EBF1" stroke-width="1"/>
+        <line x1="0" y1="410" x2="900" y2="410" stroke="#E5EBF1" stroke-width="1"/>
+
+        <!-- Вертикальні пунктирні гайди до кожної крапки -->
+        <line x1="120" y1="0" x2="120" y2="410" stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+        <line x1="337" y1="0" x2="337" y2="285" stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+        <line x1="562" y1="0" x2="562" y2="180" stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+        <line x1="787" y1="0" x2="787" y2="50"  stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+
+        <!-- крива стартує точно на 01 місяць -->
+        <path d="
+          M 120,410
+          C 180,408 240,395 280,360
+          C 310,330 320,300 337,285
+          C 380,260 440,220 500,205
+          C 540,195 562,182 580,180
+          C 620,178 660,175 700,160
+          C 730,145 760,100 787,50
+          L 787,410 L 120,410 Z" fill="url(#curveFill2)"/>
+
+        <path d="
+          M 120,410
+          C 180,408 240,395 280,360
+          C 310,330 320,300 337,285
+          C 380,260 440,220 500,205
+          C 540,195 562,182 580,180
+          C 620,178 660,175 700,160
+          C 730,145 760,100 787,50"
+          stroke="#3B82F6" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <!-- 4 точки -->
+        <circle cx="120" cy="410" r="10" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+        <circle cx="337" cy="285" r="12" fill="#5BC85C"/>
+        <circle cx="562" cy="180" r="10" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+        <circle cx="787" cy="50"  r="10" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+      </svg>
+
+      <!-- 4 тултіпи -->
+      <div class="tooltip" style="left: 4%; top: 64%;">
+        <div class="tip-bar"></div>
+        <div class="tip-content">
+          <div class="tip-title">Початок просування</div>
+          <div class="tip-meta">
+            <svg class="clock-ico" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#6E8AB4" stroke-width="2"/>
+              <path d="M12 7v5l3 2" stroke="#6E8AB4" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Аудит, стратегія, перші правки
+          </div>
+        </div>
+      </div>
+
+      <div class="tooltip" style="left: 28%; top: 36%;">
+        <div class="tip-bar"></div>
+        <div class="tip-content">
+          <div class="tip-title">Перший результат</div>
+          <div class="tip-meta">
+            <svg class="clock-ico" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#6E8AB4" stroke-width="2"/>
+              <path d="M12 7v5l3 2" stroke="#6E8AB4" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Зростання трафіку, перші ТОП-100
+          </div>
+        </div>
+      </div>
+
+      <div class="tooltip" style="left: 51%; top: 8%;">
+        <div class="tip-bar"></div>
+        <div class="tip-content">
+          <div class="tip-title">Стабільне зростання</div>
+          <div class="tip-meta">
+            <svg class="clock-ico" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#6E8AB4" stroke-width="2"/>
+              <path d="M12 7v5l3 2" stroke="#6E8AB4" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Ключові запити в ТОП-30
+          </div>
+        </div>
+      </div>
+
+      <div class="tooltip" style="left: 71%; top: 56%;">
+        <div class="tip-bar"></div>
+        <div class="tip-content">
+          <div class="tip-title">Цільові позиції</div>
+          <div class="tip-meta">
+            <svg class="clock-ico" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#6E8AB4" stroke-width="2"/>
+              <path d="M12 7v5l3 2" stroke="#6E8AB4" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            ТОП-10 за основними запитами
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================ ВАРІАНТ 1: МОБІЛЬНА КВАДРАТНА ============================ -->
+<div class="label-strip">
+  Варіант <strong>1 — мобільна квадратна версія</strong>
+  <span class="desc">Той самий зміст, що у Варіанті 1 (2 крапки, вісь з 20к, крива стартує лівіше за 01), але 1:1 пропорції для мобільної верстки. Тултіпи компактні — тільки назви.</span>
+</div>
+
+<div class="m-wrap">
+  <div class="m-chart-container">
+    <div class="m-header-row">
+      <div class="m-header-title">Терміни<br>результатів</div>
+      <div class="m-month-col"><div class="m-month-num">01</div><div class="m-month-label">міс</div></div>
+      <div class="m-month-col"><div class="m-month-num">02</div><div class="m-month-label">міс</div></div>
+      <div class="m-month-col"><div class="m-month-num">03</div><div class="m-month-label">міс</div></div>
+      <div class="m-month-col"><div class="m-month-num">04</div><div class="m-month-label">міс</div></div>
+    </div>
+
+    <div class="m-chart-area">
+      <div class="m-y-axis">
+        <span style="top: 8%;">150к</span>
+        <span style="top: 31%;">100к</span>
+        <span style="top: 56%;">50к</span>
+        <span style="top: 76%;">20к</span>
+        <span style="top: 93%;">0к</span>
+      </div>
+
+      <div class="m-chart-svg-wrap">
+        <svg class="m-chart-svg" viewBox="0 0 500 500" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="curveFillM1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.32"/>
+              <stop offset="100%" stop-color="#5BC85C" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+
+          <!-- gridlines (0/20/50/100/150) -->
+          <line x1="0" y1="40"  x2="500" y2="40"  stroke="#E5EBF1" stroke-width="1"/>
+          <line x1="0" y1="155" x2="500" y2="155" stroke="#E5EBF1" stroke-width="1"/>
+          <line x1="0" y1="280" x2="500" y2="280" stroke="#E5EBF1" stroke-width="1"/>
+          <line x1="0" y1="380" x2="500" y2="380" stroke="#E5EBF1" stroke-width="1"/>
+          <line x1="0" y1="465" x2="500" y2="465" stroke="#E5EBF1" stroke-width="1"/>
+
+          <!-- крива стартує лівіше за 01 -->
+          <path d="
+            M 20,465
+            C 40,463 55,460 70,455
+            C 110,440 145,395 170,330
+            C 180,305 185,290 187.5,280
+            C 220,260 280,225 340,205
+            C 380,195 420,140 480,40
+            L 480,465 L 20,465 Z" fill="url(#curveFillM1)"/>
+
+          <path d="
+            M 20,465
+            C 40,463 55,460 70,455
+            C 110,440 145,395 170,330
+            C 180,305 185,290 187.5,280
+            C 220,260 280,225 340,205
+            C 380,195 420,140 480,40"
+            stroke="#3B82F6" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+          <!-- 2 точки: 01 (низька) і 02 (зелена) -->
+          <circle cx="70" cy="455" r="8" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+          <circle cx="187.5" cy="280" r="11" fill="#fff"/>
+          <circle cx="187.5" cy="280" r="8" fill="#5BC85C"/>
+        </svg>
+
+        <!-- 2 компактні тултіпи -->
+        <div class="m-tooltip" style="left: 4%; top: 72%;">
+          <div class="m-tip-bar"></div>
+          <div class="m-tip-content">Початок просування</div>
+        </div>
+        <div class="m-tooltip" style="left: 22%; top: 38%;">
+          <div class="m-tip-bar"></div>
+          <div class="m-tip-content">Перший результат</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================ ВАРІАНТ 2: МОБІЛЬНА КВАДРАТНА ============================ -->
+<div class="label-strip">
+  Варіант <strong>2 — мобільна квадратна версія</strong>
+  <span class="desc">Та сама логіка, що у Варіанті 2 (4 крапки + гайди + чиста вісь), але 1:1 пропорції для мобільної верстки. Тултіпи компактні — тільки назви.</span>
+</div>
+
+<div class="m-wrap">
+  <div class="m-chart-container">
+    <div class="m-header-row">
+      <div class="m-header-title">Терміни<br>результатів</div>
+      <div class="m-month-col"><div class="m-month-num">01</div><div class="m-month-label">міс</div></div>
+      <div class="m-month-col"><div class="m-month-num">02</div><div class="m-month-label">міс</div></div>
+      <div class="m-month-col"><div class="m-month-num">03</div><div class="m-month-label">міс</div></div>
+      <div class="m-month-col"><div class="m-month-num">04</div><div class="m-month-label">міс</div></div>
+    </div>
+
+    <div class="m-chart-area">
+      <div class="m-y-axis">
+        <span style="top: 8%;">150к</span>
+        <span style="top: 36%;">100к</span>
+        <span style="top: 64%;">50к</span>
+        <span style="top: 92%;">0к</span>
+      </div>
+
+      <div class="m-chart-svg-wrap">
+        <svg class="m-chart-svg" viewBox="0 0 500 500" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="curveFillM" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#5BC85C" stop-opacity="0.32"/>
+              <stop offset="100%" stop-color="#5BC85C" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+
+          <!-- gridlines -->
+          <line x1="0" y1="40"  x2="500" y2="40"  stroke="#E5EBF1" stroke-width="1"/>
+          <line x1="0" y1="180" x2="500" y2="180" stroke="#E5EBF1" stroke-width="1"/>
+          <line x1="0" y1="320" x2="500" y2="320" stroke="#E5EBF1" stroke-width="1"/>
+          <line x1="0" y1="460" x2="500" y2="460" stroke="#E5EBF1" stroke-width="1"/>
+
+          <!-- вертикальні гайди до крапок -->
+          <line x1="62.5"  y1="0" x2="62.5"  y2="460" stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+          <line x1="187.5" y1="0" x2="187.5" y2="320" stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+          <line x1="312.5" y1="0" x2="312.5" y2="180" stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+          <line x1="437.5" y1="0" x2="437.5" y2="40"  stroke="#C7D5E8" stroke-width="1" stroke-dasharray="3 5"/>
+
+          <!-- крива стартує точно на 01 -->
+          <path d="
+            M 62.5,460
+            C 100,458 165,400 187.5,320
+            C 220,275 270,225 312.5,180
+            C 360,130 410,80 437.5,40
+            L 437.5,460 L 62.5,460 Z" fill="url(#curveFillM)"/>
+
+          <path d="
+            M 62.5,460
+            C 100,458 165,400 187.5,320
+            C 220,275 270,225 312.5,180
+            C 360,130 410,80 437.5,40"
+            stroke="#3B82F6" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+          <!-- 4 точки -->
+          <circle cx="62.5"  cy="460" r="8" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+          <circle cx="187.5" cy="320" r="11" fill="#fff"/>
+          <circle cx="187.5" cy="320" r="8"  fill="#5BC85C"/>
+          <circle cx="312.5" cy="180" r="8" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+          <circle cx="437.5" cy="40"  r="8" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+        </svg>
+
+        <!-- 4 компактні тултіпи -->
+        <div class="m-tooltip" style="left: 4%; top: 76%;">
+          <div class="m-tip-bar"></div>
+          <div class="m-tip-content">Початок просування</div>
+        </div>
+        <div class="m-tooltip" style="left: 22%; top: 50%;">
+          <div class="m-tip-bar"></div>
+          <div class="m-tip-content">Перший результат</div>
+        </div>
+        <div class="m-tooltip" style="left: 42%; top: 25%;">
+          <div class="m-tip-bar"></div>
+          <div class="m-tip-content">Стабільне зростання</div>
+        </div>
+        <div class="m-tooltip" style="left: 50%; top: 2%;">
+          <div class="m-tip-bar"></div>
+          <div class="m-tip-content">Цільові позиції</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site24 — Дизайн-гайдлайн презентацій</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ===== БРЕНД-ТОКЕНИ SITE24 (звірено з сайтом 25.06.2026) ===== */
+  --ink:#0E0E3A;        /* основний текст */
+  --blue:#2966FF;       /* бренд-синій: акцент, заголовки-ключі, чипи, графіки */
+  --green:#36EF74;      /* CTA-зелений — тільки кнопки/дія */
+  --green-mid:#94FCB1;  /* вторинний зелений — м'які кнопки, маркери */
+  --mint:#E6FAEE;       /* фон зелених панелей секцій */
+  --tint:#DAF8FF;       /* фон блакитних панелей/hero/карток */
+  --white:#FFFFFF;
+  --ink-60:rgba(14,14,58,.62);
+  --ink-30:rgba(14,14,58,.30);
+  --ink-12:rgba(14,14,58,.12);
+  --line:rgba(14,14,58,.10);
+
+  --r-sm:10px; --r-md:18px; --r-lg:28px; --r-pill:999px;
+  --page:#F4F6FB;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Ubuntu',system-ui,sans-serif;color:var(--ink);background:var(--page);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+
+/* ---------- ШАПКА ---------- */
+.masthead{background:var(--tint);padding:50px 0 44px;border-bottom:1px solid var(--line)}
+.masthead .eyebrow{color:var(--ink-60);letter-spacing:.06em}
+.masthead h1{font-size:40px;line-height:1.1;margin:6px 0 12px;font-weight:700}
+.masthead h1 .b{color:var(--blue)}
+.masthead p{font-size:17px;color:var(--ink-60);max-width:700px;margin:0}
+.masthead .meta{margin-top:22px;font-size:13px;color:var(--ink-60)}
+
+/* офіційне лого */
+.brandlogo{display:inline-flex;align-items:center;gap:10px}
+.brandlogo svg{display:block}
+.brandlogo .wm{font-weight:700;letter-spacing:.02em;font-size:24px;color:var(--ink)}
+
+/* ---------- НАВІГАЦІЯ ---------- */
+nav.toc{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px 0}
+nav.toc .wrap{display:flex;flex-wrap:wrap;gap:6px}
+nav.toc a{font-size:12.5px;text-decoration:none;color:var(--ink-60);padding:5px 11px;border-radius:var(--r-pill);transition:.15s}
+nav.toc a:hover{background:var(--tint);color:var(--ink)}
+
+/* ---------- СЕКЦІЇ ---------- */
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-60)}
+h2.sec{font-size:30px;font-weight:700;margin:6px 0 4px;line-height:1.15}
+h2.sec .b{color:var(--blue)}
+.sec-lead{color:var(--ink-60);max-width:780px;margin:0 0 26px;font-size:15.5px}
+h3.sub{font-size:19px;font-weight:700;margin:30px 0 12px}
+small.note{color:var(--ink-60);font-size:13px}
+
+/* ---------- СВОТЧІ ---------- */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.sw{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);background:#fff}
+.sw .chip{height:74px}
+.sw .body{padding:11px 13px}
+.sw .name{font-weight:700;font-size:14px}
+.sw .hex{font-size:12.5px;color:var(--ink-60);font-family:ui-monospace,monospace;text-transform:uppercase}
+.sw .use{font-size:11.5px;color:var(--ink-60);margin-top:3px;display:block}
+
+.ratio{display:flex;height:46px;border-radius:var(--r-pill);overflow:hidden;margin-top:18px;border:1px solid var(--line);font-size:12px;font-weight:700}
+.ratio div{display:flex;align-items:center;justify-content:center}
+
+/* ---------- ТИПОГРАФІКА ---------- */
+.typetable{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line)}
+.typetable td,.typetable th{padding:13px 16px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.typetable th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);background:#fafbff}
+.typetable tr:last-child td{border-bottom:none}
+.typetable .spec{font-size:12.5px;color:var(--ink-60);font-family:ui-monospace,monospace;white-space:nowrap}
+
+/* ---------- ПАТЕРНИ ВИДІЛЕННЯ ---------- */
+.demo-row{display:flex;flex-wrap:wrap;gap:26px;align-items:center;margin-top:8px}
+.demo{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:22px 24px;flex:1;min-width:260px}
+.demo .lab{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60);margin-bottom:10px;font-weight:700}
+.bluepill{display:inline-block;background:var(--blue);color:#fff;font-weight:700;padding:4px 16px;border-radius:var(--r-pill);font-size:18px;vertical-align:middle}
+.h-demo{font-size:24px;font-weight:700;line-height:1.2}
+.bannerdemo{background:var(--blue);border-radius:var(--r-lg);padding:26px 28px;color:#fff}
+.bannerdemo .t{font-size:22px;font-weight:700;line-height:1.25}
+.bannerdemo .g{color:var(--green-mid)}
+.bannerdemo .cta{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:var(--ink);font-weight:700;padding:11px 20px;border-radius:var(--r-pill);margin-top:16px;font-size:14px}
+
+/* ---------- ІКОНКИ ---------- */
+.iconset{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:6px}
+.iconcell{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:18px 10px;text-align:center}
+.iconcell svg{width:36px;height:36px}
+.iconcell span{display:block;font-size:11.5px;color:var(--ink-60);margin-top:9px}
+
+/* ---------- КАРТКИ-ПРАВИЛА ---------- */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+.rulecard{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:18px 20px}
+.rulecard.do{border-left:4px solid var(--green)}
+.rulecard.dont{border-left:4px solid #FF5470}
+.rulecard h4{margin:0 0 10px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.rulecard ul{margin:0;padding-left:18px}
+.rulecard li{font-size:13.5px;margin-bottom:7px}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill);text-transform:uppercase;letter-spacing:.04em}
+.tag.g{background:var(--green-mid);color:#0a5b2a}
+.tag.r{background:#FFE0E6;color:#a01030}
+
+/* ============================================================
+   СЛАЙД-МАКЕТИ 16:9 (канва 960×540 умовних px; 1cqw≈9.6px)
+   ============================================================ */
+.slide-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:880px){.slide-grid{grid-template-columns:1fr}}
+.slide-cap{font-size:12.5px;color:var(--ink-60);margin:9px 2px 0}
+.slide-cap b{color:var(--ink)}
+
+.slide{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 6px 22px rgba(14,14,58,.08);container-type:inline-size;font-size:2.6cqw;color:var(--ink)}
+.slide *{box-sizing:border-box}
+.s-pad{padding:6.5cqw 7cqw;height:100%}
+.kick{font-size:2.1cqw;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)}
+.s-h{font-size:5.6cqw;font-weight:700;line-height:1.08;margin:.6cqw 0}
+.s-h .b{color:var(--blue)}
+.s-h.big{font-size:7.4cqw}
+.s-sub{font-size:2.9cqw;color:var(--ink-60);line-height:1.35}
+.s-foot{position:absolute;left:7cqw;right:7cqw;bottom:4cqw;display:flex;justify-content:space-between;align-items:center;font-size:1.9cqw;color:var(--ink-30)}
+
+/* фон-варіанти слайдів */
+.slide.tint{background:var(--tint)}
+.slide.blue{background:var(--blue);color:#fff}
+.slide.blue .s-sub{color:rgba(255,255,255,.8)}
+
+/* лого у слайді (офіційний локап) */
+.slmark{width:13cqw;height:2.9cqw;display:block}
+.slmark.lg{width:19cqw;height:4.3cqw}
+
+/* блакитний/синій чип-категорія = «виділення синім фоном» */
+.chip{display:inline-block;background:var(--blue);color:#fff;font-weight:700;padding:.7cqw 2.6cqw;border-radius:var(--r-pill);font-size:3cqw;vertical-align:middle}
+
+/* зелена CTA-кнопка з іконкою */
+.cta{display:inline-flex;align-items:center;gap:1.4cqw;background:var(--green);color:var(--ink);font-weight:700;font-size:2.6cqw;padding:2.2cqw 4cqw;border-radius:var(--r-pill)}
+.cta svg{width:3cqw;height:3cqw}
+.cta-mid{background:var(--green-mid)}
+.btn-white{display:inline-flex;align-items:center;gap:1.2cqw;background:#fff;color:var(--ink);font-weight:700;font-size:2.3cqw;padding:1.8cqw 3.2cqw;border-radius:var(--r-pill)}
+.btn-white svg{width:2.6cqw;height:2.6cqw}
+
+/* картки / панелі в слайді */
+.panel-mint{background:var(--mint);border-radius:3cqw;padding:3.4cqw 3.6cqw;margin-top:3cqw}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2.4cqw;margin-top:3.2cqw}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:3cqw;margin-top:2.4cqw}
+.subcard{background:#fff;border-radius:var(--r-pill);padding:2.2cqw 2.8cqw;display:flex;align-items:center;justify-content:space-between;gap:1.5cqw;font-size:2.5cqw;font-weight:700}
+.subcard .l{display:flex;align-items:center;gap:1.6cqw;color:var(--ink)}
+.subcard .l .d{width:1.7cqw;height:1.7cqw;border-radius:50%;background:var(--blue);flex:0 0 auto}
+.subcard .arr{width:5cqw;height:5cqw;border-radius:50%;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.subcard .arr svg{width:2.6cqw;height:2.6cqw}
+
+.scard{background:#fff;border:1px solid var(--line);border-radius:2.6cqw;padding:3cqw 2.8cqw}
+.scard.hot{border:1.5px solid var(--blue);box-shadow:0 3cqw 8cqw rgba(41,102,255,.16)}
+.scard .ic{width:8cqw;height:8cqw;border-radius:2.2cqw;background:var(--tint);display:flex;align-items:center;justify-content:center;margin-bottom:2.2cqw}
+.scard .ic svg{width:4.4cqw;height:4.4cqw}
+.scard h5{font-size:3cqw;font-weight:700;margin:0 0 1.2cqw}
+.scard p{font-size:2.25cqw;color:var(--ink-60);margin:0;line-height:1.35}
+.ribbon{position:absolute;top:0;right:0;background:var(--blue);color:#fff;font-size:1.9cqw;font-weight:700;padding:1cqw 2.4cqw;border-radius:0 0 0 2cqw;text-transform:uppercase;letter-spacing:.04em}
+
+/* статистика */
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:2.4cqw;margin-top:3.6cqw}
+.stat{position:relative;padding-top:1.6cqw}
+.stat:before{content:"";position:absolute;top:0;left:0;width:.9cqw;height:5cqw;background:var(--green);border-radius:1cqw}
+.stat .n{font-size:7.6cqw;font-weight:700;color:var(--blue);line-height:1}
+.stat .l{font-size:2.05cqw;color:var(--ink-60);margin-top:1cqw;line-height:1.25}
+
+/* фіча-рядок з іконкою */
+.feat{display:flex;align-items:center;gap:2.4cqw;margin-top:3cqw}
+.feat .fi{width:7cqw;height:7cqw;flex:0 0 auto}
+.feat .ft{font-size:2.8cqw;font-weight:700}
+
+/* фото */
+.photo-ph{background:linear-gradient(160deg,#cdeffb,#fff);border-radius:3cqw;display:flex;align-items:flex-end;justify-content:center;color:var(--ink-30);font-size:2cqw;position:relative}
+.namecard{position:absolute;bottom:3cqw;right:-2cqw;background:#fff;border-radius:2cqw;padding:1.6cqw 2.4cqw;box-shadow:0 2cqw 6cqw rgba(14,14,58,.12);font-size:2cqw;line-height:1.2}
+.namecard b{font-size:2.3cqw}
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:4cqw;height:100%;align-items:center}
+
+.badges{display:flex;gap:2.2cqw;align-items:center;margin-top:3.4cqw}
+.badges span{height:5cqw;min-width:13cqw;background:#fff;border:1px solid var(--line);border-radius:1.4cqw;display:flex;align-items:center;justify-content:center;font-size:1.7cqw;color:var(--ink-60)}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2.4cqw;margin-top:3.2cqw}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:2.2cqw;padding:2.6cqw 2.4cqw}
+.kpi .n{font-size:5.2cqw;font-weight:700;color:var(--ink)}
+.kpi .d{font-size:2cqw;font-weight:700;color:#0a8a3a;margin-top:.4cqw}
+.kpi .d.down{color:#d11}
+.kpi .l{font-size:1.95cqw;color:var(--ink-60);margin-top:.8cqw;line-height:1.2}
+
+/* before/after */
+.ba{display:flex;align-items:flex-end;gap:5cqw;height:32cqw}
+.ba .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.ba .bar{width:11cqw;border-radius:1.6cqw 1.6cqw 0 0}
+.ba .b1{background:var(--ink-12);height:34%}
+.ba .b2{background:var(--blue);height:100%}
+.ba .vlab{font-size:2.6cqw;font-weight:700;margin-bottom:1.2cqw}
+.ba .xlab{font-size:2cqw;color:var(--ink-60);margin-top:1.4cqw}
+
+.bubble{display:inline-block;background:var(--tint);color:var(--blue);font-weight:700;font-size:2cqw;padding:1.2cqw 2.4cqw;border-radius:2cqw;position:relative}
+.checklist-s{margin:2.6cqw 0 0;padding:0;list-style:none}
+.checklist-s li{display:flex;align-items:flex-start;gap:1.8cqw;font-size:2.5cqw;margin-bottom:2cqw}
+.checklist-s svg{width:3cqw;height:3cqw;flex:0 0 auto;margin-top:.4cqw}
+
+/* ---------- SETUP ---------- */
+.setup{background:var(--tint);border-radius:var(--r-lg);padding:30px 32px}
+.setup h3{margin-top:0}
+.setup ol{margin:0;padding-left:20px}
+.setup li{margin-bottom:11px;font-size:14.5px}
+.setup code{background:#fff;padding:2px 7px;border-radius:6px;font-size:13px;border:1px solid var(--line)}
+.setup .pal{display:flex;gap:8px;margin:14px 0 4px;flex-wrap:wrap}
+.setup .pal i{width:34px;height:34px;border-radius:8px;display:block;border:1px solid var(--ink-12)}
+
+.checklist{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:22px 26px}
+.checklist ul{padding:0;margin:0}
+.checklist li{font-size:14px;margin-bottom:9px;list-style:none;position:relative;padding-left:28px}
+.checklist li:before{content:"";position:absolute;left:0;top:3px;width:16px;height:16px;border-radius:5px;border:2px solid var(--green)}
+
+footer{padding:38px 0 70px;color:var(--ink-60);font-size:13px}
+.legend{font-size:12px;color:var(--ink-60);margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- SVG-СИМВОЛИ: лого-трикутник + лінійні іконки (бренд-синій) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Офіційний лого-локап Site24 (vector-9.svg) -->
+    <symbol id="logo24" viewBox="0 0 182 41">
+      <path d="M45.9551 30.9609C45.5587 30.0962 45.022 29.3311 44.3625 28.6876C43.7021 28.0432 42.9285 27.5314 42.0614 27.1675C41.193 26.8003 40.2787 26.6153 39.3443 26.6153H27.8101C26.9801 26.6153 26.2992 26.3386 25.7293 25.7727C25.1668 25.2127 24.8923 24.5477 24.8923 23.7422C24.8923 22.9326 25.1668 22.268 25.7293 21.7076C26.2992 21.1426 26.9797 20.8667 27.8101 20.8667H44.4302L42.168 16.5404H27.8101C26.8083 16.5404 25.8538 16.7401 24.9767 17.1367C24.1047 17.5286 23.3351 18.0601 22.6874 18.716C22.0379 19.3737 21.5222 20.1402 21.1542 20.9934C20.7823 21.8567 20.5948 22.7802 20.5948 23.7417C20.5948 24.7459 20.7888 25.7011 21.1713 26.5795C21.5532 27.453 22.0825 28.2222 22.7451 28.862C23.4033 29.5014 24.1795 30.0122 25.0505 30.3821C25.9259 30.7548 26.8547 30.9407 27.8101 30.9407H39.3451C40.1755 30.9407 40.8569 31.2138 41.4272 31.7769C41.9889 32.3309 42.2629 32.9923 42.2629 33.7996C42.2629 34.6074 41.9889 35.2734 41.4259 35.8329C40.8551 36.3983 40.176 36.6751 39.3451 36.6751H20.972L23.2333 41H39.3447C40.3499 41 41.3009 40.7994 42.172 40.4029C43.0373 40.0109 43.8026 39.4831 44.4486 38.8359C45.0972 38.1851 45.6177 37.4182 45.9922 36.5562C46.3699 35.6888 46.5608 34.7621 46.5608 33.7996C46.5608 32.7917 46.3567 31.838 45.9551 30.9609Z" fill="#0E0E3A"/>
+      <path d="M59.2886 16.5409H54.467V41H59.2886V16.5409Z" fill="#0E0E3A"/>
+      <path d="M64.2741 20.8667H74.034V41H78.8576V20.8667H88.6356V16.5409H64.2741V20.8667Z" fill="#0E0E3A"/>
+      <path d="M93.9965 41H117.882V36.6751H98.8205V30.9407H114.094V26.6153H98.8205V20.8667H117.882V16.5409H93.9965V41Z" fill="#0E0E3A"/>
+      <path d="M178.211 33.315V16.5409H173.699L154.459 33.5913V37.6422H173.388V40.9995H178.211V37.6422H182V33.315H178.211ZM173.389 33.315H161.613L173.389 22.8825V33.315Z" fill="#0E0E3A"/>
+      <path d="M0 40.9178H21.8225L19.3713 36.737H7.53863L24.0129 8.45931L27.8126 15.0873H32.8593L24.0129 0L0 40.9178Z" fill="#2966FF"/>
+      <path d="M147.104 18.5249C146.364 17.8888 145.498 17.3779 144.527 17.008C143.551 16.6353 142.524 16.448 141.475 16.448H130.966C129.842 16.448 128.772 16.6477 127.786 17.0438C126.808 17.438 125.945 17.9686 125.217 18.6245C124.487 19.2827 123.908 20.0491 123.496 20.9024C123.079 21.7662 122.867 22.6905 122.867 23.6521V25.4921H127.693V23.6521C127.693 22.8434 128.001 22.1765 128.632 21.6179C129.272 21.0511 130.036 20.7757 130.966 20.7757H141.476C142.408 20.7757 143.171 21.0511 143.809 21.6179C144.441 22.1765 144.749 22.8434 144.749 23.6521V24.509C144.749 25.3186 144.33 26.3265 142.638 26.9255C141.814 27.2164 128.77 29.5875 127.786 29.9822C126.81 30.3737 125.948 30.9015 125.219 31.5524C124.489 32.2059 123.91 32.9733 123.497 33.8348C123.079 34.7014 122.867 35.6303 122.867 36.591V40.9177H149.575V36.591H127.693C127.693 35.7804 128.073 35.181 128.632 34.5563C130.046 32.9733 141.798 31.7112 144.55 30.7941C145.546 30.4623 146.479 30.1956 147.203 29.5453C147.931 28.8972 148.514 28.1289 148.935 27.2669C149.361 26.3981 149.575 25.471 149.575 24.509V23.6521C149.575 22.6423 149.346 21.6835 148.894 20.8046C148.449 19.9326 147.848 19.1661 147.104 18.5249Z" fill="#0E0E3A"/>
+    </symbol>
+    <symbol id="logo24w" viewBox="0 0 182 41">
+      <path d="M45.9551 30.9609C45.5587 30.0962 45.022 29.3311 44.3625 28.6876C43.7021 28.0432 42.9285 27.5314 42.0614 27.1675C41.193 26.8003 40.2787 26.6153 39.3443 26.6153H27.8101C26.9801 26.6153 26.2992 26.3386 25.7293 25.7727C25.1668 25.2127 24.8923 24.5477 24.8923 23.7422C24.8923 22.9326 25.1668 22.268 25.7293 21.7076C26.2992 21.1426 26.9797 20.8667 27.8101 20.8667H44.4302L42.168 16.5404H27.8101C26.8083 16.5404 25.8538 16.7401 24.9767 17.1367C24.1047 17.5286 23.3351 18.0601 22.6874 18.716C22.0379 19.3737 21.5222 20.1402 21.1542 20.9934C20.7823 21.8567 20.5948 22.7802 20.5948 23.7417C20.5948 24.7459 20.7888 25.7011 21.1713 26.5795C21.5532 27.453 22.0825 28.2222 22.7451 28.862C23.4033 29.5014 24.1795 30.0122 25.0505 30.3821C25.9259 30.7548 26.8547 30.9407 27.8101 30.9407H39.3451C40.1755 30.9407 40.8569 31.2138 41.4272 31.7769C41.9889 32.3309 42.2629 32.9923 42.2629 33.7996C42.2629 34.6074 41.9889 35.2734 41.4259 35.8329C40.8551 36.3983 40.176 36.6751 39.3451 36.6751H20.972L23.2333 41H39.3447C40.3499 41 41.3009 40.7994 42.172 40.4029C43.0373 40.0109 43.8026 39.4831 44.4486 38.8359C45.0972 38.1851 45.6177 37.4182 45.9922 36.5562C46.3699 35.6888 46.5608 34.7621 46.5608 33.7996C46.5608 32.7917 46.3567 31.838 45.9551 30.9609Z" fill="#fff"/>
+      <path d="M59.2886 16.5409H54.467V41H59.2886V16.5409Z" fill="#fff"/>
+      <path d="M64.2741 20.8667H74.034V41H78.8576V20.8667H88.6356V16.5409H64.2741V20.8667Z" fill="#fff"/>
+      <path d="M93.9965 41H117.882V36.6751H98.8205V30.9407H114.094V26.6153H98.8205V20.8667H117.882V16.5409H93.9965V41Z" fill="#fff"/>
+      <path d="M178.211 33.315V16.5409H173.699L154.459 33.5913V37.6422H173.388V40.9995H178.211V37.6422H182V33.315H178.211ZM173.389 33.315H161.613L173.389 22.8825V33.315Z" fill="#fff"/>
+      <path d="M0 40.9178H21.8225L19.3713 36.737H7.53863L24.0129 8.45931L27.8126 15.0873H32.8593L24.0129 0L0 40.9178Z" fill="#fff"/>
+      <path d="M147.104 18.5249C146.364 17.8888 145.498 17.3779 144.527 17.008C143.551 16.6353 142.524 16.448 141.475 16.448H130.966C129.842 16.448 128.772 16.6477 127.786 17.0438C126.808 17.438 125.945 17.9686 125.217 18.6245C124.487 19.2827 123.908 20.0491 123.496 20.9024C123.079 21.7662 122.867 22.6905 122.867 23.6521V25.4921H127.693V23.6521C127.693 22.8434 128.001 22.1765 128.632 21.6179C129.272 21.0511 130.036 20.7757 130.966 20.7757H141.476C142.408 20.7757 143.171 21.0511 143.809 21.6179C144.441 22.1765 144.749 22.8434 144.749 23.6521V24.509C144.749 25.3186 144.33 26.3265 142.638 26.9255C141.814 27.2164 128.77 29.5875 127.786 29.9822C126.81 30.3737 125.948 30.9015 125.219 31.5524C124.489 32.2059 123.91 32.9733 123.497 33.8348C123.079 34.7014 122.867 35.6303 122.867 36.591V40.9177H149.575V36.591H127.693C127.693 35.7804 128.073 35.181 128.632 34.5563C130.046 32.9733 141.798 31.7112 144.55 30.7941C145.546 30.4623 146.479 30.1956 147.203 29.5453C147.931 28.8972 148.514 28.1289 148.935 27.2669C149.361 26.3981 149.575 25.471 149.575 24.509V23.6521C149.575 22.6423 149.346 21.6835 148.894 20.8046C148.449 19.9326 147.848 19.1661 147.104 18.5249Z" fill="#fff"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="#2966FF"/></symbol>
+    <symbol id="i-ai" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9L18 15z"/></symbol>
+    <symbol id="i-bars" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="20" x2="5" y2="13"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="19" y1="20" x2="19" y2="4"/></symbol>
+    <symbol id="i-pie" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9h-9V3z"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="#2966FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></symbol>
+    <symbol id="i-trend-dark" viewBox="0 0 24 24" fill="none" stroke="#0E0E3A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></symbol>
+  </defs>
+</svg>
+
+<!-- ================= MASTHEAD ================= -->
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandlogo"><svg width="178" height="40" viewBox="0 0 182 41" aria-label="Site24"><use href="#logo24"/></svg></div>
+    <div class="eyebrow" style="margin-top:20px">Brand Guideline · Presentations</div>
+    <h1>Дизайн-гайдлайн <span class="b">презентацій</span> Site24</h1>
+    <p>Єдина система для пітч-деків і звітів, що візуально продовжує сайт site24.com.ua. Збирається в Google Slides, 16:9. Усі макети нижче відрендерені у масштабі реального слайда. Версія звірена з живим сайтом.</p>
+    <div class="meta">Версія 0.3 (уроки з першого деку Bettertone враховані) · 25.06.2026 · EN</div>
+  </div>
+</header>
+
+<!-- ================= TOC ================= -->
+<nav class="toc"><div class="wrap">
+  <a href="#principles">Принципи</a>
+  <a href="#color">Колір</a>
+  <a href="#type">Типографіка</a>
+  <a href="#highlight">Виділення тексту</a>
+  <a href="#icons">Іконки</a>
+  <a href="#logo">Лого</a>
+  <a href="#elements">Що переносимо</a>
+  <a href="#layouts-pitch">Макети: пітч</a>
+  <a href="#layouts-report">Макети: звіт</a>
+  <a href="#rules">Do / Don't</a>
+  <a href="#setup">Google Slides</a>
+  <a href="#checklist">Чек-лист</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= ПРИНЦИПИ ================= -->
+<section id="principles">
+  <div class="eyebrow">01 · Філософія</div>
+  <h2 class="sec"><span class="b">Принципи</span> дизайну</h2>
+  <p class="sec-lead">Презентація — той самий бренд, що й сайт, лише в іншому форматі. Сайт світлий і мінімалістичний — слайди теж. Той, хто бачив site24.com.ua, має впізнати Site24 з першого слайда.</p>
+  <div class="cols">
+    <div class="rulecard do">
+      <h4>5 правил, на яких усе тримається</h4>
+      <ul>
+        <li><b>Світлий фон.</b> Білий або блакитна/мʼятна панель — як на сайті. <u>Темних слайдів немає.</u></li>
+        <li><b>Синій акцентує, зелений діє.</b> <span style="color:var(--blue);font-weight:700">#2966FF</span> — ключові слова, цифри, графіки; <span style="color:#0a8a3a;font-weight:700">#36EF74</span> — лише кнопки.</li>
+        <li><b>Заголовок «з кольоровим ключем».</b> Перші слова — синім, решта — ink (як на сайті).</li>
+        <li><b>Flat-графіка.</b> Сині лінійні іконки, лінії росту, прості картки без важких тіней.</li>
+        <li><b>Цифри — герої.</b> Результат — великою синьою цифрою з зеленим маркером.</li>
+      </ul>
+    </div>
+    <div class="rulecard dont">
+      <h4>Чого НЕ переносимо з сайту (його ж недоліки)</h4>
+      <ul>
+        <li><b>Хаос радіусів</b> (8+ значень) — у деку 3: 10 / 18 / pill.</li>
+        <li><b>Декоративну «ракету»</b> з фінальних CTA — у презентації її немає.</li>
+        <li><b>Інверсію розмірів</b> (H2 > H1) — фіксований type-scale.</li>
+        <li><b>«Дізнатись» / «Розрахунок»</b> на кнопках — у деку CTA завжди конкретний.</li>
+        <li><b>Випадковий <code>#007AFF</code></b> і мішанку UA/RU.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= КОЛІР ================= -->
+<section id="color">
+  <div class="eyebrow">02 · Колір</div>
+  <h2 class="sec"><span class="b">Палітра</span> та пропорції</h2>
+  <p class="sec-lead">7 робочих кольорів — рівно ті, що домінують на сайті. Два зелені різні за роллю: яскравий — для дії, мʼятний — для фону панелей.</p>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#0E0E3A"></div><div class="body"><div class="name">Ink</div><div class="hex">#0E0E3A</div><span class="use">Текст</span></div></div>
+    <div class="sw"><div class="chip" style="background:#2966FF"></div><div class="body"><div class="name">Brand Blue</div><div class="hex">#2966FF</div><span class="use">Акцент, ключі, чипи, графіки</span></div></div>
+    <div class="sw"><div class="chip" style="background:#36EF74"></div><div class="body"><div class="name">CTA Green</div><div class="hex">#36EF74</div><span class="use">Тільки кнопки дії</span></div></div>
+    <div class="sw"><div class="chip" style="background:#94FCB1"></div><div class="body"><div class="name">Green Mid</div><div class="hex">#94FCB1</div><span class="use">Мʼякі кнопки, маркери, текст на синьому</span></div></div>
+    <div class="sw"><div class="chip" style="background:#E6FAEE;border-bottom:1px solid var(--line)"></div><div class="body"><div class="name">Mint</div><div class="hex">#E6FAEE</div><span class="use">Фон зелених панелей</span></div></div>
+    <div class="sw"><div class="chip" style="background:#DAF8FF"></div><div class="body"><div class="name">Blue Tint</div><div class="hex">#DAF8FF</div><span class="use">Фон hero/карток/бабли</span></div></div>
+    <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"></div><div class="body"><div class="name">White</div><div class="hex">#FFFFFF</div><span class="use">Основний фон</span></div></div>
+  </div>
+  <h3 class="sub">Пропорція для виділення важливого / CTA</h3>
+  <div class="ratio">
+    <div style="flex:60;background:#fff;color:var(--ink-60)">60% — світлий фон (білий / tint / mint)</div>
+    <div style="flex:28;background:var(--blue);color:#fff">28% — синій (акцент, ключі, дані)</div>
+    <div style="flex:12;background:var(--green);color:var(--ink)">12% — зелений (дія)</div>
+  </div>
+  <p class="legend">Зелений ніколи не заливає великі площини й не використовується для тексту — лише для кнопок і дрібних маркерів. Важлива інфо акцентується <b>синім</b>; заклик до дії — <b>зеленим</b>.</p>
+</section>
+
+<!-- ================= ТИПОГРАФІКА ================= -->
+<section id="type">
+  <div class="eyebrow">03 · Типографіка</div>
+  <h2 class="sec"><span class="b">Шрифт</span> і type-scale</h2>
+  <p class="sec-lead"><b>Ubuntu</b> — єдиний шрифт бренду (нативний у Google Slides). Шкала у <b>pt</b> під канву 16:9. H2 завжди менший за H1.</p>
+  <table class="typetable">
+    <tr><th>Рівень</th><th>Приклад</th><th>Розмір / вага</th></tr>
+    <tr><td>Display (титул)</td><td style="font-size:32px;font-weight:700;line-height:1.05"><span style="color:var(--blue)">Просування сайту,</span> що приводить клієнтів</td><td class="spec">40 pt · Bold 700</td></tr>
+    <tr><td>H1 / заголовок слайда</td><td style="font-size:25px;font-weight:700"><span style="color:var(--blue)">Наші послуги</span> з просування</td><td class="spec">28 pt · Bold 700</td></tr>
+    <tr><td>H2 / підзаголовок</td><td style="font-size:18px;font-weight:500">Стратегія під вашу нішу</td><td class="spec">18 pt · Medium 500</td></tr>
+    <tr><td>Body</td><td style="font-size:14px">Текст пунктів, описів, підписів.</td><td class="spec">14 pt · Regular 400</td></tr>
+    <tr><td>Eyebrow / кікер</td><td style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">СТРАТЕГІЇ ДЛЯ РОСТУ БІЗНЕСУ</td><td class="spec">11 pt · Bold · UPPER</td></tr>
+    <tr><td>Caption</td><td style="font-size:11px;color:var(--ink-60)">Джерело: Google Analytics, травень 2026</td><td class="spec">10 pt · ink-60%</td></tr>
+    <tr><td>Big number</td><td style="font-size:30px;font-weight:700;color:var(--blue)">+250%</td><td class="spec">54–76 pt · Bold · blue</td></tr>
+  </table>
+  <p class="legend">На сайті eyebrow — звичайний ink-текст (не uppercase-кольоровий). Тримаємо так само: дрібний ink-кікер над заголовком. Кольоровий акцент дає сам заголовок (синій ключ).</p>
+</section>
+
+<!-- ================= ВИДІЛЕННЯ ТЕКСТУ ================= -->
+<section id="highlight">
+  <div class="eyebrow">04 · Виділення</div>
+  <h2 class="sec">Три способи <span class="b">виділити</span> важливе</h2>
+  <p class="sec-lead">Саме ці прийоми працюють на сайті — переносимо їх у слайди один-в-один.</p>
+  <div class="demo-row">
+    <div class="demo">
+      <div class="lab">1 · Кольоровий ключ у заголовку</div>
+      <div class="h-demo"><span style="color:var(--blue)">Наші послуги</span> з просування та розкрутки сайтів</div>
+    </div>
+    <div class="demo">
+      <div class="lab">2 · Синій pill-чип навколо слова</div>
+      <div class="h-demo"><span class="bluepill">SEO</span> просування &nbsp;·&nbsp; <span class="bluepill">PPC</span> реклама &nbsp;·&nbsp; <span class="bluepill">AI</span></div>
+    </div>
+  </div>
+  <div class="bannerdemo" style="margin-top:18px">
+    <div class="lab" style="color:rgba(255,255,255,.7);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:10px">3 · Синій банер для акценту / CTA (білий + світло-зелений ключ)</div>
+    <div class="t">Ми проведемо <span class="g">аналіз сайту</span> і запропонуємо <span class="g">стратегію зростання</span></div>
+    <span class="cta">Отримайте план просування <svg width="16" height="16"><use href="#i-trend-dark"/></svg></span>
+  </div>
+  <p class="legend">Прийом №3 — точно як банер на сайті (твій приклад): синій фон, ключові слова світло-зеленим, зелена pill-кнопка з іконкою-стрілкою росту.</p>
+</section>
+
+<!-- ================= ІКОНКИ ================= -->
+<section id="icons">
+  <div class="eyebrow">05 · Іконографіка</div>
+  <h2 class="sec">Сині <span class="b">лінійні</span> іконки</h2>
+  <p class="sec-lead"><b>Дві ролі іконок — не плутати</b> (урок із деку Bettertone):<br>
+  <b>1) Для ВСІХ списків — одна нейтральна синя стрілка.</b> Єдина, скрізь однакова. Не міксувати різні пікто в списках.<br>
+  <b>2) Для карток послуг / команди / переваг — лінійні пікто-іконки</b> бренд-синім у tint-квадраті. Тут різні іконки доречні, бо кожна картка = окрема сутність.</p>
+  <div class="iconset">
+    <div class="iconcell" style="outline:2px solid var(--blue);outline-offset:-2px"><svg><use href="#i-arrow"/></svg><span><b>Списки — ЛИШЕ ця</b></span></div>
+    <div class="iconcell"><svg><use href="#i-search"/></svg><span>картка: SEO / пошук</span></div>
+    <div class="iconcell"><svg><use href="#i-target"/></svg><span>картка: ціль</span></div>
+    <div class="iconcell"><svg><use href="#i-ai"/></svg><span>картка: AI</span></div>
+    <div class="iconcell"><svg><use href="#i-bars"/></svg><span>картка: ріст</span></div>
+    <div class="iconcell"><svg><use href="#i-trend"/></svg><span>картка: тренд</span></div>
+    <div class="iconcell"><svg><use href="#i-check"/></svg><span>картка: готово</span></div>
+    <div class="iconcell"><svg><use href="#i-pie"/></svg><span>картка: частка</span></div>
+  </div>
+  <p class="legend">У Google Slides: вставляти як SVG/PNG однією бібліотекою. Ніяких emoji й різностильних наборів. Стрілка для списків — графічна, синя, одна на весь дек.</p>
+</section>
+
+<!-- ================= ЛОГО ================= -->
+<section id="logo">
+  <div class="eyebrow">06 · Лого та підпис</div>
+  <h2 class="sec"><span class="b">Офіційне</span> лого</h2>
+  <p class="sec-lead">Знак Site24 = синій трикутник-стрілка (#2966FF) + вордмарк «SITE24» ink. Це справжній логотип сайту (logo-cut). Не плутати з логотипами клієнтів.</p>
+  <div style="display:flex;gap:30px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+    <div style="background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:26px 34px"><svg width="170" height="38" viewBox="0 0 182 41"><use href="#logo24"/></svg></div>
+    <div style="background:var(--tint);border-radius:var(--r-md);padding:26px 34px"><svg width="170" height="38" viewBox="0 0 182 41"><use href="#logo24"/></svg></div>
+    <div style="background:var(--blue);border-radius:var(--r-md);padding:26px 34px"><svg width="170" height="38" viewBox="0 0 182 41"><use href="#logo24w"/></svg></div>
+  </div>
+  <p class="legend">Джерело: офіційний вектор <code>vector-9 (1).svg</code>. У Google Slides вставляти цим файлом (Вставка → Зображення), не перемальовувати.</p>
+  <div class="cols" style="margin-top:18px">
+    <div class="rulecard do"><h4><span class="tag g">Можна</span></h4><ul>
+      <li>Лого в куті <b>кожного</b> контентного слайда (дрібно).</li>
+      <li>Велике лого по центру — на титулі.</li>
+      <li>На синьому фоні — білий варіант трикутника + білий вордмарк.</li>
+      <li>Підпис експерта «Ім'я, посада» під фото/цитатою (на сайті: «Катерина Золотарьова, Керівник агенції»).</li>
+    </ul></div>
+    <div class="rulecard dont"><h4><span class="tag r">Не можна</span></h4><ul>
+      <li>Розтягувати/нахиляти, міняти колір трикутника на зелений.</li>
+      <li>Фото без підпису імені.</li>
+      <li>Лого Site24 і лого клієнта в один ряд однакового розміру.</li>
+      <li>Бейджі довіри різної висоти впереміш.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ================= ЩО ПЕРЕНОСИМО ================= -->
+<section id="elements">
+  <div class="eyebrow">07 · Інвентар</div>
+  <h2 class="sec">Що саме <span class="b">переносимо</span> з сайту</h2>
+  <p class="sec-lead">Кожен елемент сайту → його роль у деку.</p>
+  <table class="typetable">
+    <tr><th>Елемент сайту</th><th>Роль у презентації</th></tr>
+    <tr><td><b>Блакитна hero-панель + синій ключ заголовка</b></td><td>Титульний слайд і слайди-роздільники</td></tr>
+    <tr><td><b>Сині pill-чипи SEO / PPC / AI</b></td><td>Виділення категорій, навігація по секціях</td></tr>
+    <tr><td><b>Мʼятні панелі + білі pill-підкартки</b></td><td>Слайд «Послуги»: групи зі списком пунктів + стрілка</td></tr>
+    <tr><td><b>Stats: сині цифри + зелений прапорець</b></td><td>Слайд «Чому ми» / «Результати»</td></tr>
+    <tr><td><b>Сині лінійні іконки</b></td><td>Послуги, переваги, пункти зробленого</td></tr>
+    <tr><td><b>Графік росту (синя лінія + tint-заливка + бабл)</b></td><td>Слайди кейсів і звітів: динаміка</td></tr>
+    <tr><td><b>Зелена кнопка CTA + іконка-стрілка</b></td><td>Фінальний слайд, банери дії</td></tr>
+    <tr><td><b>Синій банер (білий + green-mid ключ)</b></td><td>Акцентний слайд / сильний заклик</td></tr>
+    <tr><td><b>Логотипи клієнтів у tint-картках</b></td><td>Слайд соц-доказу + бейджі Google Partner / Clutch</td></tr>
+  </table>
+</section>
+
+<!-- ================= МАКЕТИ: ПІТЧ ================= -->
+<section id="layouts-pitch">
+  <div class="eyebrow">08 · Шаблони · комерційна пропозиція / пітч</div>
+  <h2 class="sec">Макети слайдів — <span class="b">пітч</span></h2>
+  <p class="sec-lead">Логіка: Титул → Проблема → Послуги → Доказ → Кейс → Тарифи → CTA. Відрендерені макети 16:9.</p>
+
+  <div class="slide-grid">
+
+    <!-- Титул -->
+    <div>
+      <div class="slide tint">
+        <div class="s-pad split">
+          <div>
+            <svg class="slmark lg"><use href="#logo24"/></svg>
+            <div class="kick" style="margin-top:7cqw">Комерційна пропозиція</div>
+            <div class="s-h big"><span class="b">Просування сайту,</span><br>що приводить клієнтів</div>
+            <div class="s-sub" style="margin-top:1.6cqw">SEO · Контекстна реклама · AI-видимість</div>
+            <div class="badges"><span>Google Partner</span><span>Clutch ★★★★★</span></div>
+          </div>
+          <div class="photo-ph" style="height:78%"><span style="margin-bottom:3cqw">фото експерта</span><div class="namecard"><b>Катерина Золотарьова</b><br>Керівник агенції</div></div>
+        </div>
+        <div class="s-foot"><span>для [Клієнт]</span><span>червень 2026</span></div>
+      </div>
+      <div class="slide-cap"><b>01 · Титул.</b> Блакитна панель, синій ключ заголовка, фото експерта з підписом, бейджі довіри в hero.</div>
+    </div>
+
+    <!-- Проблема -->
+    <div>
+      <div class="slide">
+        <div class="s-pad">
+          <div class="kick">Проблема</div>
+          <div class="s-h"><span class="b">Сайт є</span> — клієнтів немає</div>
+          <ul class="checklist-s" style="margin-top:3.4cqw">
+            <li><svg><use href="#i-search"/></svg>Вас не видно у пошуку за цільовими запитами</li>
+            <li><svg><use href="#i-target"/></svg>Реклама «з'їдає» бюджет без заявок</li>
+            <li><svg><use href="#i-bars"/></svg>Конкуренти в топі, ви — на 3-й сторінці</li>
+          </ul>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>02</span></div>
+      </div>
+      <div class="slide-cap"><b>02 · Проблема.</b> Білий фон, синій ключ, сині лінійні іконки замість маркерів.</div>
+    </div>
+
+    <!-- Послуги -->
+    <div>
+      <div class="slide">
+        <div class="s-pad">
+          <div class="kick">Стратегії для росту бізнесу</div>
+          <div class="s-h"><span class="b">Наші послуги</span></div>
+          <div class="panel-mint">
+            <span class="chip">SEO</span> <span style="font-size:3cqw;font-weight:700">просування</span>
+            <div class="row2" style="margin-top:2.4cqw">
+              <div class="subcard"><span class="l"><span class="d"></span>SEO-стратегія</span><span class="arr"><svg><use href="#i-arrow"/></svg></span></div>
+              <div class="subcard"><span class="l"><span class="d"></span>Збір семантики</span><span class="arr"><svg><use href="#i-arrow"/></svg></span></div>
+              <div class="subcard"><span class="l"><span class="d"></span>Оптимізація</span><span class="arr"><svg><use href="#i-arrow"/></svg></span></div>
+              <div class="subcard"><span class="l"><span class="d"></span>Зростання конверсій</span><span class="arr"><svg><use href="#i-arrow"/></svg></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>03</span></div>
+      </div>
+      <div class="slide-cap"><b>03 · Послуги.</b> Мʼятна панель + синій pill-чип категорії + білі pill-підкартки зі стрілкою — точно як на сайті.</div>
+    </div>
+
+    <!-- Доказ / stats -->
+    <div>
+      <div class="slide tint">
+        <div class="s-pad">
+          <div class="kick">Наш досвід</div>
+          <div class="s-h">Site24 <span class="b">у цифрах</span></div>
+          <div class="statrow">
+            <div class="stat"><span class="n">1000+</span><span class="l">клієнтів з SEO в портфоліо</span></div>
+            <div class="stat"><span class="n">150+</span><span class="l">проєктів з PPC</span></div>
+            <div class="stat"><span class="n">86%</span><span class="l">прийшли за рекомендацією</span></div>
+            <div class="stat"><span class="n">9</span><span class="l">років на ринку</span></div>
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>04</span></div>
+      </div>
+      <div class="slide-cap"><b>04 · Доказ.</b> Сині цифри + зелений прапорець-маркер на блакитному фоні — патерн stats сайту. <small class="note">Числа уніфіковано.</small></div>
+    </div>
+
+    <!-- Тарифи -->
+    <div>
+      <div class="slide">
+        <div class="s-pad">
+          <div class="kick">Тарифи</div>
+          <div class="s-h"><span class="b">Оберіть</span> формат співпраці</div>
+          <div class="row3">
+            <div class="scard"><h5>Старт</h5><p style="margin:1.2cqw 0;font-size:4.2cqw;font-weight:700;color:var(--ink)">$X<span style="font-size:2.2cqw;color:var(--ink-60)">/міс</span></p><p>Базове SEO, до 50 запитів</p></div>
+            <div class="scard hot"><div class="ribbon">Хіт</div><h5>Зростання</h5><p style="margin:1.2cqw 0;font-size:4.2cqw;font-weight:700;color:var(--blue)">$XX<span style="font-size:2.2cqw;color:var(--ink-60)">/міс</span></p><p>SEO + контекст + звіти</p></div>
+            <div class="scard"><h5>Максимум</h5><p style="margin:1.2cqw 0;font-size:4.2cqw;font-weight:700;color:var(--ink)">$XXX<span style="font-size:2.2cqw;color:var(--ink-60)">/міс</span></p><p>Повний цикл + AI</p></div>
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>06</span></div>
+      </div>
+      <div class="slide-cap"><b>06 · Тарифи.</b> Білі картки; рекомендований — синя рамка + ribbon, ціна синім. Без кнопок-обманок «Розрахунок».</div>
+    </div>
+
+    <!-- CTA банер -->
+    <div>
+      <div class="slide blue">
+        <div class="s-pad split">
+          <div>
+            <div class="s-h" style="font-size:5.6cqw">Ми проведемо <span style="color:var(--green-mid)">аналіз сайту</span> і запропонуємо <span style="color:var(--green-mid)">стратегію зростання</span></div>
+            <span class="cta" style="margin-top:3.4cqw">Отримайте план просування <svg><use href="#i-trend-dark"/></svg></span>
+          </div>
+          <div style="text-align:right;font-size:2.3cqw;color:rgba(255,255,255,.85);line-height:1.8">
+            site24.com.ua<br>+38 (098) 738 77 08<br>hello@site24.com.ua
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24w"/></svg><span style="color:rgba(255,255,255,.5)">07</span></div>
+      </div>
+      <div class="slide-cap"><b>07 · Фінал-CTA.</b> Синій банер (твій приклад): білий текст + ключі green-mid, зелена кнопка з іконкою + контакти.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= МАКЕТИ: ЗВІТ ================= -->
+<section id="layouts-report">
+  <div class="eyebrow">09 · Шаблони · звіт для клієнта</div>
+  <h2 class="sec">Макети слайдів — <span class="b">звіт</span></h2>
+  <p class="sec-lead">Логіка: Титул періоду → KPI-дашборд → Динаміка → Кейс-метрика → Зроблено → Плани.</p>
+
+  <div class="slide-grid">
+
+    <!-- Титул звіту -->
+    <div>
+      <div class="slide tint">
+        <div class="s-pad">
+          <svg class="slmark lg"><use href="#logo24"/></svg>
+          <div style="margin-top:8cqw">
+            <div class="kick">Звіт про роботу</div>
+            <div class="s-h big">Травень <span class="b">2026</span></div>
+            <div class="s-sub" style="margin-top:1.6cqw">Проєкт: [Клієнт] · SEO + Контекст</div>
+          </div>
+        </div>
+        <div class="s-foot"><span>Менеджер: Катерина Золотарьова</span><span>1 / 6</span></div>
+      </div>
+      <div class="slide-cap"><b>01 · Титул звіту.</b> Блакитний титул, кікер «Звіт», період із синім акцентом.</div>
+    </div>
+
+    <!-- KPI -->
+    <div>
+      <div class="slide">
+        <div class="s-pad">
+          <div class="kick">Підсумок періоду</div>
+          <div class="s-h"><span class="b">Ключові</span> показники</div>
+          <div class="kpi-row">
+            <div class="kpi"><div class="n">18.4K</div><div class="d">↑ 32%</div><div class="l">Органічний трафік</div></div>
+            <div class="kpi"><div class="n">214</div><div class="d">↑ 19%</div><div class="l">Заявки з сайту</div></div>
+            <div class="kpi"><div class="n">3.1x</div><div class="d">↑ 0.4</div><div class="l">ROAS реклами</div></div>
+            <div class="kpi"><div class="n">$6.2</div><div class="d down">↓ 14%</div><div class="l">Ціна заявки</div></div>
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>2 / 6</span></div>
+      </div>
+      <div class="slide-cap"><b>02 · KPI-дашборд.</b> 4 плитки: число + дельта (зелене ↑ / червоне ↓). Спад показуємо чесно.</div>
+    </div>
+
+    <!-- Динаміка -->
+    <div>
+      <div class="slide">
+        <div class="s-pad">
+          <div class="kick">Динаміка</div>
+          <div class="s-h">Органічний трафік, <span class="b">6 міс</span></div>
+          <div style="position:relative;margin-top:1cqw">
+            <div class="bubble" style="position:absolute;right:6cqw;top:0">Зростання трафіку</div>
+            <svg viewBox="0 0 600 210" style="width:100%;height:auto;margin-top:5cqw" preserveAspectRatio="xMidYMid meet">
+              <line x1="40" y1="180" x2="585" y2="180" stroke="#0E0E3A" stroke-opacity=".12"/>
+              <polygon fill="#2966FF" fill-opacity=".10" points="40,150 130,135 220,140 310,98 400,70 490,48 565,26 565,180 40,180"/>
+              <polyline fill="none" stroke="#2966FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="40,150 130,135 220,140 310,98 400,70 490,48 565,26"/>
+              <circle cx="565" cy="26" r="6" fill="#2966FF"/>
+              <g font-family="Ubuntu" font-size="13" fill="#0E0E3A" fill-opacity=".5"><text x="34" y="200">Гру</text><text x="205" y="200">Лют</text><text x="385" y="200">Кві</text><text x="545" y="200">Тра</text></g>
+            </svg>
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>3 / 6</span></div>
+      </div>
+      <div class="slide-cap"><b>03 · Динаміка.</b> Синя лінія + tint-заливка + tint-бабл — фірмовий «графік росту» сайту.</div>
+    </div>
+
+    <!-- Before/After -->
+    <div>
+      <div class="slide tint">
+        <div class="s-pad split">
+          <div>
+            <div class="kick">Результат</div>
+            <div class="s-h" style="font-size:6cqw">Трафік виріс<br>у <span class="b">2.9×</span></div>
+            <div class="s-sub" style="margin-top:1.6cqw">За 6 місяців,<br>без росту бюджету</div>
+          </div>
+          <div class="ba">
+            <div class="col"><span class="vlab">6.3K</span><div class="bar b1"></div><span class="xlab">Було</span></div>
+            <div class="col"><span class="vlab" style="color:var(--blue)">18.4K</span><div class="bar b2"></div><span class="xlab">Стало</span></div>
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>4 / 6</span></div>
+      </div>
+      <div class="slide-cap"><b>04 · Before/After.</b> Синя цифра-герой + бари (сірий «було» / синій «стало»).</div>
+    </div>
+
+    <!-- Зроблено -->
+    <div>
+      <div class="slide">
+        <div class="s-pad">
+          <div class="kick">Зроблено за період</div>
+          <div class="s-h"><span class="b">Що</span> відбувалось</div>
+          <div class="row2" style="margin-top:1cqw">
+            <ul class="checklist-s">
+              <li><svg><use href="#i-check"/></svg>Технічний аудит + 38 правок</li>
+              <li><svg><use href="#i-check"/></svg>12 нових SEO-статей у блог</li>
+            </ul>
+            <ul class="checklist-s">
+              <li><svg><use href="#i-check"/></svg>Переналаштовано Performance Max</li>
+              <li><svg><use href="#i-check"/></svg>Зібрано 4 нові групи запитів</li>
+            </ul>
+          </div>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24"/></svg><span>5 / 6</span></div>
+      </div>
+      <div class="slide-cap"><b>05 · Зроблено.</b> Дві колонки з синіми чек-іконками, без «води».</div>
+    </div>
+
+    <!-- Плани -->
+    <div>
+      <div class="slide blue">
+        <div class="s-pad">
+          <div class="kick" style="color:rgba(255,255,255,.7)">Наступний місяць</div>
+          <div class="s-h">План на <span style="color:var(--green-mid)">червень</span></div>
+          <ul class="checklist-s" style="margin-top:2.6cqw">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#36EF74" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg><span style="color:#fff">Масштабувати топові кластери запитів</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#36EF74" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg><span style="color:#fff">Запустити ремаркетинг на «гарячу» аудиторію</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#36EF74" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg><span style="color:#fff">A/B-тест посадкової під заявки</span></li>
+          </ul>
+          <span class="cta" style="margin-top:3cqw">Обговорити пріоритети <svg><use href="#i-trend-dark"/></svg></span>
+        </div>
+        <div class="s-foot"><svg class="slmark"><use href="#logo24w"/></svg><span style="color:rgba(255,255,255,.5)">6 / 6</span></div>
+      </div>
+      <div class="slide-cap"><b>06 · Плани.</b> Синій слайд-закриття, зелені чеки, зелена CTA на діалог.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= DO / DON'T ================= -->
+<section id="rules">
+  <div class="eyebrow">10 · Зведені правила</div>
+  <h2 class="sec">Do / Don't — <span class="b">пам'ятка</span></h2>
+  <div class="cols">
+    <div class="rulecard do"><h4><span class="tag g">Do</span></h4><ul>
+      <li><b>Тексти — лише з ТЗ/брифу клієнта.</b> Заголовок із ТЗ = заголовок слайда.</li>
+      <li>Світлий фон: білий / tint / mint. Синій банер — для акценту.</li>
+      <li>Заголовок із синім ключем (перші слова реального заголовка).</li>
+      <li>Списки — одна синя стрілка; пікто-іконки лише в картках.</li>
+      <li>Важливі блоки виділяти картками (mint), розміром під слайд.</li>
+      <li>Графік/ілюстрація — <b>другорядні</b>, ≤ ~⅓–½ слайда; головне — текст.</li>
+      <li>Лого клієнта — окремим файлом; має власний фон → на білій картці.</li>
+      <li>Контакти/підписи — один формат label+значення; лінки клікабельні.</li>
+      <li>Цифри синім + зелений маркер. Лого + номер у підвалі.</li>
+    </ul></div>
+    <div class="rulecard dont"><h4><span class="tag r">Don't</span></h4><ul>
+      <li><b>Не вигадувати тексти</b> — ні eyebrow, ні підзаголовків, ні CTA, яких нема в ТЗ.</li>
+      <li>Не робити графік/ілюстрацію на 2/3 слайда (текст — головний).</li>
+      <li>Не лишати самотній декор (одна стрілка) — або реальний контент, або чисто.</li>
+      <li>Картки/шрифт не завеликі — не мають налазити на підвал і нумерацію.</li>
+      <li>Не міксувати різні іконки в списках; жодних emoji.</li>
+      <li>Не робити темні слайди; не заливати площини зеленим.</li>
+      <li>Не робити H2 більшим за H1; не лишати фото без підпису.</li>
+      <li>Не використовувати #007AFF; не мішати UA/RU.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ================= GOOGLE SLIDES ================= -->
+<section id="setup">
+  <div class="eyebrow">11 · Технічне</div>
+  <h2 class="sec">Налаштування <span class="b">Google Slides</span></h2>
+  <p class="sec-lead">Збираємо майстер-шаблон один раз, далі лише наповнюємо.</p>
+  <div class="setup">
+    <h3>Покроково</h3>
+    <ol>
+      <li><b>Розмір.</b> Файл → Налаштування сторінки → <code>Широкоформатний 16:9</code> (25.4 × 14.29 см).</li>
+      <li><b>Шрифт.</b> Ubuntu є у Google Fonts всередині Slides. Якщо немає — «Інші шрифти» → <code>Ubuntu</code> → додати. Заголовки Ubuntu Bold, текст Regular.</li>
+      <li><b>Кольори теми.</b> Слайд → Редагувати тему → задати 7 бренд-кольорів як користувацькі:</li>
+    </ol>
+    <div class="pal">
+      <i style="background:#0E0E3A" title="#0E0E3A"></i><i style="background:#2966FF" title="#2966FF"></i><i style="background:#36EF74" title="#36EF74"></i><i style="background:#94FCB1" title="#94FCB1"></i><i style="background:#E6FAEE" title="#E6FAEE"></i><i style="background:#DAF8FF" title="#DAF8FF"></i><i style="background:#FFFFFF" title="#FFFFFF"></i>
+    </div>
+    <ol start="4">
+      <li><b>Майстер-лейаути.</b> <code>Титул (tint)</code>, <code>Контент (white)</code>, <code>Послуги (mint+chip)</code>, <code>Stats</code>, <code>Графік</code>, <code>Тарифи</code>, <code>KPI</code>, <code>Синій банер-CTA</code>.</li>
+      <li><b>Підвал.</b> У кожен лейаут — лого Site24 у куті + плейсхолдер номера (Вставити → Номери слайдів).</li>
+      <li><b>Іконки.</b> Завантажити один line-набір SVG (синій) у бібліотеку проєкту.</li>
+      <li><b>Зберегти</b> як «Site24 — Master (Pitch)» і «Site24 — Master (Report)», далі копіювати під клієнта.</li>
+    </ol>
+    <p style="margin:14px 0 0;font-size:13px;color:var(--ink-60)">PDF клієнту: Файл → Завантажити → PDF (Ubuntu вшиється автоматично).</p>
+  </div>
+</section>
+
+<!-- ================= ЧЕК-ЛИСТ ================= -->
+<section id="checklist" style="border-bottom:none">
+  <div class="eyebrow">12 · Перед відправкою</div>
+  <h2 class="sec">Чек-лист <span class="b">готового</span> деку</h2>
+  <div class="checklist"><ul>
+    <li>Тексти лише з ТЗ/брифу клієнта; заголовок ТЗ = заголовок слайда (нічого не вигадано)</li>
+    <li>Списки — одна синя стрілка; різні пікто-іконки лише в картках</li>
+    <li>Графіки/ілюстрації другорядні (≤ ~⅓–½ слайда), текст головний</li>
+    <li>Нічого не налазить на підвал/нумерацію; картки і шрифт не завеликі</li>
+    <li>Лого клієнта вставлено файлом (на білій картці, якщо має власний фон)</li>
+    <li>Фон світлий; синій — лише акцентний банер; зелений — лише дія</li>
+    <li>Кольори — лише з 7 бренд-токенів (жодного #007AFF); шрифт Ubuntu; H1 > H2</li>
+    <li>Заголовки мають синій ключ; цифри сині з зеленим маркером; числа уніфіковані</li>
+    <li>Кожне фото/цитата — підпис «Ім'я, посада»; контакти однаковим форматом, лінки клікабельні</li>
+    <li>Лого Site24 + номер слайда в підвалі; підписи лише українською</li>
+  </ul></div>
+</section>
+
+</main>
+
+<footer><div class="wrap">
+  Site24 — Дизайн-гайдлайн презентацій · v0.3 (уроки з деку Bettertone) · EN · 25.06.2026.<br>
+  Наступний крок — зібрати майстер-шаблон у Google Slides (Pitch + Report).
+</div></footer>
+
+</body>
+</html>

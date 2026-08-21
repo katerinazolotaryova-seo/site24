@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 — PPC illustration (компактна, прозорий фон)</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    /* Бренд-синій банера — щоб бачити, як виглядатиме у фоні форми.
+       При скріншоті можна обрізати по краях ілюстрації — картки на прозорому. */
+    background: #2966FF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+  }
+
+  /* === КОНТЕЙНЕР ІЛЮСТРАЦІЇ — прозорий === */
+  .illu {
+    position: relative;
+    width: 460px;
+    height: 290px;
+    background: transparent;
+  }
+
+  /* === КАРТКИ === */
+  .fcard {
+    position: absolute;
+    background: #fff;
+    border-radius: 14px;
+    padding: 12px 16px;
+    box-shadow: 0 10px 30px rgba(0, 20, 60, 0.25);
+    min-width: 130px;
+  }
+  .fcard.accent-green { border-left: 4px solid #5BC85C; }
+  .fcard.accent-blue  { border-left: 4px solid #2966FF; }
+
+  .fcard-label {
+    font-size: 10px;
+    color: #6E8AB4;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+  .fcard-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0a1f3d;
+    line-height: 1.05;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .fcard-value .accent-b { color: #2966FF; }
+
+  .fcard-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #166534;
+    background: #DCFCE7;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+  .fcard-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #DBEAFE;
+    color: #1D4ED8;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .fcard-pill::before {
+    content:""; width:6px; height:6px; border-radius:50%; background:#2966FF;
+  }
+
+  /* === КОМПАКТНІ ПОЗИЦІЇ — тісніше, без перекриття === */
+  .fcard-1 { top: 4%;  left: 0;     transform: rotate(-3deg); z-index: 2; }
+  .fcard-2 { top: 0;   right: 0;    transform: rotate(2deg);  z-index: 3; }
+  .fcard-3 { bottom: 0; left: 4%;   transform: rotate(1.5deg); z-index: 2; }
+  .fcard-4 { bottom: 6%; right: 0;  transform: rotate(-2deg); z-index: 3; }
+
+  /* Декоративні точки */
+  .bg-dot {
+    position: absolute;
+    background: rgba(255,255,255,0.55);
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+
+<div class="illu">
+  <!-- декоративні крапки у вільних кутах -->
+  <div class="bg-dot" style="width:4px;height:4px;top:48%;left:42%;"></div>
+  <div class="bg-dot" style="width:3px;height:3px;top:38%;right:30%;"></div>
+  <div class="bg-dot" style="width:5px;height:5px;bottom:30%;left:35%;"></div>
+  <div class="bg-dot" style="width:3px;height:3px;top:8%;left:46%;"></div>
+
+  <!-- Картка 1 — Вартість кліка (top-left) -->
+  <div class="fcard fcard-1 accent-green">
+    <div class="fcard-label">Вартість кліка</div>
+    <div class="fcard-value">−42%</div>
+    <div class="fcard-delta">↓ з 0,72 ₴ до 0,42 ₴</div>
+  </div>
+
+  <!-- Картка 2 — ROAS (top-right) -->
+  <div class="fcard fcard-2 accent-blue">
+    <div class="fcard-label">ROAS</div>
+    <div class="fcard-value"><span class="accent-b">4,2</span>×</div>
+    <div class="fcard-delta">+186% до старту</div>
+  </div>
+
+  <!-- Картка 3 — Конверсії (bottom-left) -->
+  <div class="fcard fcard-3 accent-green">
+    <div class="fcard-label">Конверсії / міс.</div>
+    <div class="fcard-value">+312</div>
+    <svg width="100" height="22" viewBox="0 0 100 22" style="margin-top: 4px; display: block;">
+      <path d="M 0,18 C 20,16 35,12 55,8 C 75,4 90,3 100,2" stroke="#5BC85C" fill="none" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- Картка 4 — Google Partner (bottom-right) -->
+  <div class="fcard fcard-4">
+    <div class="fcard-pill">Google Partner</div>
+    <div class="fcard-value" style="font-size: 14px; margin-top: 8px;">ТОП-3 Google Ads</div>
+  </div>
+</div>
+
+</body>
+</html>

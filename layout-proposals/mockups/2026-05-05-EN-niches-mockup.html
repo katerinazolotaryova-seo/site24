@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Site24 niches+map block — чорновик</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f5f6f8;
+    color: #1a1a1a;
+  }
+  .label {
+    max-width: 1200px;
+    margin: 48px auto 16px;
+    padding: 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+  .label strong { color: #111827; font-weight: 700; }
+  .label .desc { display: block; margin-top: 6px; font-size: 12px; font-weight: 500; text-transform: none; color: #9ca3af; letter-spacing: 0; }
+
+  .section-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  .section-h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #0a1f3d;
+    margin: 0 0 32px;
+    line-height: 1.15;
+  }
+
+  .divider {
+    max-width: 1200px;
+    margin: 56px auto 0;
+    border-top: 1px dashed #d1d5db;
+  }
+
+  .footnote {
+    max-width: 1200px;
+    margin: 80px auto 64px;
+    padding: 0 24px;
+    font-size: 12px;
+    color: #9ca3af;
+    text-align: center;
+  }
+
+  /* === МАПА З ЛЕЙБЛАМИ === */
+  .map-block {
+    position: relative;
+    background: linear-gradient(180deg, #FAFCFE 0%, #F2F8FC 100%);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 4px 24px rgba(20, 60, 120, 0.04);
+  }
+  .map-svg-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1200 / 520;
+  }
+  .map-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+  .country-label {
+    position: absolute;
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 24px rgba(20, 60, 120, 0.12);
+    font-size: 12px;
+    line-height: 1.35;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .country-label .country-name { font-weight: 700; color: #0a1f3d; font-size: 13px; }
+  .country-label .country-meta { color: #6b7280; font-size: 11px; margin-top: 3px; }
+
+  /* координати — top-left позиція картки. Близько до відповідної крапки. */
+  .lbl-ua { left: 62%; top: 28%; }
+  .lbl-pl { left: 53%; top: 4%; }
+  .lbl-uk { left: 38%; top: 5%; }
+  .lbl-us { left: 24%; top: 36%; }
+  .lbl-ca { left: 14%; top: 16%; }
+
+  /* === БЛОК ІЗ БУЛЛЕТАМИ + ЗАМІНА ФОТО === */
+  .twocol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .bullets-col h3 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #3B82F6;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .bullets-col h3::before {
+    content: "";
+    width: 22px; height: 22px;
+    background: #5BC85C;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 4px rgba(91,200,92,0.18);
+  }
+  .bullets-col h3 + p {
+    font-size: 15px;
+    color: #4b5563;
+    margin: 0 0 32px 36px;
+    line-height: 1.55;
+  }
+  .bullets-col h3:last-of-type + p { margin-bottom: 0; }
+
+  /* === ВАРІАНТ 1: Сітка ніш === */
+  .niches-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .niche {
+    background: #fff;
+    border: 1px solid #E5EBF1;
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all .15s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .niche:hover { border-color: #3B82F6; box-shadow: 0 6px 18px rgba(59,130,246,0.10); }
+  .niche-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: #E8F2FB;
+  }
+  .niche-text .niche-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0a1f3d;
+    line-height: 1.2;
+  }
+  .niche-text .niche-count {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  /* === ВАРІАНТ 2: Брендована ілюстрація === */
+  .brand-illu {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    background: linear-gradient(135deg, #E8F2FB 0%, #F4FAFD 100%);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .brand-illu .float-card {
+    position: absolute;
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 26px rgba(20, 60, 120, 0.10);
+    font-size: 12px;
+  }
+  .fc-1 { top: 12%; left: 8%; width: 180px; }
+  .fc-2 { top: 18%; right: 8%; width: 130px; text-align: center; }
+  .fc-3 { bottom: 16%; left: 14%; width: 145px; }
+  .fc-4 { bottom: 10%; right: 6%; width: 200px; }
+
+  .fc-label { font-size: 10px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+  .fc-value { font-size: 22px; font-weight: 800; color: #0a1f3d; line-height: 1; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .fc-value .pct { color: #3B82F6; }
+  .fc-delta { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600; color: #166534; background: #DCFCE7; padding: 2px 8px; border-radius: 6px; }
+
+  .fc-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #DBEAFE;
+    color: #1D4ED8;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .fc-pill::before { content:""; width:6px; height:6px; border-radius:50%; background:#3B82F6;}
+
+  .fc-stars { color: #5BC85C; font-size: 14px; letter-spacing: 1px; }
+
+  .brand-illu-bg { position: absolute; inset: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<!-- ============================ КАРТА З ЛЕЙБЛАМИ ============================ -->
+<div class="label">
+  Карта <strong>з підписами країн</strong> + новий заголовок секції
+  <span class="desc">Лейбли України / Польщі / UK / США / Канади з кількістю проєктів. Заголовок змінено з «Рішення для будь-якої ніші» на гео-формулювання.</span>
+</div>
+<div class="section-wrap">
+  <h2 class="section-h2">Локальний та міжнародний досвід</h2>
+
+  <div class="map-block">
+    <div class="map-svg-wrap">
+      <svg class="map-svg" id="dotMap" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="cityGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#5BC85C" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#5BC85C" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <g id="dotsLand"></g>
+        <g id="cities">
+          <!-- США (NYC) -->
+          <g><circle cx="353" cy="156" r="28" fill="url(#cityGlow)"/><circle cx="353" cy="156" r="9" fill="#3B82F6"/></g>
+          <!-- США (Chicago) -->
+          <g><circle cx="310" cy="149" r="18" fill="url(#cityGlow)"/><circle cx="310" cy="149" r="5" fill="#3B82F6"/></g>
+          <!-- Канада (Торонто) -->
+          <g><circle cx="337" cy="141" r="18" fill="url(#cityGlow)"/><circle cx="337" cy="141" r="5" fill="#3B82F6"/></g>
+          <!-- UK (Лондон → зміщено на Англію щоб не зачіпало Францію) -->
+          <g><circle cx="590" cy="100" r="16" fill="url(#cityGlow)"/><circle cx="590" cy="100" r="6" fill="#3B82F6"/></g>
+          <!-- Польща (Варшава) -->
+          <g><circle cx="670" cy="111" r="22" fill="url(#cityGlow)"/><circle cx="670" cy="111" r="7" fill="#3B82F6"/></g>
+          <!-- Україна (Київ) — найбільша -->
+          <g><circle cx="700" cy="119" r="36" fill="url(#cityGlow)"/><circle cx="700" cy="119" r="12" fill="#3B82F6"/></g>
+        </g>
+      </svg>
+      <script>
+        (function() {
+          // Continents as overlapping ellipses in lon/lat — заплашка для isLand-функції
+          const lands = [
+            // North America
+            {cx:-100, cy:50, rx:32, ry:18},
+            {cx:-78, cy:50, rx:14, ry:10},
+            {cx:-130, cy:62, rx:22, ry:12},
+            {cx:-150, cy:65, rx:14, ry:8},
+            {cx:-95, cy:30, rx:10, ry:9},
+            {cx:-85, cy:22, rx:8, ry:6},
+            // Greenland
+            {cx:-40, cy:73, rx:14, ry:10},
+            // South America
+            {cx:-62, cy:-8, rx:14, ry:14},
+            {cx:-65, cy:-25, rx:10, ry:18},
+            {cx:-70, cy:-45, rx:6, ry:10},
+            // Europe
+            {cx:15, cy:50, rx:18, ry:8},
+            {cx:30, cy:60, rx:18, ry:9},
+            {cx:10, cy:42, rx:8, ry:6},
+            // British Isles
+            {cx:-3, cy:54, rx:5, ry:6},
+            // Scandinavia
+            {cx:18, cy:65, rx:10, ry:8},
+            // Africa
+            {cx:18, cy:8, rx:18, ry:18},
+            {cx:25, cy:-10, rx:14, ry:14},
+            {cx:25, cy:-28, rx:8, ry:8},
+            // Middle East
+            {cx:45, cy:30, rx:14, ry:12},
+            // Russia (величезна)
+            {cx:70, cy:60, rx:25, ry:10},
+            {cx:100, cy:62, rx:30, ry:9},
+            {cx:140, cy:62, rx:20, ry:7},
+            // China/East Asia
+            {cx:105, cy:38, rx:22, ry:14},
+            {cx:125, cy:43, rx:8, ry:8},
+            // India
+            {cx:78, cy:22, rx:10, ry:13},
+            // SE Asia
+            {cx:103, cy:13, rx:10, ry:8},
+            {cx:115, cy:0, rx:12, ry:6},
+            {cx:122, cy:-2, rx:10, ry:5},
+            // Australia
+            {cx:135, cy:-25, rx:14, ry:10},
+            // Japan
+            {cx:138, cy:38, rx:4, ry:8},
+            // New Zealand
+            {cx:172, cy:-42, rx:4, ry:6},
+          ];
+          function isLand(lon, lat) {
+            for (const L of lands) {
+              const dx = (lon - L.cx) / L.rx;
+              const dy = (lat - L.cy) / L.ry;
+              if (dx*dx + dy*dy <= 1) return true;
+            }
+            return false;
+          }
+          // Equirectangular projection
+          // map: x = (lon+180)/360 * 1200, y = (90-lat)/180 * 520 (with crop)
+          // Crop to lat range [-58, 82] for typical web map
+          const cols = 90, rows = 38;
+          const W = 1200, H = 520;
+          const latMax = 82, latMin = -58;
+          const ns = "http://www.w3.org/2000/svg";
+          const g = document.getElementById("dotsLand");
+          if (!g) return;
+          let frag = "";
+          for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+              const lon = -180 + (i + 0.5) * (360/cols);
+              const lat = latMax - (j + 0.5) * ((latMax-latMin)/rows);
+              if (isLand(lon, lat)) {
+                const x = (i + 0.5) * (W/cols);
+                const y = (j + 0.5) * (H/rows);
+                frag += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#B6D4E8"/>`;
+              }
+            }
+          }
+          g.innerHTML = frag;
+        })();
+      </script>
+
+      <!-- Лейбли країн з кількістю -->
+      <div class="country-label lbl-ua">
+        <div class="country-name">🇺🇦 Україна</div>
+        <div class="country-meta">850+ проєктів</div>
+      </div>
+      <div class="country-label lbl-pl">
+        <div class="country-name">🇵🇱 Польща</div>
+        <div class="country-meta">120+ проєктів</div>
+      </div>
+      <div class="country-label lbl-uk">
+        <div class="country-name">🇬🇧 Велика Британія</div>
+        <div class="country-meta">45+ проєктів</div>
+      </div>
+      <div class="country-label lbl-us">
+        <div class="country-name">🇺🇸 США</div>
+        <div class="country-meta">85+ проєктів</div>
+      </div>
+      <div class="country-label lbl-ca">
+        <div class="country-name">🇨🇦 Канада</div>
+        <div class="country-meta">30+ проєктів</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================ ВАРІАНТ 1: Сітка ніш ============================ -->
+<div class="label">
+  Варіант <strong>1</strong> — сітка ніш замість стокового фото
+  <span class="desc">Текст справа в новому порядку: «Локальний та міжнародний» → «Експертність у нішах» → «Гнучкість». Ліворуч — 8 карток ніш.</span>
+</div>
+<div class="section-wrap">
+  <div class="twocol">
+    <div class="niches-grid">
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 4h18l-2 12H5L3 4zm2 14h14M9 21h6" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">E-commerce</div>
+          <div class="niche-count">220+ кейсів</div>
+        </div>
+      </a>
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12L12 4l9 8M5 10v10h14V10" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">Нерухомість</div>
+          <div class="niche-count">85+ кейсів</div>
+        </div>
+      </a>
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M3 12h6m6 0h6M5 5l4 4m6 6l4 4M5 19l4-4m6-6l4-4" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">Медицина</div>
+          <div class="niche-count">60+ кейсів</div>
+        </div>
+      </a>
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-7h6v7" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">Фінанси</div>
+          <div class="niche-count">95+ кейсів</div>
+        </div>
+      </a>
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 8l10 5 10-5-10-5zM2 14l10 5 10-5" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">Освіта</div>
+          <div class="niche-count">40+ кейсів</div>
+        </div>
+      </a>
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm13 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">B2B-послуги</div>
+          <div class="niche-count">180+ кейсів</div>
+        </div>
+      </a>
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M5 18V8h4v10M11 18V4h4v14M17 18v-6h4v6" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">Виробництво</div>
+          <div class="niche-count">75+ кейсів</div>
+        </div>
+      </a>
+      <a class="niche" href="#">
+        <div class="niche-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C7 7 7 13 12 22c5-9 5-15 0-20zm0 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="niche-text">
+          <div class="niche-name">Туризм</div>
+          <div class="niche-count">35+ кейсів</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="bullets-col">
+      <h3>Локальний та міжнародний досвід</h3>
+      <p>Працюємо як на українському ринку, так і за кордоном. Стратегії адаптовані під специфіку бізнесу, послуги охоплюють більшість європейських мов.</p>
+      <h3>Експертність у різних нішах</h3>
+      <p>За роки роботи з тисячею різноманітних проєктів ми стали експертами з просування у всіх сферах.</p>
+      <h3>Гнучкість у підходах</h3>
+      <p>Наш досвід дозволяє знаходити оптимальні рішення для будь-якої ніші та забезпечувати результат у будь-якому бізнес-сегменті.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================ ВАРІАНТ 2: Брендована ілюстрація ============================ -->
+<div class="label">
+  Варіант <strong>2</strong> — брендована ілюстрація замість стокового фото
+  <span class="desc">SVG-композиція в стилі сайту: floating-картки з мікро-метриками і м'які графіки. Без AI-людей і фейкових дашбордів.</span>
+</div>
+<div class="section-wrap">
+  <div class="twocol">
+    <div class="brand-illu">
+      <!-- декоративний фон з кривими -->
+      <svg class="brand-illu-bg" viewBox="0 0 600 480" preserveAspectRatio="none">
+        <path d="M -20,300 C 100,260 200,310 320,280 C 440,250 540,300 620,270" stroke="#B6DCEE" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0"/>
+        <path d="M -20,360 C 120,330 230,380 340,340 C 450,310 550,360 620,330" stroke="#3B82F6" fill="none" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+        <circle cx="180" cy="345" r="6" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+        <circle cx="380" cy="328" r="6" fill="#fff" stroke="#3B82F6" stroke-width="3"/>
+
+        <!-- ambient декоративні точки -->
+        <circle cx="80" cy="80" r="3" fill="#5BC85C" opacity="0.5"/>
+        <circle cx="540" cy="120" r="4" fill="#3B82F6" opacity="0.5"/>
+        <circle cx="500" cy="420" r="3" fill="#5BC85C" opacity="0.5"/>
+        <circle cx="60" cy="420" r="3" fill="#3B82F6" opacity="0.5"/>
+      </svg>
+
+      <!-- Картка 1: ROI / трафік -->
+      <div class="float-card fc-1">
+        <div class="fc-label">Органічний трафік</div>
+        <div class="fc-value">28,4K<span class="fc-delta">+246%</span></div>
+        <svg width="100%" height="32" viewBox="0 0 160 32"><path d="M 0,28 C 30,26 60,22 90,16 C 120,10 140,6 160,4" stroke="#3B82F6" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+
+      <!-- Картка 2: Рейтинг / зірки -->
+      <div class="float-card fc-2">
+        <div class="fc-stars">★★★★★</div>
+        <div class="fc-value" style="font-size:20px; margin-top:6px;">5.0</div>
+        <div class="fc-label" style="margin-top:6px;">Clutch · 22 reviews</div>
+      </div>
+
+      <!-- Картка 3: Pill з нішею -->
+      <div class="float-card fc-3" style="text-align:center;">
+        <div class="fc-pill">E-commerce</div>
+        <div class="fc-pill" style="margin-top:6px;">Нерухомість</div>
+        <div class="fc-pill" style="margin-top:6px;">B2B</div>
+      </div>
+
+      <!-- Картка 4: Великий KPI -->
+      <div class="float-card fc-4">
+        <div class="fc-label">Ключові слова в ТОП-10</div>
+        <div class="fc-value"><span class="pct">312</span></div>
+        <div class="fc-delta">+492% за 9 міс.</div>
+      </div>
+    </div>
+
+    <div class="bullets-col">
+      <h3>Локальний та міжнародний досвід</h3>
+      <p>Працюємо як на українському ринку, так і за кордоном. Стратегії адаптовані під специфіку бізнесу, послуги охоплюють більшість європейських мов.</p>
+      <h3>Експертність у різних нішах</h3>
+      <p>За роки роботи з тисячею різноманітних проєктів ми стали експертами з просування у всіх сферах.</p>
+      <h3>Гнучкість у підходах</h3>
+      <p>Наш досвід дозволяє знаходити оптимальні рішення для будь-якої ніші та забезпечувати результат у будь-якому бізнес-сегменті.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footnote">
+  Чорновик · 2026-05-05 · Карта з лейблами країн + 2 варіанти заміни стокового фото блоку «Експертність у різних нішах»
+</div>
+
+</body>
+</html>
