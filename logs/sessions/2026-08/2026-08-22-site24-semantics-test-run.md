@@ -26,6 +26,12 @@
 4. Повний прогін Фаз 0–6 (seo-cluster skill) по всіх 5 пілорах, RU:
    `clusters/ru-catalog-2026-08-22/cluster-plan.md` + `structure.md`, і датований
    батч у `BACKLOG.md` (13 ідей).
+5. За командою "роби далі" — дзеркальний повний прогін для UA (той самий набір
+   seed-термінів, ті самі 5 пілорів): `clusters/ua-catalog-2026-08-22/`, ще 13 ідей
+   у `BACKLOG.md`. `config.yml.languages` оновлено на `[ru, ua]`. Порівняння двох
+   прогонів підсилило знахідку про RU/UA канібалізацію (RU: 296K показів на ціновій
+   сторінці, UA: лише 12.8K на ту саму тему — розрив 23×, ще виразніший, ніж
+   здавалось по одному RU-прогону).
 
 ## Ключові знахідки
 
@@ -53,9 +59,11 @@
 
 ## Що далі
 
-- Катерина переглядає `cluster-plan.md`/`structure.md`/`BACKLOG.md` і коригує
-  сам skill (`content-semantics-agent`, `seo-cluster`) на основі побаченого.
-- Не зроблено і не заплановано: UA-мовний прогін, OAuth GSC setup, реальна
-  перевірка RU/UA канібалізації, DataForSEO enrichment (нічого не вмикалось,
-  `dataforseo.enabled: false`).
+- Катерина переглядає `cluster-plan.md`/`structure.md`/`BACKLOG.md` (обидві мови)
+  і коригує сам skill (`content-semantics-agent`, `seo-cluster`) на основі побаченого.
+- Не зроблено і не заплановано: OAuth GSC setup, реальна перевірка RU/UA
+  канібалізації (двічі позначена як пріоритет #1 в обох BACKLOG-батчах),
+  DataForSEO enrichment (нічого не вмикалось, `dataforseo.enabled: false`),
+  сторінка Amazon Ads (чернетка H1/Title/Description є в обох `structure.md`,
+  але не створена — комерційне рішення за Катериною).
 - Нічого не публікувалось і не змінювалось на живому сайті — усе чернетка.
