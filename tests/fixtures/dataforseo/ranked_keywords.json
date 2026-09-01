@@ -1,0 +1,37 @@
+{
+  "version": "0.1.20250101",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "tasks": [
+    {
+      "id": "02020202-0202-0202-0202-020202020202",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "result": [
+        {
+          "target": "acme-roofing.example",
+          "total_count": 412,
+          "items_count": 2,
+          "items": [
+            {
+              "keyword_data": {
+                "keyword": "roof replacement cost",
+                "search_volume": 2400,
+                "keyword_info": {"search_intent_info": {"main_intent": "commercial"}}
+              },
+              "ranked_serp_element": {"serp_item": {"rank_absolute": 6, "url": "https://acme-roofing.example/roof-replacement/"}}
+            },
+            {
+              "keyword_data": {
+                "keyword": "emergency roof repair",
+                "search_volume": 880,
+                "keyword_info": {"search_intent_info": {"main_intent": "commercial"}}
+              },
+              "ranked_serp_element": {"serp_item": {"rank_absolute": 14, "url": "https://acme-roofing.example/emergency-repair/"}}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

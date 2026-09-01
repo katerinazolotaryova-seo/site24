@@ -1,0 +1,24 @@
+{
+  "version": "0.1.20250101",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "tasks": [
+    {
+      "id": "04040404-0404-0404-0404-040404040404",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "result": [
+        {
+          "keyword": "roof replacement cost",
+          "location_code": "us",
+          "language_code": "en",
+          "items": [
+            {"type": "organic", "rank_absolute": 1, "domain": "bestlocalroofers.example", "url": "https://bestlocalroofers.example/roof-replacement-cost/"},
+            {"type": "organic", "rank_absolute": 2, "domain": "roofprosinc.example", "url": "https://roofprosinc.example/pricing/roof-replacement/"},
+            {"type": "organic", "rank_absolute": 6, "domain": "acme-roofing.example", "url": "https://acme-roofing.example/roof-replacement/"}
+          ]
+        }
+      ]
+    }
+  ]
+}

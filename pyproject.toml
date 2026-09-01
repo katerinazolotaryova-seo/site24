@@ -1,0 +1,49 @@
+[project]
+name = "seo-presale-analyzer"
+version = "0.1.0"
+description = "Internal tool for automated SEO presale analysis (crawl, SEO data, gap analysis, LLM interpretation, presale report)."
+requires-python = ">=3.11"
+readme = "docs/seo-presale-analyzer/ARCHITECTURE_AND_MVP_PLAN.md"
+license = { text = "Proprietary" }
+dependencies = [
+    "sqlalchemy>=2.0,<3.0",
+    "alembic>=1.13,<2.0",
+    "pydantic>=2.6,<3.0",
+    "pydantic-settings>=2.2,<3.0",
+    "httpx>=0.27,<1.0",
+    "typer>=0.12,<1.0",
+    "PyYAML>=6.0,<7.0",
+    "psycopg[binary]>=3.1,<4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "respx>=0.21",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+analyzer = "analyzer.cli:app"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["analyzer*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+exclude = ["analyzer/db/migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = [
+    "UP042",  # `class X(str, enum.Enum)` is deliberate here, not `enum.StrEnum` —
+              # keeps SQLAlchemy's `Enum(python_enum)` column type behavior explicit.
+]

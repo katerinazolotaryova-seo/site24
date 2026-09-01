@@ -1,0 +1,37 @@
+{
+  "version": "0.1.20250101",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "tasks": [
+    {
+      "id": "01010101-0101-0101-0101-010101010101",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "result": [
+        {
+          "target": "acme-roofing.example",
+          "location_code": "us",
+          "language_code": "en",
+          "metrics": {
+            "organic": {
+              "count": 412,
+              "etv": 3200,
+              "pos_1": 2,
+              "pos_2_3": 5,
+              "pos_4_10": 41,
+              "pos_11_20": 68,
+              "pos_21_30": 90,
+              "pos_31_40": 61,
+              "pos_41_50": 40,
+              "pos_51_60": 33,
+              "pos_61_70": 25,
+              "pos_71_80": 20,
+              "pos_81_90": 15,
+              "pos_91_100": 12
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

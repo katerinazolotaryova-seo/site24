@@ -257,7 +257,9 @@ llm_runs                                                                        
 
 ## 8. MVP development tasks & acceptance criteria
 
-### Phase 0 — Foundations
+### Phase 0 — Foundations ✅ implemented
+
+Code lives at the repo root (`analyzer/`, `tests/`, `alembic.ini`, `docker-compose.yml`) — see [`README.md`](../../README.md) for setup/run instructions. `pytest` (24 tests) and `ruff check .` both pass.
 
 **T0.1 — Project scaffolding**
 Python package layout, dependency management, Docker Compose (Postgres + Redis), config loader, logging, CI skeleton.
@@ -397,4 +399,4 @@ This gates one specific thing: **T1.1 (Site Crawler) must not be pointed at a re
 
 ---
 
-*This plan intentionally stops here. No pipeline code has been written. Next step is resolving the remaining open items in §10 (crawl budget, JS rendering policy, scoring weights, hosting — all lower-stakes and default-able) and completing `LEGAL_SIGNOFF.md`, after which Phase 0–3 tasks in §8 can start.*
+*Phase 0 (§8, T0.1–T0.4) is implemented — see [`README.md`](../../README.md). Phase 1 (crawler, page classification, technical screening) is next; per §10.5/§12, its crawler (T1.1) must not run against a real prospect/competitor domain until `LEGAL_SIGNOFF.md` is filled in and approved. The remaining lower-stakes open items in §10 (crawl budget, JS rendering policy, scoring weights, hosting) have proposed defaults and don't block starting Phase 1.*

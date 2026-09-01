@@ -1,0 +1,42 @@
+# Planning-level cost estimates for the DataForSEO endpoints the MVP calls.
+#
+# THESE ARE ESTIMATES ONLY, not a quote — cross-check every value here
+# against DataForSEO's current price list before relying on this for a real
+# budget decision (see docs/seo-presale-analyzer/ARCHITECTURE_AND_MVP_PLAN.md
+# §4.1). They exist so the pre-flight cost estimator (analyzer.budget) has
+# something concrete to compute against instead of guessing at call time.
+#
+# cost(call) = base_cost_usd + per_row_usd * row_count
+#
+# `row_count` is whatever "limit"/result-count the caller plans to request
+# for that endpoint (e.g. the keyword-pull row cap, or 1 for a per-query
+# SERP lookup — see analyzer.budget.estimator).
+
+endpoints:
+  domain_rank_overview:
+    base_cost_usd: 0.01
+    per_row_usd: 0.0
+  ranked_keywords:
+    base_cost_usd: 0.0
+    per_row_usd: 0.0002
+  relevant_pages:
+    base_cost_usd: 0.01
+    per_row_usd: 0.0001
+  competitors_domain:
+    base_cost_usd: 0.02
+    per_row_usd: 0.0
+  search_volume:
+    base_cost_usd: 0.0
+    per_row_usd: 0.0001
+  serp_organic_live_advanced:
+    base_cost_usd: 0.003
+    per_row_usd: 0.0
+  # Not called by the MVP (Backlink Profile Analyzer is Phase 5) — priced
+  # here so the estimator can still cost a plan that includes them once
+  # that phase starts.
+  backlinks_live:
+    base_cost_usd: 0.02
+    per_row_usd: 0.0001
+  referring_domains_live:
+    base_cost_usd: 0.02
+    per_row_usd: 0.0001

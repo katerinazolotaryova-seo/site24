@@ -1,0 +1,22 @@
+{
+  "version": "0.1.20250101",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "tasks": [
+    {
+      "id": "03030303-0303-0303-0303-030303030303",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "result": [
+        {
+          "target": "acme-roofing.example",
+          "items_count": 2,
+          "items": [
+            {"domain": "bestlocalroofers.example", "avg_position": 5.2, "sum_position": 620, "intersections": 118},
+            {"domain": "roofprosinc.example", "avg_position": 6.7, "sum_position": 540, "intersections": 96}
+          ]
+        }
+      ]
+    }
+  ]
+}
