@@ -3,6 +3,8 @@
 Status: **DRAFT — for review, not yet approved for implementation.**
 Per the brief (§26), this document stops at the planning stage. No pipeline code should be written until the open decisions in §10 are resolved and this plan is signed off.
 
+**Decisions resolved so far** (§10): provider = DataForSEO, per-project API budget = **$8**, output format = **plain text**. See §10 for what remains open, most importantly the legal/compliance sign-off (§10.5, template provided in §12).
+
 ---
 
 ## 1. Reading of the brief — spory / technically hard spots
@@ -98,7 +100,7 @@ Each arrow is a persisted table boundary (§5), not just an in-memory transforma
 | Object storage | S3-compatible bucket (or local disk in dev) for raw HTML snapshots and large raw API payloads, referenced from Postgres by key | Keeps the DB lean; raw HTML for hundreds of pages doesn't belong in row storage. |
 | LLM | Anthropic Claude (structured/tool-output calls for grounding) | Matches the environment this tool is being built in; strong structured-output and long-context support for the interpretation layer. |
 | Embeddings (Phase 3+, semantic clustering) | Start with a local `sentence-transformers` model (no per-call cost, works offline) for MVP-adjacent clustering; revisit a hosted embeddings API only if quality demands it | Avoids adding a second paid vendor before it's proven necessary. |
-| Report rendering | Markdown → HTML → PDF via WeasyPrint (or Jinja2 templates + wkhtmltopdf) | Simple, scriptable, no manual design-tool step for MVP. |
+| Report rendering | Jinja2 text templates → plain `.txt` output (no PDF/HTML rendering step) | Confirmed per §10: MVP output is plain text, so no PDF toolchain (WeasyPrint/wkhtmltopdf) is needed yet — that's a Phase 8 concern if/when a formatted deliverable is wanted. |
 | Config | `pydantic-settings` + versioned YAML for scoring weights / exclude-lists / thresholds | Keeps the "configurable formula" and exclude-lists (per §17, §7) out of code. |
 | Testing | `pytest`, fixture-recorded HTTP responses (`vcrpy` or similar) for provider calls | Pipeline correctness must be testable without spending real API budget on every CI run. |
 
@@ -113,6 +115,26 @@ Each arrow is a persisted table boundary (§5), not just an in-memory transforma
 | LLM interpretation, block classification, E-E-A-T signal extraction, grounding-adjacent structured output | Anthropic Claude API | — | Structured/tool-call output used everywhere an LLM touches page content, never free-form prose fed back into calculations. |
 | Keyword/semantic clustering embeddings (post-MVP) | Local `sentence-transformers` model | Voyage AI embeddings API | Deferred; only add a paid embeddings vendor if local quality is insufficient. |
 | Headless rendering (JS pages) | Self-hosted Playwright | Browserless.io (hosted) | Self-hosted by default; hosted only if infra ops overhead becomes a problem. |
+
+### 4.1 API budget: fitting DataForSEO calls into $8/project
+
+$8 is workable for the MVP call pattern **if the pipeline actively rations it**, not by default — DataForSEO bills per request/per row, and an MVP run touches client + up to 5 competitor domains. Rough shape of the spend (exact rates should be checked against DataForSEO's current price list before go-live — these are planning-level estimates, not a quote):
+
+| Call | Domains touched | Rows/limit used | Rough cost |
+|---|---|---|---|
+| Domain metrics + 12mo history (Labs: Domain Rank Overview / Historical) | client + up to 5 competitors (≤6) | n/a (summary) | small, low cents per domain |
+| Organic keywords (Labs: Ranked Keywords), capped `limit` | client + competitors (≤6) | capped at ~500–1000 rows/domain | the single biggest line item — scales directly with the row cap |
+| Competitor discovery: SERP lookups for top N commercial keywords | n/a (query-based) | N = 20–30 queries (config, per risk §1.2) | second biggest line item — scales directly with N |
+| Domain Competitors endpoint (if used instead of/alongside manual SERP discovery) | client | 1 call | small |
+| Backlinks / referring domains | — | **not called in MVP** (Phase 5) | $0 |
+
+**Guardrails this implies for MVP, not just a documented ceiling:**
+- A **pre-flight cost estimator** runs before any paid call: given the planned row caps (`limit` per keyword pull) and query counts (N for competitor discovery), it sums an estimated cost and refuses to proceed past the configured budget (default $8/project) without an explicit override.
+- Every `seo_metrics_raw` row stores its own `estimated_cost_usd`; a project's running total is checked against its budget before each new call, not just once at the start (so a partial run can't blow past budget by summing untracked calls).
+- Defaults that keep spend low: keyword pull `limit` starts conservative (e.g. 300–500 rows/domain, raised only if the project needs deeper coverage), competitor discovery samples ≤5 competitors and ≤20 seed keywords, and Domain Competitors endpoint is preferred over full manual SERP intersection where it's cheaper for equivalent signal.
+- If actual DataForSEO pricing (once verified against a live account) makes $8 too tight for the row caps needed for good-quality clusters, that's a decision to surface explicitly (raise the ceiling, or hold the row caps and accept thinner keyword coverage) — not something to quietly exceed.
+
+This is why **T0.4** below (budget guardrail) is in Phase 0, before any paid call is wired up — the enforcement has to exist before the first real spend, not be bolted on after a project goes over.
 
 ---
 
@@ -151,7 +173,7 @@ All tables carry `created_at`; tables holding externally-sourced or calculated d
 projects
   id, name, domain, target_country, target_language, business_type,
   website_type (services|ecommerce|saas|other), priority_services (jsonb),
-  created_at
+  api_budget_usd (default 8.00), api_spend_usd (running total), created_at
 
 domains                                   -- client + competitor domains, one row per hostname
   id, project_id, hostname, role (client|competitor),
@@ -175,7 +197,7 @@ page_images
 
 seo_metrics_raw                            -- RAW, never mutated                [prov.]
   id, domain_id, provider, endpoint, request_params (jsonb), raw_response (jsonb),
-  fetched_at
+  estimated_cost_usd, fetched_at
 
 domain_metrics                             -- NORMALIZED, recomputable          [prov.]
   id, domain_id, date, organic_traffic, organic_keywords, top3, top10, top20, top100,
@@ -249,6 +271,10 @@ Implement the MVP tables from §6 via Alembic migrations.
 Define the interface (`get_domain_metrics`, `get_organic_keywords`, `get_top_pages`, `get_competitors`, `get_backlinks`, `get_referring_domains`, `get_keyword_metrics`, `get_serp`) and a DataForSEO implementation.
 *AC:* interface defined as an ABC/Protocol; DataForSEO implementation covers at least the 6 methods MVP uses (backlinks/referring_domains may raise `NotImplementedError` for now but must exist in the interface); every provider call persists its raw response to `seo_metrics_raw` before any normalization; unit tests run against recorded fixture responses, not live API calls.
 
+**T0.4 — API budget guardrail**
+Pre-flight cost estimator + running-spend tracker enforcing the $8/project default ceiling (see §4.1) before any paid DataForSEO call executes.
+*AC:* given a planned set of calls (row caps + query counts) that would exceed `api_budget_usd`, the pipeline refuses to start that stage and reports which planned call would breach the budget, instead of executing calls and finding out after the fact; every executed call updates `seo_metrics_raw.estimated_cost_usd` and the project's running `api_spend_usd`; the ceiling is config (not hardcoded), so it can be raised per-project with an explicit override flag.
+
 ### Phase 1 — Crawl & classify
 
 **T1.1 — Site Crawler (static)**
@@ -314,8 +340,8 @@ Build the structured input object (§18 example) from calculated metrics/opportu
 *AC:* a test asserts raw HTML/crawl content never appears in the LLM request payload; the grounding validator rejects a deliberately-corrupted test output containing a number absent from the input, triggering bounded regeneration or a templated fallback sentence.
 
 **T4.4 — Report Generator**
-Render the presale report (sections 1–4, 9–11 populated per §19; sections 5–7 shown as phase-deferred placeholders) to Markdown and PDF.
-*AC:* a completed pipeline run produces a report file with all required sections present; every factual claim in the text is traceable to a source record id; PDF renders cleanly for a real test project without manual adjustment.
+Render the presale report (sections 1–4, 9–11 populated per §19; sections 5–7 shown as phase-deferred placeholders) as **plain text** (`.txt`) — no PDF/HTML rendering for MVP.
+*AC:* a completed pipeline run produces a `.txt` report file with all required sections present, in the order given in §19, readable as-is (fixed-width friendly, no markup); every factual claim in the text is traceable to a source record id (kept in the run's metadata/log even though it isn't printed inline in the plain-text body); running against a real test project produces a file a sales manager could read and use without any further formatting step.
 
 **T4.5 — Sales Talking Points Generator**
 Produce PRIMARY SALES ANGLE / SUPPORTING ARGUMENTS / QUICK WIN / WHAT TO SELL as a structured object separate from the client-facing report.
@@ -335,16 +361,18 @@ Phase 4 (SERP collection + competitor page parsing + Page Structure Gap) → Pha
 
 ## 10. Decisions needed before development starts
 
-1. **Primary SEO data provider** — recommend DataForSEO (see §4) for cost/flexibility, but this has budget/contract implications and should be explicitly approved, especially since Ahrefs/Semrush might already be licensed in-house.
-2. **Per-project API budget ceiling** — how much are we willing to spend in provider calls for one presale analysis? This drives the keyword-sample size in Competitor Discovery, crawl budget, and caching freshness window.
-3. **Crawl scope/budget default** — max pages and max depth per client crawl (affects cost, runtime, and how much "orphan pages"/"true depth" claims can be trusted, per risk #6 in §1).
-4. **JS rendering policy** — off by default with a heuristic trigger (as proposed in §1, risk #4), or always-on for a specific site-type (e.g. SaaS marketing sites tend to be JS-heavy)?
-5. **Legal/compliance sign-off on crawling prospect + competitor sites** — the client isn't a customer yet at presale stage; confirm this is acceptable practice for the agency (robots.txt-respecting, low-volume, identified UA) before Phase 1 ships.
-6. **LLM/embeddings vendor** — Claude for interpretation/structured extraction (proposed default given the environment), and local `sentence-transformers` vs. a paid embeddings API for clustering, deferred to Phase 3+.
-7. **Output format expectations** — is a Markdown/PDF report sufficient for MVP, or does sales expect something closer to the existing `SEO_Strategy_*.pptx` decks already in this repo? If slide-deck output is a hard requirement rather than a nice-to-have, that changes the Report Generator's design now rather than after MVP.
-8. **Scoring weights v1** — the Impact/Confidence/Effort/Business-Relevance formula and per-opportunity-type rules are a first-guess calibration (§1, risk #11); confirm who owns validating/adjusting these against real sales outcomes.
-9. **Data retention/privacy** — how long raw crawl/API data for a prospect (not yet a client) is retained, and whether prospects need to be informed their public site was analyzed.
-10. **Hosting** — where this runs (internal server, cloud VM, containers) — affects whether Redis/Celery/Playwright infra is provisioned from day one or deferred until parallel/batch processing is actually needed.
+1. ✅ **Primary SEO data provider** — **resolved: DataForSEO.**
+2. ✅ **Per-project API budget ceiling** — **resolved: $8/project**, enforced by T0.4's guardrail (see §4.1). Drives the row caps and query counts used by Competitor Discovery and keyword collection.
+3. **Crawl scope/budget default** — max pages and max depth per client crawl (affects cost, runtime, and how much "orphan pages"/"true depth" claims can be trusted, per risk #6 in §1). Still open — proposed default to confirm: 300 pages / depth 5 for a `services` or `saas` site, higher for `ecommerce` given category/product volume; adjustable per project.
+4. **JS rendering policy** — off by default with a heuristic trigger (as proposed in §1, risk #4), or always-on for a specific site-type (e.g. SaaS marketing sites tend to be JS-heavy)? Still open.
+5. **Legal/compliance sign-off on crawling prospect + competitor sites** — **in progress.** A fill-in template is provided at [`LEGAL_SIGNOFF.md`](./LEGAL_SIGNOFF.md) in this same folder — see §12 below for what to fill in and how it gates Phase 1. Crawler work (T1.1) should not run against real prospect/competitor domains until that document is completed and committed.
+6. **LLM/embeddings vendor** — Claude for interpretation/structured extraction (proposed default given the environment), and local `sentence-transformers` vs. a paid embeddings API for clustering, deferred to Phase 3+. Still open (low urgency — doesn't block MVP Phase 0–3).
+7. ✅ **Output format** — **resolved: plain text.** MVP report and talking points are `.txt` output; no PDF/HTML rendering, no slide-deck generation (the existing `SEO_Strategy_*.pptx` decks in this repo are a separate, manually-built deliverable and out of scope for the analyzer's MVP output).
+8. **Scoring weights v1** — the Impact/Confidence/Effort/Business-Relevance formula and per-opportunity-type rules are a first-guess calibration (§1, risk #11); confirm who owns validating/adjusting these against real sales outcomes. Still open.
+9. **Data retention/privacy** — how long raw crawl/API data for a prospect (not yet a client) is retained, and whether prospects need to be informed their public site was analyzed. Still open — folded into the legal sign-off template (§12).
+10. **Hosting** — where this runs (internal server, cloud VM, containers) — affects whether Redis/Celery/Playwright infra is provisioned from day one or deferred until parallel/batch processing is actually needed. Still open, but doesn't block Phase 0–3 (a local/single-machine run is enough for MVP).
+
+Remaining open items (#3, #4, #6, #8, #10) are lower-stakes than #1/#2/#5/#7 and don't have to block starting Phase 0 — they can be defaulted per the proposed values above and revisited before Phase 1's crawler goes live against a real prospect domain.
 
 ---
 
@@ -359,4 +387,14 @@ Phase 4 (SERP collection + competitor page parsing + Page Structure Gap) → Pha
 
 ---
 
-*This plan intentionally stops here. No pipeline code has been written. Next step is resolving §10, after which Phase 0–3 tasks in §8 can start.*
+## 12. Legal / compliance sign-off — what to add and where
+
+This gates one specific thing: **T1.1 (Site Crawler) must not be pointed at a real prospect's or a real competitor's live domain** until this is filled in and committed. Everything else in Phase 0–3 (scaffolding, schema, provider abstraction, DataForSEO calls, keyword/visibility analysis) doesn't touch a third party's site directly and isn't blocked by this.
+
+**What to add:** fill in [`LEGAL_SIGNOFF.md`](./LEGAL_SIGNOFF.md) in this folder — it's a template with the specific fields that matter for this tool (who approved it, the crawl policy the tool will actually follow, data retention, and what happens if a site owner objects). It doesn't need to be a formal legal document — it needs to be a clear, dated record that someone with authority to decide this for the agency looked at the crawl policy and approved it, so this decision isn't made silently by whoever happens to write the crawler code.
+
+**How it gates development:** once `LEGAL_SIGNOFF.md` has the "Approved" fields filled in, T1.1 can run against real domains. Until then, T1.1 can still be built and tested against domains you own or explicitly control (e.g. a test site, or this repo's own site) — the sign-off blocks *production use against prospects*, not the engineering work itself.
+
+---
+
+*This plan intentionally stops here. No pipeline code has been written. Next step is resolving the remaining open items in §10 (crawl budget, JS rendering policy, scoring weights, hosting — all lower-stakes and default-able) and completing `LEGAL_SIGNOFF.md`, after which Phase 0–3 tasks in §8 can start.*
