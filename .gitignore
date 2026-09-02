@@ -1,2 +1,2 @@
 # Локальный файл с реальными доступами — не коммитить
-access/credentials.local.txt
+.env
