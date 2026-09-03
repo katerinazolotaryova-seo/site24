@@ -145,6 +145,27 @@
 
 ---
 
+## 10. Доступ до DataForSEO API
+
+- Доступ до DataForSEO API (SERP, keyword research, domain overview, backlinks тощо) заведений
+  на рівні середовища Claude Code on the web (Settings → Environment variables) і автоматично
+  доступний у кожній новій сесії через змінні `DATAFORSEO_LOGIN` / `DATAFORSEO_PASSWORD` —
+  нічого додатково підключати не треба.
+- **Auth:** HTTP Basic Auth (login + password). **Base URL:** `https://api.dataforseo.com/v3/`.
+  Документація: https://docs.dataforseo.com/v3/.
+- Перевірка доступності й балансу:
+  ```bash
+  curl -s -u "$DATAFORSEO_LOGIN:$DATAFORSEO_PASSWORD" \
+    "https://api.dataforseo.com/v3/appendix/user_data"
+  ```
+- Використовувати виключно через змінні середовища в командах — ніколи не друкувати їхні
+  значення в чат, код, коміти чи файли репозиторію (див. розділ 1).
+- Контекст попереднього використання цього акаунту в проєкті — `logs/DECISIONS.md` (M-005, M-006):
+  LinkedIn-збагачення через `dataforseo_labs/google/domain_rank_overview`, з локацією/мовою під
+  реальний ринок сайту (не дефолтний US).
+
+---
+
 ## Примітки з підтримки файлу
 
 - Файл читається щосесії — не роздувати, прибирати те, що більше не діє.
