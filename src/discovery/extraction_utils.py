@@ -120,6 +120,19 @@ def extract_person_candidates(data: ExtractedPageData, source_url: str) -> list[
     return candidates
 
 
+def _json_ld_org_matches_page_subject(name: str, data: ExtractedPageData) -> bool:
+    """A JSON-LD Organization block is frequently CMS/SEO-plugin boilerplate
+    describing the *site itself* (WordPress/Yoast in particular stamps the
+    same "publisher" Organization on literally every page of a domain),
+    not the specific company a detail page is actually about. Only trust
+    it if its name plausibly appears in this page's own title/headings --
+    real evidence the block is *about this page*, not generic site
+    identity.
+    """
+    haystack = " ".join([data.title or "", *data.headings]).lower()
+    return bool(haystack) and name.lower() in haystack
+
+
 def extract_company_candidate(data: ExtractedPageData, source_url: str, allow_title_fallback: bool = True) -> dict | None:
     """Guesses the single company a page is *about*. Appropriate for a
     single-subject page (a company's own /about page, a bio page for one
@@ -131,7 +144,7 @@ def extract_company_candidate(data: ExtractedPageData, source_url: str, allow_ti
     """
     for obj in data.json_ld_orgs:
         name = (obj.get("name") or "").strip()
-        if name:
+        if name and _json_ld_org_matches_page_subject(name, data):
             return {
                 "company_name": _dedupe_repeated_text(name),
                 "website": obj.get("url") or source_url,

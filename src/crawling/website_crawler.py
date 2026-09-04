@@ -176,7 +176,7 @@ class WebsiteCrawler:
                 category = classify_path(urlparse(url).path)
                 return CrawledPage(
                     url=url, status_code=cached.get("status_code", 0), category=category.value,
-                    data=parse_page(cached.get("html", "")),
+                    data=parse_page(cached.get("html", ""), url),
                 )
 
         async with self.global_semaphore, self._domain_lock(domain):
