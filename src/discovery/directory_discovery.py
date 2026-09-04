@@ -55,6 +55,16 @@ LISTING_CATEGORIES = frozenset(
 SINGLE_COMPANY_CATEGORIES = frozenset({PageCategory.COMPANY})
 
 
+def _is_pagination_path(path_parts: tuple) -> bool:
+    """True for a later page of the same listing -- a WordPress-style
+    "/page/2/" archive segment, or a bare numeric page-number segment
+    ("/list-of-members/3/"). Such a page is still an index (many links
+    out, no single company of its own), just not the first one.
+    """
+    non_root = [p for p in path_parts if p != "/"]
+    return bool(non_root) and ("page" in non_root or non_root[-1].isdigit())
+
+
 @dataclass
 class DirectoryExtractionResult:
     source: DiscoverySource
@@ -119,7 +129,17 @@ class DirectoryDiscovery:
             # can't tell those apart (both contain "members"), so use path
             # depth instead: an index page has <=1 path segment, a detail
             # page has more.
-            is_index_page = len(PurePosixPath(urlparse(page.url).path).parts) <= 2  # ('/', 'members')
+            #
+            # A later *page* of that same index (/companies/page/2/,
+            # /list-of-members/3/) has just as many path segments as a
+            # real detail page, so depth alone would misclassify it as
+            # one -- and its own title ("Companies Archive") would get
+            # extracted as a fake company. We still WANT to visit and
+            # follow links from these pages (that's the only way to reach
+            # the items listed on page 2+), just never treat the
+            # pagination page itself as a detail page.
+            path_parts = PurePosixPath(urlparse(page.url).path).parts
+            is_index_page = len(path_parts) <= 2 or _is_pagination_path(path_parts)  # ('/', 'members')
             if category in LISTING_CATEGORIES and is_index_page:
                 # The page-<title> single-company fallback is meaningless
                 # on an index page ("Business Members Directory" is not a

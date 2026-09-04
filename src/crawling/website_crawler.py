@@ -163,9 +163,22 @@ class WebsiteCrawler:
         section = PurePosixPath(urlparse(page.url).path).parts[:2]  # e.g. ('/', 'members')
         out = []
         for link in sorted(page.data.internal_links):
-            link_section = PurePosixPath(urlparse(link).path).parts[:2]
-            if link_section == section and link != page.url:
-                out.append(link)
+            parsed_link = urlparse(link)
+            link_section = PurePosixPath(parsed_link.path).parts[:2]
+            if link_section != section or link == page.url:
+                continue
+            # "?query=..." variants are almost always an AJAX/loop-override
+            # view of the very page we're already on (WordPress
+            # "?ignore_numberposts=1" and similar), not a distinct page --
+            # skip those, but DO still follow clean "/page/2/"-style
+            # pagination: that's how a listing's later pages (and the
+            # per-item links only reachable from them) get discovered at
+            # all. is_pagination_path() in directory_discovery.py is what
+            # stops a pagination page's own title from being extracted as
+            # a fake "company" -- this method's job is just reachability.
+            if parsed_link.query:
+                continue
+            out.append(link)
         return out[: self.max_links_per_page]
 
     async def _fetch_and_parse(self, client: httpx.AsyncClient, domain: str, url: str) -> CrawledPage | None:
