@@ -200,6 +200,67 @@ class Orchestrator:
         log.info("stage_discover_sources_complete", total_sources=len(sources))
 
     # ------------------------------------------------------------------
+    # ЭТАП 1 only: seed discovery, run standalone (no community/web/event/
+    # founder/marketer/person->company discovery, no verification or
+    # qualification -- just "read the seed sources, extract what's on
+    # them"). Useful for validating/inspecting a seed file in isolation
+    # before running the full pipeline.
+    # ------------------------------------------------------------------
+
+    async def run_seed_discovery_only(self, seed_path: str) -> PipelineState:
+        sources = load_seed_sources(seed_path)
+        self.state.sources = sources
+        for s in sources:
+            self.log_writer.log(
+                "seed_discovery", "source_loaded", entity_type="source", entity_id=s.source_id, source_name=s.source_name, source_url=s.source_url
+            )
+
+        directory = DirectoryDiscovery(
+            max_pages_per_domain=self.config.get("crawler.max_pages_per_domain", 50),
+            timeout=self.config.get("crawler.timeout", 15),
+            concurrency=self.config.get("crawler.concurrency", 10),
+            per_domain_concurrency=self.config.get("crawler.per_domain_concurrency", 2),
+            user_agent=self.config.get("crawler.user_agent", "UkraineUSLeadsBot/1.0"),
+            cache=self.cache,
+            dry_run=self.config.dry_run,
+        )
+
+        companies: list[Company] = []
+        people: list[Person] = []
+        for source in sources:
+            extraction = await directory.extract_from_source(source)
+            for c in extraction.companies:
+                companies.append(self._company_from_candidate(c, source))
+            for p in extraction.people:
+                people.append(self._person_from_directory_candidate(p, source))
+            self.log_writer.log(
+                "seed_discovery",
+                "source_extracted",
+                entity_type="source",
+                entity_id=source.source_id,
+                source_name=source.source_name,
+                companies_found=len(extraction.companies),
+                people_found=len(extraction.people),
+            )
+
+        self.state.companies = companies
+        self.state.people = people
+        self.normalize()
+
+        out = self.config.output_dir
+        write_sources_csv(self.state.sources, out / self.config.get("output.sources_csv", "sources.csv"))
+        write_companies_csv(self.state.companies, out / self.config.get("output.companies_csv", "companies.csv"))
+        write_people_csv(self.state.people, out / self.config.get("output.people_csv", "people.csv"))
+
+        log.info(
+            "seed_discovery_complete",
+            sources=len(self.state.sources),
+            companies=len(self.state.companies),
+            people=len(self.state.people),
+        )
+        return self.state
+
+    # ------------------------------------------------------------------
     # Stage: DISCOVER PEOPLE / COMPANIES
     # ------------------------------------------------------------------
 

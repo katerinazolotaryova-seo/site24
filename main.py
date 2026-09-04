@@ -7,6 +7,8 @@ Usage:
     python main.py --live                       # override config: run against real providers
     python main.py --max-records 100             # cap for a small validation run
     python main.py --reset                       # clear checkpoints and re-run from scratch
+    python main.py --stage seed --live           # run ONLY Stage 1 (seed source ingestion +
+                                                  # extraction), skipping every later stage
 """
 
 from __future__ import annotations
@@ -31,6 +33,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true", help="Force dry-run even if .env says otherwise")
     parser.add_argument("--max-records", type=int, default=None, help="Cap total discovered records (small test runs)")
     parser.add_argument("--reset", action="store_true", help="Clear checkpoints before running")
+    parser.add_argument(
+        "--stage",
+        choices=["full", "seed"],
+        default="full",
+        help="'seed' runs ONLY Stage 1 (seed source ingestion + extraction); 'full' runs the whole pipeline",
+    )
     return parser.parse_args(argv)
 
 
@@ -59,6 +67,20 @@ def main(argv: list[str] | None = None) -> int:
         log.warning("seed_file_not_found", path=args.seed)
 
     orchestrator = Orchestrator(config)
+
+    if args.stage == "seed":
+        if not seed_path:
+            log.error("seed_stage_requires_seed_file", path=args.seed)
+            print(f"\nERROR: --stage seed requires a seed file; {args.seed} not found.\n")
+            return 1
+        state = asyncio.run(orchestrator.run_seed_discovery_only(seed_path))
+        print(
+            f"\nSeed discovery (Stage 1) done. sources={len(state.sources)} "
+            f"companies={len(state.companies)} people={len(state.people)}\n"
+            f"Output written to: {config.output_dir} (sources.csv, companies.csv, people.csv)\n"
+        )
+        return 0
+
     state = asyncio.run(orchestrator.run(seed_path))
 
     log.info(
