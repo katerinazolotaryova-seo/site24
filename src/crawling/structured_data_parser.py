@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass, field
+from urllib.parse import urljoin, urlparse
 
 from selectolax.parser import HTMLParser
 
@@ -37,6 +38,12 @@ class ExtractedPageData:
     title: str | None = None
     headings: list[str] = field(default_factory=list)
     text_snippet: str = ""
+    # Same-registrable-domain links found on the page (absolute URLs,
+    # fragment-stripped). Lets the crawler follow a listing page (e.g.
+    # /members) to its individual per-item detail pages (e.g.
+    # /members/griffith-roofing/) without following offsite links or
+    # doing a full-site crawl.
+    internal_links: set[str] = field(default_factory=set)
 
 
 def parse_page(html: str, base_url: str = "") -> ExtractedPageData:
@@ -70,12 +77,19 @@ def parse_page(html: str, base_url: str = "") -> ExtractedPageData:
             data.phones.add(phone)
 
     # social links + generic hrefs
+    base_netloc = urlparse(base_url).netloc.lower() if base_url else ""
     for a in tree.css("a[href]"):
         href = a.attributes.get("href", "") or ""
         for platform, pattern in SOCIAL_DOMAIN_PATTERNS.items():
             m = pattern.search(href)
             if m:
                 data.social_links[platform].add("https://" + m.group(0))
+
+        if base_netloc and href and not href.startswith(("mailto:", "tel:", "javascript:", "#")):
+            absolute = urljoin(base_url, href)
+            parsed = urlparse(absolute)
+            if parsed.netloc.lower() == base_netloc and parsed.scheme in ("http", "https"):
+                data.internal_links.add(absolute.split("#")[0])
 
     body_text = tree.body.text(separator=" ", strip=True) if tree.body else tree.text(separator=" ", strip=True)
     data.text_snippet = body_text[:4000]

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass, field
+from pathlib import PurePosixPath
 from urllib.parse import urljoin, urlparse
 
 import httpx
@@ -77,6 +78,7 @@ class WebsiteCrawler:
         user_agent: str = "UkraineUSLeadsBot/1.0",
         cache: DiskCache | None = None,
         dry_run: bool = True,
+        max_links_per_page: int = 40,
     ):
         self.paths = paths or [
             "/", "/about", "/about-us", "/team", "/leadership", "/management",
@@ -90,6 +92,7 @@ class WebsiteCrawler:
         self.user_agent = user_agent
         self.cache = cache
         self.dry_run = dry_run
+        self.max_links_per_page = max_links_per_page
         self._domain_locks: dict[str, asyncio.Semaphore] = {}
 
     def _domain_lock(self, domain: str) -> asyncio.Semaphore:
@@ -110,7 +113,15 @@ class WebsiteCrawler:
 
         root = f"{parsed.scheme or 'https'}://{domain}"
         seen: set[str] = set()
-        queue: list[str] = [urljoin(root + "/", p.lstrip("/")) for p in self.paths]
+        queue: list[str] = []
+        # If the caller handed us a specific path (e.g. a seed source
+        # curated as "https://org.example/list-of-members/" rather than
+        # just the bare domain), that's almost certainly the single most
+        # relevant page on the site -- fetch it first, in addition to (not
+        # instead of) the generic community/company paths below.
+        if parsed.path and parsed.path not in ("", "/"):
+            queue.append(urljoin(root, parsed.path))
+        queue.extend(urljoin(root + "/", p.lstrip("/")) for p in self.paths)
 
         async with httpx.AsyncClient(
             timeout=self.timeout,
@@ -140,12 +151,22 @@ class WebsiteCrawler:
         return result
 
     def _extract_links(self, page: CrawledPage, root: str) -> list[str]:
-        # We didn't keep the raw anchors in ExtractedPageData (keeps that
-        # module focused); page_classifier + structured_data_parser cover
-        # what we need for now. Link-following growth is intentionally
-        # conservative -- return none by default. Subclass/extend if a
-        # future crawl needs deeper same-domain traversal.
-        return []
+        """Same-section same-domain links found on a person-bearing page --
+        e.g. a /members listing page linking to its own
+        /members/<company-slug>/ detail pages. Deliberately scoped to the
+        *same first path segment* as the page we found them on (never an
+        offsite link, and never a jump to an unrelated site section) so
+        this stays a targeted crawl, not a full-site crawl. Capped per
+        page so one huge listing can't alone exhaust the domain's page
+        budget.
+        """
+        section = PurePosixPath(urlparse(page.url).path).parts[:2]  # e.g. ('/', 'members')
+        out = []
+        for link in sorted(page.data.internal_links):
+            link_section = PurePosixPath(urlparse(link).path).parts[:2]
+            if link_section == section and link != page.url:
+                out.append(link)
+        return out[: self.max_links_per_page]
 
     async def _fetch_and_parse(self, client: httpx.AsyncClient, domain: str, url: str) -> CrawledPage | None:
         cache_key = f"crawl::{url}"

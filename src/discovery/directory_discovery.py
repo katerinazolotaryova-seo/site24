@@ -15,11 +15,17 @@ scores low / manual_review, not verified).
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import PurePosixPath
+from urllib.parse import urlparse
 
 from src.cache import DiskCache
 from src.crawling.page_classifier import PageCategory, is_person_bearing
 from src.crawling.website_crawler import WebsiteCrawler
-from src.discovery.extraction_utils import extract_company_candidate, extract_person_candidates
+from src.discovery.extraction_utils import (
+    extract_company_candidate,
+    extract_company_candidates_from_headings,
+    extract_person_candidates,
+)
 from src.logging_setup import get_logger
 from src.models import DiscoverySource
 
@@ -30,6 +36,23 @@ COMMUNITY_PATHS = [
     "/leadership", "/speakers", "/participants", "/sponsors", "/partners",
     "/companies", "/founders", "/events",
 ]
+
+# Pages that list *many* companies -- extract each one from per-item
+# heading patterns, never from a single page-level guess.
+LISTING_CATEGORIES = frozenset(
+    {
+        PageCategory.MEMBERS,
+        PageCategory.DIRECTORY,
+        PageCategory.SPONSORS,
+        PageCategory.PARTNERS,
+        PageCategory.FOUNDERS,
+        PageCategory.COMPANIES,
+    }
+)
+# Pages that are plausibly *about one specific company* (a dedicated
+# company-profile page on the directory site) -- safe to use the
+# JSON-LD/page-title single-company guess here.
+SINGLE_COMPANY_CATEGORIES = frozenset({PageCategory.COMPANY})
 
 
 @dataclass
@@ -80,10 +103,42 @@ class DirectoryDiscovery:
                     p["found_via_source"] = source.source_name
                 result.people.extend(people)
 
-            company_candidate = extract_company_candidate(page.data, page.url)
-            if company_candidate and category in (PageCategory.HOME, PageCategory.ABOUT, PageCategory.COMPANY):
-                company_candidate["found_via_source"] = source.source_name
-                result.companies.append(company_candidate)
+            # Only pull "company" candidates from pages that plausibly list
+            # *member/portfolio* companies -- not HOME/ABOUT/COMPANY, which
+            # on an association's own site almost always describe the
+            # association itself (its own JSON-LD Organization block, or a
+            # weak page-<title> guess like "About U.S. UCC"), not a target
+            # company. Trades a little recall for precision, matching the
+            # project's overall bias.
+            #
+            # A real member-directory site typically has both an *index*
+            # page (/members -- no single company to name, many links out)
+            # and, one level down, one *detail* page per member
+            # (/members/griffith-roofing/ -- an actual single-company page
+            # whose own <h1>/<title>/JSON-LD names it). classify_path()
+            # can't tell those apart (both contain "members"), so use path
+            # depth instead: an index page has <=1 path segment, a detail
+            # page has more.
+            is_index_page = len(PurePosixPath(urlparse(page.url).path).parts) <= 2  # ('/', 'members')
+            if category in LISTING_CATEGORIES and is_index_page:
+                # The page-<title> single-company fallback is meaningless
+                # on an index page ("Business Members Directory" is not a
+                # company), and a global site-wide JSON-LD Organization
+                # block that shows up on every page of the association's
+                # own site (its own identity, not a member) is exactly
+                # what we're trying to exclude here, so we skip the
+                # single-candidate helper entirely and only take explicit
+                # per-company heading matches.
+                for company_candidate in extract_company_candidates_from_headings(page.data, page.url):
+                    company_candidate["found_via_source"] = source.source_name
+                    result.companies.append(company_candidate)
+            elif category in LISTING_CATEGORIES or category in SINGLE_COMPANY_CATEGORIES:
+                # A listing *detail* page, or an explicit single-company
+                # page -- both plausibly describe exactly one company.
+                company_candidate = extract_company_candidate(page.data, page.url)
+                if company_candidate:
+                    company_candidate["found_via_source"] = source.source_name
+                    result.companies.append(company_candidate)
 
         log.info(
             "directory_source_extracted",
