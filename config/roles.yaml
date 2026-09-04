@@ -1,0 +1,97 @@
+# Canonical role taxonomy + free-text title -> normalized_role mapping.
+# role_classifier.py loads this file; keep patterns lowercase, matched
+# against a lowercased/cleaned job title.
+
+founder_roles:
+  - founder
+  - co_founder
+  - owner
+  - ceo
+
+marketing_roles:
+  - cmo
+  - vp_marketing
+  - head_of_marketing
+  - marketing_director
+  - head_of_growth
+  - head_of_digital
+
+seo_ppc_roles:
+  - head_of_seo
+  - head_of_ppc
+  - head_of_performance
+
+other_marketing_roles:
+  - marketing_manager
+  - growth_manager
+
+# decision-maker roles used for enrichment prioritization (stage 17)
+priority_roles:
+  - founder
+  - co_founder
+  - owner
+  - ceo
+  - cmo
+  - vp_marketing
+  - head_of_marketing
+  - marketing_director
+  - head_of_growth
+  - head_of_digital
+
+# title text -> normalized_role. Matched as substring after normalization
+# (lowercase, punctuation stripped). Order matters: first match wins, so
+# more specific phrases are listed before generic ones.
+title_patterns:
+  founder:
+    - "co-founder & ceo"
+    - "founder & ceo"
+    - "founder and ceo"
+    - "founder"
+  co_founder:
+    - "co-founder"
+    - "cofounder"
+    - "co founder"
+  owner:
+    - "owner"
+    - "proprietor"
+  ceo:
+    - "chief executive officer"
+    - "ceo"
+  cmo:
+    - "chief marketing officer"
+    - "cmo"
+  vp_marketing:
+    - "vp of marketing"
+    - "vp marketing"
+    - "vice president of marketing"
+    - "vice president, marketing"
+  head_of_marketing:
+    - "head of marketing"
+  marketing_director:
+    - "director of marketing"
+    - "marketing director"
+  head_of_growth:
+    - "head of growth"
+    - "vp of growth"
+    - "growth lead"
+  head_of_digital:
+    - "head of digital"
+    - "director of digital"
+    - "digital director"
+  head_of_seo:
+    - "head of seo"
+    - "seo director"
+    - "seo lead"
+  head_of_ppc:
+    - "head of ppc"
+    - "ppc director"
+    - "ppc lead"
+    - "paid media lead"
+  head_of_performance:
+    - "head of performance marketing"
+    - "performance marketing lead"
+    - "performance marketing director"
+  marketing_manager:
+    - "marketing manager"
+  growth_manager:
+    - "growth manager"

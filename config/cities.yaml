@@ -1,0 +1,43 @@
+# Configurable list of major US cities for Stage 4 city-level search.
+# Add/remove freely; the list is only a discovery seed, not a filter.
+cities:
+  - name: New York
+    state: New York
+  - name: Los Angeles
+    state: California
+  - name: Chicago
+    state: Illinois
+  - name: Miami
+    state: Florida
+  - name: San Francisco
+    state: California
+  - name: Seattle
+    state: Washington
+  - name: Boston
+    state: Massachusetts
+  - name: Austin
+    state: Texas
+  - name: Dallas
+    state: Texas
+  - name: Houston
+    state: Texas
+  - name: Philadelphia
+    state: Pennsylvania
+  - name: Washington DC
+    state: District of Columbia
+  - name: San Diego
+    state: California
+  - name: Denver
+    state: Colorado
+  - name: Atlanta
+    state: Georgia
+  - name: Phoenix
+    state: Arizona
+  - name: Portland
+    state: Oregon
+  - name: Charlotte
+    state: North Carolina
+  - name: Tampa
+    state: Florida
+  - name: Orlando
+    state: Florida

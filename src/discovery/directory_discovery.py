@@ -1,0 +1,95 @@
+"""DirectoryDiscovery (Stage 1): extracts company_name, website,
+person_name, job_title, city, state, industry, source_url from Ukrainian
+business directories / associations / communities in the seed file (and
+anything Stage 5 community discovery queues up afterwards).
+
+IMPORTANT (per spec): being listed on an organization's member/board/
+directory page is NOT itself treated as confirmed evidence of that
+person's Ukraine connection -- it is only enough to create the Person
+record and a `business_community_profile`-type evidence candidate, which
+verification/ukraine_connection.py still scores on its own merits (a
+generic membership listing with no biographical text about the person
+scores low / manual_review, not verified).
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+from src.cache import DiskCache
+from src.crawling.page_classifier import PageCategory, is_person_bearing
+from src.crawling.website_crawler import WebsiteCrawler
+from src.discovery.extraction_utils import extract_company_candidate, extract_person_candidates
+from src.logging_setup import get_logger
+from src.models import DiscoverySource
+
+log = get_logger(__name__)
+
+COMMUNITY_PATHS = [
+    "/", "/about", "/members", "/member-directory", "/directory", "/board",
+    "/leadership", "/speakers", "/participants", "/sponsors", "/partners",
+    "/companies", "/founders", "/events",
+]
+
+
+@dataclass
+class DirectoryExtractionResult:
+    source: DiscoverySource
+    people: list[dict] = field(default_factory=list)
+    companies: list[dict] = field(default_factory=list)
+
+
+class DirectoryDiscovery:
+    def __init__(
+        self,
+        max_pages_per_domain: int = 50,
+        timeout: float = 15.0,
+        concurrency: int = 10,
+        per_domain_concurrency: int = 2,
+        user_agent: str = "UkraineUSLeadsBot/1.0",
+        cache: DiskCache | None = None,
+        dry_run: bool = True,
+    ):
+        self.crawler = WebsiteCrawler(
+            paths=COMMUNITY_PATHS,
+            max_pages_per_domain=max_pages_per_domain,
+            timeout=timeout,
+            concurrency=concurrency,
+            per_domain_concurrency=per_domain_concurrency,
+            user_agent=user_agent,
+            cache=cache,
+            dry_run=dry_run,
+        )
+
+    async def extract_from_source(self, source: DiscoverySource) -> DirectoryExtractionResult:
+        result = DirectoryExtractionResult(source=source)
+        crawl = await self.crawler.crawl(source.source_url)
+
+        for page in crawl.pages:
+            try:
+                category = PageCategory(page.category)
+            except ValueError:
+                category = PageCategory.OTHER
+
+            if is_person_bearing(category):
+                people = extract_person_candidates(page.data, page.url)
+                for p in people:
+                    p["city"] = None
+                    p["state"] = None
+                    p["industry"] = None
+                    p["found_via_source"] = source.source_name
+                result.people.extend(people)
+
+            company_candidate = extract_company_candidate(page.data, page.url)
+            if company_candidate and category in (PageCategory.HOME, PageCategory.ABOUT, PageCategory.COMPANY):
+                company_candidate["found_via_source"] = source.source_name
+                result.companies.append(company_candidate)
+
+        log.info(
+            "directory_source_extracted",
+            source=source.source_name,
+            people_found=len(result.people),
+            companies_found=len(result.companies),
+            pages_crawled=len(crawl.pages),
+        )
+        return result

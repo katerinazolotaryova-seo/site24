@@ -1,0 +1,124 @@
+# Ukraine-US Leads discovery/qualification system — main configuration.
+# Every section here is read by src/config.py (AppConfig). Values can be
+# overridden by environment variables documented in .env.example.
+
+run:
+  dry_run: true          # if true, no real network calls are made to search
+                          # or enrichment providers; discovery uses only the
+                          # seed file + cached/synthetic responses.
+  max_records: null      # cap discovered records for a small test run,
+                          # e.g. 100. null = unlimited.
+  checkpoint_enabled: true
+  checkpoint_dir: .checkpoints
+  cache_dir: .cache
+  cache_ttl_hours: 168   # 1 week
+
+discovery:
+  enabled: true
+  seed_sources: true
+  states: true
+  cities: true
+  communities: true
+  events: true
+  founder_discovery: true
+  marketer_discovery: true
+  person_to_company: true
+  ukraine_company_seed: true
+  max_queries_per_stage: 200   # safety cap so a full 50-state x N-mask sweep
+                                # doesn't runaway in one run
+  max_results_per_query: 10
+
+crawler:
+  max_pages_per_domain: 50
+  timeout: 15
+  concurrency: 10
+  per_domain_concurrency: 2
+  user_agent: "UkraineUSLeadsBot/1.0 (+https://example.com/bot; public-data-only)"
+  paths:
+    - /
+    - /about
+    - /about-us
+    - /team
+    - /leadership
+    - /management
+    - /contact
+    - /contacts
+    - /company
+    - /blog
+    - /authors
+    - /press
+    - /media
+    - /careers
+
+verification:
+  ukraine_connection:
+    verified_threshold: 85
+    probable_threshold: 65
+    manual_review_threshold: 40
+  us_company:
+    require_verified_or_probable: true
+
+matching:
+  person:
+    verified_threshold: 80
+    probable_threshold: 60
+    manual_review_threshold: 40
+  company:
+    verified_threshold: 80
+    probable_threshold: 60
+    manual_review_threshold: 40
+
+qualification:
+  min_account_score: 65
+  min_ukraine_connection_score: 85
+  outbound_statuses: ["verified"]     # set to ["verified", "probable"] to widen
+  weights:
+    icp_fit: 0.30
+    seo_ppc_opportunity: 0.35
+    ukraine_connection: 0.20
+    us_verification: 0.10
+    trigger_intent: 0.05
+
+enrichment:
+  enabled: true
+  max_people_per_company: 5
+  skip_email_if_confidence_gte: 0.90
+  skip_phone_if_confidence_gte: 0.90
+  roles_by_company_size:
+    small:       # <20 employees
+      max_employees: 20
+      roles: [founder, ceo, owner]
+    medium:      # 20-100 employees
+      max_employees: 100
+      roles: [cmo, head_of_marketing, founder, head_of_growth]
+    large:       # 100+ employees
+      max_employees: null
+      roles: [cmo, vp_marketing, head_of_marketing, head_of_digital, head_of_growth]
+
+providers:
+  search:
+    enabled: true
+    backend: none          # none | serpapi | google_cse | bing
+    rps: 1
+  hunter:
+    enabled: false
+    monthly_credit_limit: 100
+  apollo:
+    enabled: false
+    monthly_credit_limit: 100
+
+manual_review:
+  enabled: true
+
+output:
+  dir: output
+  companies_csv: companies.csv
+  people_csv: people.csv
+  qualified_accounts_csv: qualified_accounts.csv
+  manual_review_csv: manual_review.csv
+  sources_csv: sources.csv
+  discovery_log_jsonl: discovery_log.jsonl
+
+logging:
+  level: INFO
+  json: true

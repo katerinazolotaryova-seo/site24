@@ -1,0 +1,21 @@
+# Stage 10: known Ukrainian-tech/business-ecosystem companies.
+# IMPORTANT: this list is a *discovery signal only*. Having worked at one of
+# these companies is never treated as evidence of nationality or of a
+# Ukraine connection -- see verification/ukraine_connection.py. It is only
+# used to seed "former/current employee of X -> now in US marketing/growth
+# leadership" search queries (person_to_company pipeline).
+companies:
+  - Genesis
+  - MacPaw
+  - Ajax Systems
+  - Grammarly
+  - Preply
+  - Jooble
+  - Prom.ua
+  - Rozetka
+  - Netpeak
+  - SoftServe
+  - EPAM Ukraine
+  - Ciklum
+  - Intellias
+  - DataArt Ukraine
