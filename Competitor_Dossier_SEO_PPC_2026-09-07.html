@@ -1,0 +1,808 @@
+<title>Досье конкурентов</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --paper:#F2F4F3;
+    --paper-raised:#FFFFFF;
+    --ink:#171A1D;
+    --ink-soft:#4B5560;
+    --ink-faint:#7C8A87;
+    --accent:#2F5D62;
+    --accent-soft:#DCE8E7;
+    --line:#D8DDDB;
+    --ok:#3F7D53;
+    --ok-soft:#E1EEE4;
+    --warn:#96650a;
+    --warn-soft:#F3E7CE;
+    --gap:#A6503D;
+    --gap-soft:#F1DFD9;
+    --shadow: 0 1px 2px rgba(23,26,29,.06), 0 8px 24px -16px rgba(23,26,29,.25);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#13171A;
+      --paper-raised:#1B2023;
+      --ink:#E8ECEA;
+      --ink-soft:#A6B3B0;
+      --ink-faint:#748582;
+      --accent:#7CC2BD;
+      --accent-soft:#20302E;
+      --line:#2B3235;
+      --ok:#74C08B;
+      --ok-soft:#1D2C22;
+      --warn:#E0B15C;
+      --warn-soft:#332A17;
+      --gap:#DE9075;
+      --gap-soft:#332320;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13171A;
+    --paper-raised:#1B2023;
+    --ink:#E8ECEA;
+    --ink-soft:#A6B3B0;
+    --ink-faint:#748582;
+    --accent:#7CC2BD;
+    --accent-soft:#20302E;
+    --line:#2B3235;
+    --ok:#74C08B;
+    --ok-soft:#1D2C22;
+    --warn:#E0B15C;
+    --warn-soft:#332A17;
+    --gap:#DE9075;
+    --gap-soft:#332320;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    font-size:16px;
+    line-height:1.55;
+  }
+  a{color:var(--accent);}
+  ::selection{background:var(--accent-soft);}
+
+  .wrap{max-width:960px;margin:0 auto;padding:56px 24px 96px;}
+
+  h1,h2,h3{font-family:'Fraunces', Georgia, serif; text-wrap:balance; color:var(--ink); font-weight:600; letter-spacing:-.01em;}
+  h1{font-size:clamp(2rem,4vw,2.7rem); line-height:1.08; margin:0 0 10px;}
+  h2{font-size:1.55rem; margin:0 0 6px;}
+  h3{font-size:1.15rem; margin:0 0 4px; font-weight:600;}
+  p{margin:0 0 12px; max-width:70ch;}
+  .lede{color:var(--ink-soft); font-size:1.05rem; max-width:62ch;}
+
+  code, .mono{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+  .mono-block{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:.86rem;
+    color:var(--ink);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:6px 10px;
+    display:inline-block;
+    word-break:break-word;
+  }
+
+  /* header */
+  header.cover{
+    border-bottom:1px solid var(--line);
+    padding-bottom:32px;
+    margin-bottom:36px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:.72rem;
+    color:var(--accent);
+    display:flex; gap:10px; align-items:center;
+    margin-bottom:14px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap:8px 22px;
+    margin-top:18px; font-size:.85rem; color:var(--ink-faint);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .meta-row b{color:var(--ink-soft); font-weight:500;}
+
+  /* methodology callout */
+  .callout{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-left:3px solid var(--warn);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:22px 0 0;
+    box-shadow:var(--shadow);
+  }
+  .callout h3{margin-bottom:8px; font-size:1rem;}
+  .callout p{margin-bottom:8px; font-size:.92rem; color:var(--ink-soft);}
+  .callout ul{margin:0; padding-left:20px; font-size:.92rem; color:var(--ink-soft);}
+  .callout li{margin-bottom:4px;}
+
+  /* nav */
+  nav.toc{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin:28px 0 44px;
+  }
+  nav.toc a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.78rem;
+    text-decoration:none;
+    color:var(--ink-soft);
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:100px;
+    padding:6px 13px;
+  }
+  nav.toc a:hover{color:var(--accent); border-color:var(--accent);}
+
+  section{margin-bottom:56px; scroll-margin-top:20px;}
+  .section-head{margin-bottom:20px;}
+  .section-num{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink-faint);
+    font-size:.8rem;
+    letter-spacing:.06em;
+  }
+
+  /* pills / badges */
+  .pill{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    padding:3px 9px;
+    border-radius:100px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .pill-ok{background:var(--ok-soft); color:var(--ok);}
+  .pill-warn{background:var(--warn-soft); color:var(--warn);}
+  .pill-gap{background:var(--gap-soft); color:var(--gap);}
+  .pill-neutral{background:var(--accent-soft); color:var(--accent);}
+
+  .legend{
+    display:flex; flex-wrap:wrap; gap:16px;
+    font-size:.82rem; color:var(--ink-soft);
+    margin:14px 0 20px;
+  }
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+
+  /* tables */
+  .table-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; min-width:760px; background:var(--paper-raised);}
+  th,td{
+    text-align:left; padding:10px 14px; border-bottom:1px solid var(--line);
+    font-size:.86rem; vertical-align:top;
+  }
+  th{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.7rem; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink-faint); background:var(--paper);
+    position:sticky; top:0;
+  }
+  tr:last-child td{border-bottom:none;}
+  td.num, th.num{font-variant-numeric:tabular-nums; text-align:right;}
+  td .mono{font-size:.82rem;}
+  tbody tr:hover{background:var(--accent-soft);}
+
+  /* dossier cards */
+  .dossier{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    margin-bottom:26px;
+    overflow:hidden;
+  }
+  .dossier-head{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+    flex-wrap:wrap;
+    padding:20px 24px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .dossier-head h3{font-family:'Fraunces', serif; font-size:1.4rem; font-weight:600;}
+  .dossier-head .tagline{color:var(--ink-soft); font-size:.9rem; margin-top:2px;}
+  .badges{display:flex; gap:6px; flex-wrap:wrap;}
+
+  .dossier-grid{
+    display:grid; grid-template-columns:170px 1fr;
+    gap:0;
+  }
+  .dossier-grid .row{display:contents;}
+  .dossier-grid .k{
+    padding:10px 24px; font-family:'IBM Plex Mono', monospace; font-size:.72rem;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint);
+    border-top:1px solid var(--line); border-right:1px solid var(--line);
+    background:var(--paper);
+  }
+  .dossier-grid .v{
+    padding:10px 20px; border-top:1px solid var(--line); font-size:.88rem;
+  }
+  .dossier-grid .row:first-child .k, .dossier-grid .row:first-child .v{border-top:none;}
+  .dossier-grid .v ul{margin:2px 0; padding-left:18px;}
+  .dossier-grid .v li{margin-bottom:3px;}
+
+  .findings{
+    padding:16px 24px 20px;
+    background:var(--accent-soft);
+  }
+  .findings h4{
+    font-family:'IBM Plex Mono', monospace; font-size:.72rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--accent); margin:0 0 8px;
+  }
+  .findings ul{margin:0; padding-left:18px; font-size:.87rem; color:var(--ink);}
+  .findings li{margin-bottom:6px;}
+
+  /* compact profile cards for the extra 9 */
+  .profile-grid{display:grid; grid-template-columns:1fr; gap:14px;}
+  .profile{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:10px;
+    padding:16px 20px; box-shadow:var(--shadow);
+  }
+  .profile-top{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .profile-top h4{font-family:'Fraunces', serif; font-size:1.1rem; font-weight:600; margin:0;}
+  .profile-top .rank{font-family:'IBM Plex Mono', monospace; font-size:.78rem; color:var(--ink-faint);}
+  .profile p{font-size:.88rem; color:var(--ink-soft); margin:8px 0 0;}
+  .profile .urls{margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;}
+
+  /* pattern cards */
+  .patterns{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;}
+  .pattern{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:10px;
+    padding:16px 18px; border-top:3px solid var(--accent);
+  }
+  .pattern h4{font-size:.98rem; margin-bottom:6px; font-family:'IBM Plex Sans'; font-weight:600;}
+  .pattern p{font-size:.85rem; color:var(--ink-soft); margin:0;}
+
+  footer{
+    border-top:1px solid var(--line); padding-top:24px; margin-top:20px;
+    font-size:.82rem; color:var(--ink-faint);
+  }
+
+  @media (max-width:640px){
+    .dossier-grid{grid-template-columns:1fr;}
+    .dossier-grid .k{border-right:none;}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="eyebrow"><span class="dot"></span>Конкурентная разведка · SEO / PPC</div>
+    <h1>Досье конкурентов</h1>
+    <p class="lede">Сравнительный аудит страниц «SEO / продвижение сайтов» и «PPC / контекстная реклама» у 13 конкурентов site24.com.ua — по метатегам, структуре, EEAT-сигналам и таргетингу главной страницы.</p>
+    <div class="meta-row">
+      <span><b>Дата:</b> 07.09.2026</span>
+      <span><b>Доменов:</b> 14 (5 основных + 9 дополнительных + site24 для контекста)</span>
+      <span><b>Источник данных:</b> WebSearch (сниппеты SERP)</span>
+      <span><b>Прямой доступ (WebFetch/curl):</b> заблокирован egress-прокси</span>
+    </div>
+
+    <div class="callout">
+      <h3>Как читать это досье — и чего в нём нет</h3>
+      <p>В этой сессии WebFetch и прямой curl снова полностью заблокированы egress-прокси (проверено на inweb.ua — <code>EGRESS_BLOCKED</code>). Доступен только WebSearch — он даёт заголовки страниц (обычно совпадают с реальным <code>&lt;title&gt;</code>) и сжатые пересказы контента, но <b>не даёт</b> дословный <code>meta description</code>, точный порядок H1/H2, число слов и частотность фраз — это требует чтения сырого HTML.</p>
+      <ul>
+        <li><span class="pill pill-ok">✓ надёжно</span> — заголовки страниц, URL-структура, партнёрства/сертификаты, кейсы с именами, годы на рынке — подтверждены минимум одним прямым упоминанием.</li>
+        <li><span class="pill pill-warn">~ приблизительно</span> — цифры расходятся между источниками (разные годы основания, разная численность штата) или взяты из вторичных каталогов.</li>
+        <li><span class="pill pill-gap">✕ нужен HTML</span> — meta description дословно, порядок блоков, число слов, топ-10 фраз по частотности — по всем 14 доменам без исключения.</li>
+      </ul>
+      <p style="margin-top:10px;">Чтобы закрыть <span class="pill pill-gap">✕</span>-пункты: пришлите HTML пяти основных пар страниц (SEO+PPC у inweb.ua, locomotive.ua, penguin-team.ua + главные sprava.ua и luxeo.team) через Ctrl+U → «Сохранить как», либо прогоните все 14 доменов через Screaming Frog, как ранее с vizy.ua — краулер отдаст title/description/H-теги/word count по всем страницам разом.</p>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <a href="#glance">Сводная таблица</a>
+    <a href="#primary">5 основных конкурентов</a>
+    <a href="#site24">site24.com.ua</a>
+    <a href="#extra">9 дополнительных</a>
+    <a href="#patterns">Сквозные находки</a>
+    <a href="#gaps">Что проверить руками</a>
+  </nav>
+
+  <!-- AT A GLANCE -->
+  <section id="glance">
+    <div class="section-head">
+      <div class="section-num">01 — обзор</div>
+      <h2>Кто есть кто: 14 доменов на одной странице</h2>
+      <p class="lede">Есть ли отдельная страница SEO, отдельная PPC, совпадают ли SEO и «продвижение сайта», и под что явно заточена главная.</p>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Домен</th>
+            <th>Роль</th>
+            <th>SEO-страница</th>
+            <th>PPC-страница</th>
+            <th>SEO = «продвижение»?</th>
+            <th>Google Partner</th>
+            <th>Кластер главной</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>site24.com.ua</b></td>
+            <td><span class="pill pill-neutral">контекст</span></td>
+            <td class="mono">site24.tech/seo/ (?)</td>
+            <td class="mono">—</td>
+            <td>требует проверки</td>
+            <td>—</td>
+            <td>бренд + «продвижение сайтов Киев»</td>
+          </tr>
+          <tr>
+            <td><b>sprava.ua</b></td>
+            <td>основной</td>
+            <td class="mono">нет общей — только гео-лендинги</td>
+            <td class="mono">нет общей — КМС + таргет отдельно</td>
+            <td>общей страницы нет вовсе</td>
+            <td><span class="pill pill-ok">есть</span></td>
+            <td>full-cycle агентство + гео-кластер по городам</td>
+          </tr>
+          <tr>
+            <td><b>luxeo.team</b></td>
+            <td>основной</td>
+            <td class="mono">/ (главная = SEO)</td>
+            <td class="mono">нет — PPC не оказывают</td>
+            <td>да, это одна страница</td>
+            <td>—</td>
+            <td>«SEO outsourcing» для IT/SaaS, англ. B2B</td>
+          </tr>
+          <tr>
+            <td><b>inweb.ua</b></td>
+            <td>основной</td>
+            <td class="mono">/ua/seo/</td>
+            <td class="mono">/ua/ppc/</td>
+            <td>нет, разные страницы</td>
+            <td><span class="pill pill-ok">Premium</span></td>
+            <td>digital-агентство полного цикла, Киев</td>
+          </tr>
+          <tr>
+            <td><b>locomotive.ua</b></td>
+            <td>основной</td>
+            <td class="mono">/seo</td>
+            <td class="mono">/ppc</td>
+            <td>нет, разные страницы</td>
+            <td><span class="pill pill-ok">есть</span></td>
+            <td>digital-агентство + выход на EU/US/CIS</td>
+          </tr>
+          <tr>
+            <td><b>penguin-team.ua</b></td>
+            <td>основной</td>
+            <td class="mono">/ru/seo-ru/</td>
+            <td class="mono">/ru/ppc-ru/ + /google-ads-ru/</td>
+            <td>нет, разные страницы</td>
+            <td><span class="pill pill-ok">Premier</span></td>
+            <td>PPC-агентство (White Label), SEO вторично</td>
+          </tr>
+          <tr>
+            <td>elit-web.ua</td>
+            <td>доп.</td>
+            <td class="mono">/seo-optimizatsija-sajta</td>
+            <td class="mono">/uslugi-kontekstnoy-reklamy</td>
+            <td>нет, разные страницы</td>
+            <td><span class="pill pill-ok">Premier</span></td>
+            <td>«раскрутка сайта в Киеве», совпадает с главной</td>
+          </tr>
+          <tr>
+            <td>wezom.com.ua</td>
+            <td>доп.</td>
+            <td class="mono">/prodvizhenie</td>
+            <td class="mono">/kontekstnaja-reklama-v-google-ads</td>
+            <td>нет, разные страницы</td>
+            <td><span class="pill pill-warn">не подтв.</span></td>
+            <td>IT-компания полного цикла, Киев</td>
+          </tr>
+          <tr>
+            <td>netpeak.ua</td>
+            <td>доп.</td>
+            <td class="mono">/ru/services/seo/</td>
+            <td class="mono">/ru/services/ppc-audit/ и др.</td>
+            <td>нет, разные страницы</td>
+            <td><span class="pill pill-ok">Premier</span></td>
+            <td>крупнейший игрок; SEO+AI/GEO-видимость</td>
+          </tr>
+          <tr>
+            <td>itua.com.ua</td>
+            <td>доп.</td>
+            <td class="mono">/ru/seo-prodvizenie-ru</td>
+            <td class="mono">/ru/kontekstnaia-reklama-ppc-ru</td>
+            <td>нет, разные страницы</td>
+            <td><span class="pill pill-gap">нет данных</span></td>
+            <td>раскрутка сайтов Киев (титулы старого образца)</td>
+          </tr>
+          <tr>
+            <td>ideadigital.agency</td>
+            <td>доп.</td>
+            <td class="mono">/en/seo-promotion-websites/</td>
+            <td class="mono">нет общей — только гео-лендинги</td>
+            <td>SEO — да; PPC общей страницы нет</td>
+            <td><span class="pill pill-gap">нет данных</span></td>
+            <td>SEO-продвижение сайтов</td>
+          </tr>
+          <tr>
+            <td>seok.ua</td>
+            <td>доп.</td>
+            <td class="mono">/ (главная = SEO)</td>
+            <td class="mono">/google-ads</td>
+            <td>да, это одна страница</td>
+            <td><span class="pill pill-gap">нет данных</span></td>
+            <td>SEO-раскрутка сайта в Киеве</td>
+          </tr>
+          <tr>
+            <td>limenet.kiev.ua</td>
+            <td>доп.</td>
+            <td class="mono">общей страницы не найдено</td>
+            <td class="mono">/kontekstnaya-reklama/</td>
+            <td>SEO — нет общей; проверить руками</td>
+            <td><span class="pill pill-gap">нет данных</span></td>
+            <td>создание + продвижение сайта, комплекс</td>
+          </tr>
+          <tr>
+            <td>web24.com.ua</td>
+            <td>доп.</td>
+            <td class="mono">5 пересекающихся URL (см. §5)</td>
+            <td class="mono">/kontext/</td>
+            <td>похоже на да, но дублей много</td>
+            <td><span class="pill pill-gap">нет данных</span></td>
+            <td>SEO-продвижение Киев (каннибализация)</td>
+          </tr>
+          <tr>
+            <td>fnx.com.ua</td>
+            <td>доп.</td>
+            <td class="mono">/services/seo/ + зеркало на seo.fnx.com.ua</td>
+            <td class="mono">/services/context</td>
+            <td>похоже на да, но домен-дубль</td>
+            <td><span class="pill pill-ok">есть</span></td>
+            <td>SEO + отдельно GEO (AI-поиск)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><span class="pill pill-ok">✓</span> подтверждено</span>
+      <span><span class="pill pill-warn">~</span> расходится в источниках</span>
+      <span><span class="pill pill-gap">✕</span> нет данных / нужен прямой доступ</span>
+    </div>
+  </section>
+
+  <!-- PRIMARY 5 -->
+  <section id="primary">
+    <div class="section-head">
+      <div class="section-num">02 — глубокий разбор</div>
+      <h2>Пять основных конкурентов</h2>
+      <p class="lede">Домены из исходного брифа. Метатеги и структура — в пределах того, что даёт SERP-сниппет; там, где нужен точный текст, поле помечено как пробел.</p>
+    </div>
+
+    <!-- SPRAVA -->
+    <div class="dossier">
+      <div class="dossier-head">
+        <div>
+          <h3>sprava.ua</h3>
+          <div class="tagline">Full-cycle digital-агентство, Киев/Одесса/Запорожье</div>
+        </div>
+        <div class="badges">
+          <span class="pill pill-gap">нет общей SEO-стр.</span>
+          <span class="pill pill-gap">нет общей PPC-стр.</span>
+          <span class="pill pill-ok">Google Partner</span>
+        </div>
+      </div>
+      <div class="dossier-grid">
+        <div class="row"><div class="k">Ближайший аналог SEO</div><div class="v"><span class="mono-block">sprava.ua/ru/stvorennya-ta-prosuvannya-sajtu-v-kievi</span> — гео-лендинг «Киев», не обобщённая услуга. Та же схема повторена для Ровно, Кривого Рога, Днепра, Полтавы, Львова, Одессы — <span class="pill pill-ok">подтверждено</span> программный гео-SEO паттерн, а не пробел в структуре сайта.</div></div>
+        <div class="row"><div class="k">PPC</div><div class="v">Общей страницы «контекстная реклама» нет. Есть только <span class="mono-block">/services/kontekstno-medijna-reklama-v-google</span> (КМС) и <span class="mono-block">/services/targeted-advertising</span> (таргет соцсети) — поисковый PPC (Google Search Ads) как отдельная услуга на сайте не выделен.</div></div>
+        <div class="row"><div class="k">Title / meta</div><div class="v"><span class="pill pill-gap">✕</span> дословно не получены — нужен HTML геолендинга и главной.</div></div>
+        <div class="row"><div class="k">Структура / word count</div><div class="v"><span class="pill pill-gap">✕</span> не определены.</div></div>
+        <div class="row"><div class="k">EEAT</div><div class="v"><ul>
+          <li>«20+ лет на рынке интернет-маркетинга» — заявлено на /about, <span class="pill pill-warn">~</span> не сверено с датой регистрации домена.</li>
+          <li>Численность штата расходится: «46 штатных специалистов» в одном источнике и «более 30 специалистов» в другом — <span class="pill pill-warn">~</span>.</li>
+          <li>Сертифицированный Google Partner.</li>
+          <li>Отзывы привязаны к названиям клиентов (MAXIMUM, «Елемент Здоров'я», ФОП Барановський) на отдельных страницах /reviews/* — именных авторов с должностью не найдено.</li>
+          <li>Именных экспертов/авторов на сайте не всплыло в поиске.</li>
+        </ul></div></div>
+      </div>
+      <div class="findings">
+        <h4>Находка</h4>
+        <ul>
+          <li>Отсутствие общей SEO- и PPC-страницы — не случайность, а системный паттерн: агентство продаёт услугу через связку «создание + продвижение + город», без единой посадочной под общий запрос. Для site24 это одновременно и слабое место конкурента (не захватывает общий высокочастотный запрос «SEO продвижение сайта» без города), и подсказка — гео-кластер у sprava.ua явно шире, чем у остальных четырёх.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- LUXEO -->
+    <div class="dossier">
+      <div class="dossier-head">
+        <div>
+          <h3>luxeo.team</h3>
+          <div class="tagline">SEO outsourcing для IT/SaaS — англоязычный B2B, не локальный Kyiv-рынок</div>
+        </div>
+        <div class="badges">
+          <span class="pill pill-ok">SEO = главная</span>
+          <span class="pill pill-gap">PPC отсутствует</span>
+        </div>
+      </div>
+      <div class="dossier-grid">
+        <div class="row"><div class="k">Title главной</div><div class="v"><span class="mono-block">SEO Outsourcing Company - Luxeo Team</span> <span class="pill pill-ok">✓</span></div></div>
+        <div class="row"><div class="k">Позиционирование</div><div class="v">Не веб-студия для украинского локального бизнеса, а B2B SEO-аутсорс для IT/SaaS-компаний (услуги: on-page SEO, technical SEO, «hire dedicated SEO experts», отраслевые страницы под IT и e-commerce). Весь сайт на английском.</div></div>
+        <div class="row"><div class="k">PPC</div><div class="v">Страницы услуги PPC/Google Ads не существует ни по одному запросу — подтверждено повторно, компания в принципе не продаёт контекстную рекламу как услугу.</div></div>
+        <div class="row"><div class="k">EEAT</div><div class="v"><ul>
+          <li>«7 лет на IT-рынке» — заявлено на сайте.</li>
+          <li>42 отзыва на Clutch — сторонняя площадка с именем/должностью/компанией рецензента, это сильнее типовых отзывов «на своём сайте».</li>
+        </ul></div></div>
+      </div>
+      <div class="findings">
+        <h4>Важная поправка к брифу</h4>
+        <ul>
+          <li>При поиске «luxeo.team PPC» систематически всплывает <b>другой домен — luxeo.com.ua</b>: украиноязычное агентство контекстной рекламы (Google Ads, Яндекс.Директ), не связанное по контенту с luxeo.team. На странице контактов luxeo.team действительно указаны оба адреса (<span class="mono">order@luxeo.team</span> и <span class="mono">partner@luxeo.com.ua</span>) — это может быть один холдинг с двумя брендами под разные рынки, а может быть совпадение названия. Разница принципиальна: если это разные компании, luxeo.team вообще не локальный конкурент site24 по PPC и слабый конкурент по SEO (другой язык, другая аудитория — IT/SaaS-аутсорс, а не украинский SMB). Стоит выяснить у Google/через WHOIS или прямым письмом, прежде чем считать luxeo.team полноценным конкурентом по обеим услугам.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- INWEB -->
+    <div class="dossier">
+      <div class="dossier-head">
+        <div>
+          <h3>inweb.ua</h3>
+          <div class="tagline">Digital-агентство полного цикла, Киев, с 2011 года</div>
+        </div>
+        <div class="badges">
+          <span class="pill pill-ok">SEO ≠ PPC, обе есть</span>
+          <span class="pill pill-ok">Google Premium Partner</span>
+        </div>
+      </div>
+      <div class="dossier-grid">
+        <div class="row"><div class="k">Title SEO</div><div class="v"><span class="mono-block">SEO просування сайтів ➔ Розкрутка сайту в пошукових системах — Inweb Україна</span> <span class="pill pill-ok">✓</span></div></div>
+        <div class="row"><div class="k">Title PPC</div><div class="v"><span class="pill pill-gap">✕</span> сама страница /ua/ppc/ не проиндексирована отдельно в выдаче по этому запросу — нашлась только дочерняя <span class="mono-block">Таргетована реклама ➔ Налаштування таргетингу в Instagram та Facebook — Inweb Україна</span> (/ua/ppc/targeted-advertising/). Значит /ua/ppc/ — это хаб с подстраницами (вероятно, ещё есть /ua/ppc/google-ads/ или аналог) — нужен прямой заход, чтобы увидеть заглавную PPC-страницу целиком.</div></div>
+        <div class="row"><div class="k">Дочерние SEO-страницы</div><div class="v">Помимо основной — отдельные лендинги под нишу: SEO на этапе разработки сайта, SEO для интернет-магазина на Хорошоп, SEO-аудит как отдельная услуга.</div></div>
+        <div class="row"><div class="k">EEAT</div><div class="v"><ul>
+          <li>Основано в 2011 году, штат ≈ 90–100 человек.</li>
+          <li>Google Premium Partner + Meta Business Partner.</li>
+          <li>241 реализованный проект; узнаваемые клиенты — BOX Catering, Freelancehunt, Alex Bell, Study.ua, Veda, Soho Rooms.</li>
+          <li>Награда: «Лучшее digital-агентство 2023» по версии IT-rating Ukraine.</li>
+          <li>Отзыв на сайте от компании «Licvidator» с конкретикой по росту обращений.</li>
+        </ul></div></div>
+      </div>
+      <div class="findings">
+        <h4>Находка</h4>
+        <ul>
+          <li>Одна страница закрывает и «SEO», и «продвижение сайта» (подтверждает бриф). Но PPC-раздел устроен как хаб с под-услугами по каналам (таргет в Instagram/Facebook отдельно от Google Ads) — если у site24 PPC-страница монолитная, это точка для сравнения структуры навигации.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- LOCOMOTIVE -->
+    <div class="dossier">
+      <div class="dossier-head">
+        <div>
+          <h3>locomotive.ua</h3>
+          <div class="tagline">Digital-агентство, Киев — с прицелом на выход клиентов в EU/US/СНГ</div>
+        </div>
+        <div class="badges">
+          <span class="pill pill-ok">SEO ≠ PPC, обе есть</span>
+          <span class="pill pill-ok">Google + Meta Partner</span>
+        </div>
+      </div>
+      <div class="dossier-grid">
+        <div class="row"><div class="k">Title PPC</div><div class="v"><span class="mono-block">PPC Гугл Реклама, Настройка Контекстной Рекламы | Locomotive Media Group</span> <span class="pill pill-ok">✓</span></div></div>
+        <div class="row"><div class="k">Title SEO</div><div class="v"><span class="pill pill-gap">✕</span> не получен дословно; en-версия называется «SEO Продвижение Сайта — Цена на Поисковое Продвижение | Locomotive Media Group», что почти наверняка калька с ru/ua-оригинала.</div></div>
+        <div class="row"><div class="k">Бренд-нестыковка</div><div class="v">В разных источниках компания фигурирует то как «Locomotive Media Group», то как «Locomotive Digital» — вероятно, ребрендинг в процессе; проверить, какое имя актуально сейчас в футере/шапке сайта.</div></div>
+        <div class="row"><div class="k">EEAT</div><div class="v"><ul>
+          <li>Официальный Google Partner + Meta Business Partner.</li>
+          <li>Член ICC Ukraine, резидент Young Business Club (YBC) — членства, которых нет у остальных четырёх.</li>
+          <li>Публичное обещание результата: «20% целевых запросов в топ-10 Google за 9 месяцев» — конкретная, проверяемая гарантия (плюс маркетинговый риск, если не выполняется).</li>
+          <li>Отдельные разделы «Кейсы» и «Отзывы»; на странице «Команда» перечислены роли (SEO-специалисты, проджект-менеджеры, программисты, копирайтеры) — именных карточек с должностью в сниппетах не всплыло.</li>
+        </ul></div></div>
+      </div>
+      <div class="findings">
+        <h4>Находка</h4>
+        <ul>
+          <li>Единственный из пятёрки, кто публично формулирует количественную гарантию результата прямо в позиционировании (20% ключей в топ-10 за 9 мес.) — это сильный, легко цитируемый EEAT/CRO-приём, которого нет у site24 судя по брифу.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PENGUIN -->
+    <div class="dossier">
+      <div class="dossier-head">
+        <div>
+          <h3>penguin-team.ua</h3>
+          <div class="tagline">PPC-агентство (White Label) с SEO как вторичной линией, Днепр</div>
+        </div>
+        <div class="badges">
+          <span class="pill pill-ok">SEO ≠ PPC, + отдельная Google Ads</span>
+          <span class="pill pill-ok">Google Premier Partner</span>
+        </div>
+      </div>
+      <div class="dossier-grid">
+        <div class="row"><div class="k">SEO-страница</div><div class="v">Требует доступа Google Search Console + Analytics для старта работ; доступ к админке сайта — опционален. Комиссия по SEO — от $300/мес, индивидуально.</div></div>
+        <div class="row"><div class="k">PPC-страница</div><div class="v">Заказ настройки «с нуля», оптимизация или масштабирование текущих кампаний; фокус на бизнес-метриках — ROAS, прибыль (e-commerce), число заявок (B2B).</div></div>
+        <div class="row"><div class="k">Третья страница</div><div class="v">Отдельный лендинг именно под <span class="mono-block">/ru/google-ads-ru/</span> — самая глубокая сегментация PPC-предложения среди всех 14 доменов (SEO / общий PPC / Google Ads отдельно).</div></div>
+        <div class="row"><div class="k">EEAT</div><div class="v"><ul>
+          <li>Google Premier Partner, сотрудники сертифицированы.</li>
+          <li>~50 PPC-специалистов, опыт 2–5 лет.</li>
+          <li>300+ оптимизированных проектов; заявлено $5 млн/квартал оборота клиентов через рекламу.</li>
+          <li>White Label PPC — партнёрская программа для других агентств (B2B2B-модель).</li>
+          <li>География клиентов: США, Канада, Великобритания, Норвегия, Испания, Новая Зеландия, Украина.</li>
+        </ul></div></div>
+      </div>
+      <div class="findings">
+        <h4>Находка</h4>
+        <ul>
+          <li>Это по факту PPC-агентство с SEO как побочной услугой, а не наоборот — маркетинг, кейсы и цифры почти целиком про рекламный оборот и White Label, а не про органику. Если site24 продаёт SEO и PPC как равные направления, здесь явная asymmetричная позиция конкурента — можно перехватывать SEO-интент у клиентов penguin-team.ua, которым нужен именно органический рост.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE24 CONTEXT -->
+  <section id="site24">
+    <div class="section-head">
+      <div class="section-num">03 — для контекста</div>
+      <h2>site24.com.ua</h2>
+      <p class="lede">Не входит в аудит конкурентов — приведён как опорная точка; подробный разбор своей страницы уже сделан в более раннем расследовании (не воспроизводится здесь полностью).</p>
+    </div>
+    <div class="callout" style="border-left-color:var(--gap);">
+      <h3>Требует вашего подтверждения</h3>
+      <p>В выдаче по запросу «site24.com.ua SEO услуга» страница SEO-продвижения нашлась не на основном домене, а на <span class="mono-block">site24.tech/seo/</span> — отдельном домене. Если это актуально (а не старый/заброшенный домен или тестовый стенд), это классический технический риск: ссылочный вес и поведенческие сигналы дробятся между site24.com.ua и site24.tech вместо накопления на одном домене. Уточните, пожалуйста, актуален ли site24.tech и что на нём сейчас размещено — это первое, что стоит проверить, прежде чем сравнивать site24 с конкурентами по EEAT-плотности главной страницы.</p>
+    </div>
+  </section>
+
+  <!-- EXTRA 9 -->
+  <section id="extra">
+    <div class="section-head">
+      <div class="section-num">04 — расширенный список</div>
+      <h2>Девять дополнительных конкурентов</h2>
+      <p class="lede">Ранжирование и число ключей в топе — из вашей таблицы (коды kw1–kw5 не были расшифрованы в задании; ниже они приведены как есть). Профили компаний — из открытого поиска.</p>
+    </div>
+
+    <div class="table-scroll" style="margin-bottom:22px;">
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>Домен</th>
+            <th class="num">Ключей в топе</th>
+            <th>Какие</th>
+            <th>Лучшая позиция</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">1</td><td><b>elit-web.ua</b></td><td class="num">3</td><td class="mono">kw1, kw2, kw3</td><td><span class="pill pill-ok">#1</span> (kw1)</td></tr>
+          <tr><td class="num">2</td><td>wezom.com.ua</td><td class="num">3</td><td class="mono">kw2, kw3, kw4</td><td><span class="pill pill-neutral">#4</span> (kw3)</td></tr>
+          <tr><td class="num">3</td><td>netpeak.ua</td><td class="num">3</td><td class="mono">kw1, kw2, kw4</td><td>крупный игрок рынка, вне общего рейтинга</td></tr>
+          <tr><td class="num">4</td><td>itua.com.ua</td><td class="num">2</td><td class="mono">kw1, kw3</td><td><span class="pill pill-neutral">#6</span> (kw3)</td></tr>
+          <tr><td class="num">5</td><td>ideadigital.agency</td><td class="num">2</td><td class="mono">kw1, kw3</td><td><span class="pill pill-neutral">#6</span> (kw1)</td></tr>
+          <tr><td class="num">6</td><td>seok.ua</td><td class="num">2</td><td class="mono">kw1, kw2</td><td><span class="pill pill-ok">#2</span> (kw1)</td></tr>
+          <tr><td class="num">7</td><td>limenet.kiev.ua</td><td class="num">2</td><td class="mono">kw1, kw5</td><td><span class="pill pill-warn">#10</span> (kw1)</td></tr>
+          <tr><td class="num">8</td><td>web24.com.ua</td><td class="num">2</td><td class="mono">kw1, kw5</td><td><span class="pill pill-warn">#9</span> (kw1)</td></tr>
+          <tr><td class="num">9</td><td>fnx.com.ua</td><td class="num">2</td><td class="mono">kw3, kw5</td><td><span class="pill pill-warn">#10</span> (kw3)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile">
+        <div class="profile-top"><h4>elit-web.ua</h4><span class="rank">#1 по kw1 · часть Wezom Group</span></div>
+        <p>Google Premier + Meta Business Partner. Заявлено 150 сотрудников / 2500+ кейсов (в другом источнике — «120+ экспертов», цифры расходятся). Назван конкретный руководитель — Игорь Воловый, маркетолог, 12+ лет опыта: единственный найденный на всех 14 доменах именной эксперт с должностью. PPC сегментирован глубоко: общий хаб, отдельная страница под Google Ads, гео-версия под Одессу.</p>
+        <p><b>Важно:</b> elit-web.ua и wezom.com.ua — сестринские бренды одного IT-холдинга (Wezom Group), не независимые конкуренты друг другу.</p>
+        <div class="urls"><span class="mono-block">/seo-optimizatsija-sajta</span><span class="mono-block">/uslugi-kontekstnoy-reklamy</span><span class="mono-block">/reklama-google</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>wezom.com.ua</h4><span class="rank">#4 по kw3 · сестринский бренд elit-web.ua</span></div>
+        <p>Заявлено «20 лет на рынке», 280+ специалистов, 2000+ проектов — цифры выглядят завышенными относительно возраста Wezom как маркетингового бренда (проверить дату основания отдельно от материнской IT-компании). Публикует образовательный контент о статусе Google Partner, но собственный актуальный бейдж партнёрства в сниппетах не подтвердился напрямую. URL SEO-страницы (<span class="mono">/prodvizhenie</span>) не совпадает по слову с заголовком («Seo продвижение сайтов»).</p>
+        <div class="urls"><span class="mono-block">/prodvizhenie</span><span class="mono-block">/kontekstnaja-reklama-v-google-ads</span><span class="mono-block">/audit-kontekstnoj-reklamy</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>netpeak.ua</h4><span class="rank">крупный игрок, вне общего рейтинга</span></div>
+        <p>Один из старейших игроков на рынке (основан в 2006), офисы в 4 странах, ~500 сотрудников, 1086 клиентов, Google Premier Partner с сертификатами по всем инструментам, 70+ сертифицированных PPC-специалистов в 4 командах (средний опыт 3,6 года). Именные клиенты — TripAdvisor, Slando, ŠKODA, Kärcher. Единственный (вместе с fnx.com.ua) кто прямо продаёт «SEO+AI»-продвижение — видимость в AI Overviews, ChatGPT, Gemini.</p>
+        <div class="urls"><span class="mono-block">/ru/services/seo/</span><span class="mono-block">/ru/services/ppc-audit/</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>itua.com.ua</h4><span class="rank">#6 по kw3</span></div>
+        <p>Заголовки страниц («SEO продвижение сайтов. Раскрутка сайта в Киеве и Украине. Цена СЕО оптимизации сайта. Заказать услугу поискового продвижения — ITUA») написаны в keyword-stuffing стиле начала 2010-х — контраст с более короткими современными title остальных. EEAT почти не всплыл в поиске: ни партнёрства, ни численности команды, ни кейсов именно по SEO/PPC-направлению — самый слабый по прозрачности профиль в списке (либо просто хуже всех индексируется).</p>
+        <div class="urls"><span class="mono-block">/ru/seo-prodvizenie-ru</span><span class="mono-block">/ru/kontekstnaia-reklama-ppc-ru</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>ideadigital.agency</h4><span class="rank">#6 по kw1</span></div>
+        <p>Технический дефект: русскоязычные страницы («Контекстная реклама Google в Киеве») висят под префиксом <span class="mono">/en/</span> вместо <span class="mono">/ru/</span> — вероятная путаница с hreflang/локализацией. Общей PPC-страницы нет, только гео-лендинги (Днепр, Киев) — тот же паттерн, что у sprava.ua. Из EEAT — только общий блок «отзывы» и «кейсы», без цифр по штату или партнёрствам.</p>
+        <div class="urls"><span class="mono-block">/en/seo-promotion-websites/</span><span class="mono-block">/en/promo/google-ads-kyiv/</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>seok.ua</h4><span class="rank">#2 по kw1</span></div>
+        <p>Главная страница и есть SEO-страница — тот же паттерн, что у luxeo.team. PPC вынесен на отдельный <span class="mono">/google-ads</span>. Похожий домен <span class="mono">seok.com.ua</span> тоже всплывает в выдаче с собственной PPC-страницей — стоит проверить, это тот же бренд или омоним. Данные о штате расходятся: «30 специалистов» в одном источнике против «команда 1–3 человека, 8 лет опыта» в другом, явно устаревшем.</p>
+        <div class="urls"><span class="mono-block">/ (SEO)</span><span class="mono-block">/google-ads</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>limenet.kiev.ua</h4><span class="rank">#10 по kw1</span></div>
+        <p>Один из старейших доменов в списке — основан в 2006-м, но при этом самый компактный: 8–15 специалистов, 600+ проектов. Отдельной страницы «SEO» найти не удалось (только SEO-аудит как под-услуга) — общая посадочная страница под продвижение, вероятно, отсутствует, как у sprava.ua; нужна проверка напрямую. PPC-страница есть, с калькулятором стоимости — редкая деталь у остальных конкурентов.</p>
+        <div class="urls"><span class="mono-block">/seo-audit/</span><span class="mono-block">/kontekstnaya-reklama/</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>web24.com.ua</h4><span class="rank">#9 по kw1</span></div>
+        <p>Пять разных URL с пересекающимся SEO-смыслом (<span class="mono">/promo/</span>, <span class="mono">/key/seo-prodvizhenie-kiev/</span>, <span class="mono">/key/seo-uslugi-kiev/</span>, <span class="mono">/seo-website-promotion/</span>, <span class="mono">/seo-5-steps/</span>) — сильный сигнал каннибализации ключевых запросов, стоит явно отметить как слабое место конкурента. Год основания расходится (2008 vs 2012). PPC-страница одна и понятная.</p>
+        <div class="urls"><span class="mono-block">/key/seo-prodvizhenie-kiev/</span><span class="mono-block">/kontext/</span></div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-top"><h4>fnx.com.ua</h4><span class="rank">#10 по kw3 · Fenix Industry</span></div>
+        <p>SEO-раздел зеркалится на двух хостах — <span class="mono">fnx.com.ua/services/seo/…</span> и <span class="mono">seo.fnx.com.ua/services/seo/…</span> с почти идентичными путями — похоже на незавершённый перенос на поддомен и риск дублей контента. Из плюсов: официальный Google Partner, публичная страница клиентов (<span class="mono">/clients</span>), физический адрес (Киев, ул. Маршала Тимошенко, 29) — редкий у конкурентов NAP-сигнал. Отдельная услуга GEO (генеративная/AI-оптимизация) — второй и последний домен из 14 с таким явным предложением.</p>
+        <div class="urls"><span class="mono-block">/services/seo/geo</span><span class="mono-block">/services/context</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PATTERNS -->
+  <section id="patterns">
+    <div class="section-head">
+      <div class="section-num">05 — сквозные находки</div>
+      <h2>Что видно только при сравнении всех 14</h2>
+    </div>
+    <div class="patterns">
+      <div class="pattern">
+        <h4>Партнёрский бейдж — почти table stakes</h4>
+        <p>Google Partner в каком-либо статусе подтверждён у 8 из 14 доменов (site24 не считая). Отсутствие бейджа на странице site24 будет заметно на фоне конкурентов, если его в самом деле нет.</p>
+      </div>
+      <div class="pattern">
+        <h4>Именных экспертов почти никто не показывает</h4>
+        <p>Из 14 доменов только у elit-web.ua нашёлся конкретный человек с именем и должностью (Игорь Воловый). Это либо реальный пробел рынка, либо артефакт того, что поиск по сниппетам не видит блоки «наша команда» — нужна проверка вручную, но как гипотеза для site24 это интересное окно для дифференциации.</p>
+      </div>
+      <div class="pattern">
+        <h4>Домены-дубли и путаница брендов</h4>
+        <p>luxeo.team / luxeo.com.ua, seok.ua / seok.com.ua, fnx.com.ua / seo.fnx.com.ua, site24.com.ua / site24.tech — четыре случая, где одно и то же название встречается на двух хостах. В каждом случае стоит подтвердить вручную, один это бизнес или два, прежде чем делать выводы о конкуренте.</p>
+      </div>
+      <div class="pattern">
+        <h4>Холдинговая аффилиация</h4>
+        <p>elit-web.ua и wezom.com.ua — не два независимых конкурента, а два бренда одного IT-холдинга (Wezom Group). Для позиционирования их стоит считать одной стратегической единицей, а не суммировать как двух разных игроков.</p>
+      </div>
+      <div class="pattern">
+        <h4>GEO/AI-поиск — только у двух</h4>
+        <p>Явную услугу «продвижение в AI-поиске / генеративная оптимизация» продают только netpeak.ua и fnx.com.ua. Остальные 12 доменов такого предложения не выставляют — потенциальное окно для site24, если этого пока нет у неё самой.</p>
+      </div>
+      <div class="pattern">
+        <h4>«Только гео-лендинги» — не редкость</h4>
+        <p>sprava.ua, ideadigital.agency (для PPC) и, вероятно, limenet.kiev.ua (для SEO) не имеют единой обобщённой страницы услуги — работают через город/нишу. Если у этих запросов есть объём без геопривязки, это ниша, которую сейчас никто из них не закрывает напрямую.</p>
+      </div>
+      <div class="pattern">
+        <h4>Каннибализация URL у web24.com.ua</h4>
+        <p>Пять пересекающихся SEO-адресов на одном домене — самый явный технический промах среди всех 14, стоит явно упомянуть как слабость конкурента в отчёте для клиента, если она всплывёт в разговоре.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAPS -->
+  <section id="gaps">
+    <div class="section-head">
+      <div class="section-num">06 — методология</div>
+      <h2>Что нельзя было проверить и как это закрыть</h2>
+    </div>
+    <div class="callout">
+      <h3>Пробелы, общие для всех 14 доменов</h3>
+      <ul>
+        <li><b>Meta description дословно</b> — WebSearch отдаёт пересказ, а не сырой тег.</li>
+        <li><b>Порядок блоков страницы</b> (хиро → кейсы → отзывы → FAQ → цены → форма) — не виден по сниппетам ни для одного домена.</li>
+        <li><b>Число слов основного текста</b> — требует загрузки HTML и подсчёта после исключения меню/футера.</li>
+        <li><b>Топ-8–10 фраз по частотности</b> — то же самое, нужен полный текст страницы.</li>
+        <li><b>Именные авторы/эксперты на страницах услуг</b> — не всплывают в SERP-сниппетах, даже если реально есть на сайте.</li>
+      </ul>
+      <p style="margin-top:12px;">Два рабочих способа закрыть всё сразу: (1) прислать HTML пяти-семи приоритетных страниц через Ctrl+U → «Сохранить как» / вставить код; (2) прогнать все 14 доменов через Screaming Frog одним крауом, как ранее делали для vizy.ua — на выходе получите title/description/H1–H2/word count по каждой странице без ручной пересылки.</p>
+    </div>
+  </section>
+
+  <footer>
+    Досье собрано по открытым источникам (WebSearch) 07.09.2026. Цифры и заявления компаний — с их собственных сайтов и агрегаторов (Clutch, IT-rating, cmsmagazine и др.), не проверены независимо; там, где источники расходятся, это отмечено явно.
+  </footer>
+
+</div>
