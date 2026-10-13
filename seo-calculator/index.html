@@ -130,9 +130,9 @@ tr.sum td{font-weight:800;border-bottom:none}
           <input type="radio" name="lkmode" id="lk-m" value="manual"><label for="lk-m">Вручную</label>
         </div>
         <div class="row2" id="lk-formula">
-          <label class="field"><span class="hint">Свои RD</span><input type="number" id="rd-own" min="0" step="10" value="150"></label>
-          <label class="field"><span class="hint">Медиана RD топ-5</span><input type="number" id="rd-comp" min="0" step="10" value="630"></label>
-          <label class="field"><span class="hint">Прирост RD конкурентов/мес.</span><input type="number" id="rd-vel" min="0" step="1" value="25"></label>
+          <label class="field"><span class="hint">Свои ссылающиеся домены (RD)</span><input type="number" id="rd-own" min="0" step="10" value="150"></label>
+          <label class="field"><span class="hint">Медиана ссылающихся доменов топ-5 конкурентов</span><input type="number" id="rd-comp" min="0" step="10" value="630"></label>
+          <label class="field"><span class="hint">Прирост ссылающихся доменов у конкурентов в мес.</span><input type="number" id="rd-vel" min="0" step="1" value="25"></label>
           <label class="field"><span class="hint">Догнать за, мес.</span><select id="catch"><option>6</option><option selected>12</option><option>24</option></select></label>
           <label class="field"><span class="hint">Доля статейных, %</span><input type="number" id="art" min="0" max="100" step="5" value="30"></label>
           <label class="field"><span class="hint">Доноры</span><select id="donq"><option value="1" selected>Стандарт ×1</option><option value="1.5">Качественные ×1.5</option></select></label>
@@ -143,7 +143,7 @@ tr.sum td{font-weight:800;border-bottom:none}
           <label class="field"><span class="hint">Каждые N мес.</span><input type="number" id="lkevery" min="1" step="1" value="3"></label>
           <label class="field"><span class="hint">Макс. рост, $</span><input type="number" id="lkmax" min="0" step="50" value="100"></label>
         </div>
-        <span class="hint">RD берём из Ahrefs. Цена статейной ссылки — по языкам сайта: язык = рынок донора.</span>
+        <span class="hint">Ссылающиеся домены (RD) — из Ahrefs, считаем только домены с трафиком от 1000 в месяц. Цена статейной ссылки — по языкам сайта: язык = рынок донора.</span>
       </div>
       </div>
 
@@ -375,10 +375,10 @@ function render(){
   const L = r.lk, f1 = v => (Math.round(v*10)/10).toLocaleString('ru-RU');
   $('lk-box').hidden = !!L.manual;
   if(!L.manual) $('lktab').innerHTML = `<tr><th>Показатель</th><th>Как считается</th><th class="n">Значение</th></tr>
-    <tr><td>Отставание по RD</td><td class="qty">${s.rdComp} − ${s.rdOwn}</td><td class="n">${L.gap}</td></tr>
+    <tr><td>Отставание по ссылающимся доменам (трафик от 1000/мес.)</td><td class="qty">${s.rdComp} − ${s.rdOwn}</td><td class="n">${L.gap}</td></tr>
     <tr><td>Темп, чтобы догнать</td><td class="qty">${L.gap} / ${s.catchM} мес.</td><td class="n">${f1(L.catchUp)}/мес.</td></tr>
     <tr><td>Темп конкурентов × 1.2</td><td class="qty">${s.rdVel} × 1.2</td><td class="n">${f1(L.keep)}/мес.</td></tr>
-    <tr><td>Потолок безопасности</td><td class="qty">свои RD ${s.rdOwn<50?'< 50':s.rdOwn<=300?'50–300':'> 300'}</td><td class="n">${L.cap===Infinity?'нет':L.cap+'/мес.'}</td></tr>
+    <tr><td>Потолок безопасности</td><td class="qty">свои ссылающиеся домены ${s.rdOwn<50?'< 50':s.rdOwn<=300?'50–300':'> 300'}</td><td class="n">${L.cap===Infinity?'нет':L.cap+'/мес.'}</td></tr>
     <tr><td><b>Ссылок в месяц</b></td><td class="qty">max(темпов), не выше потолка</td><td class="n"><b>${L.need}</b></td></tr>
     <tr><td>Статейные</td><td class="qty">${L.nArt} × ${f1(L.artPrice)} $</td><td class="n">${usd(Math.round(L.nArt*L.artPrice))}</td></tr>
     <tr><td>Крауд</td><td class="qty">${L.nCrowd} × ${s.pCrowd} $</td><td class="n">${usd(L.nCrowd*s.pCrowd)}</td></tr>
