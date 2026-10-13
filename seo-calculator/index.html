@@ -143,7 +143,7 @@ tr.sum td{font-weight:800;border-bottom:none}
       <details>
         <summary>Нормы часов</summary>
         <div class="norms" id="norms"></div>
-        <p class="hint">Семантика — на группу на 1 язык (UA/RU). Мета-теги — на группу на язык. Меняйте, если реальные часы другие.</p>
+        <p class="hint">Семантика — на группу на 1 язык (UA/RU; EN ×1.25, другие ×1.75). Мета-теги — на группу на 1 язык, каждый следующий язык +25%. Меняйте, если реальные часы другие.</p>
       </details>
     </form>
 
@@ -172,11 +172,11 @@ tr.sum td{font-weight:800;border-bottom:none}
 <script>
 const NORMS = [
   ['sem','Семантика, ч/группа/язык',0.075],
-  ['meta','Мета-теги, ч/группа/язык',0.025],
+  ['meta','Мета-теги, ч/группа (1 язык; +25% за каждый следующий)',0.04],
   ['tz','ТЗ на текст, ч/шт',0.25],
   ['ctrl','Контроль текста, ч/шт',0.1],
-  ['struct_shop','Шаблонные мета + ТЗ на фильтрацию (магазин), ч',3],
-  ['struct_serv','Анализ структуры конкурентов + ТЗ (услуги), ч',4],
+  ['struct_shop','Шаблонные мета-теги + ТЗ на функционал фильтрации, ч',3],
+  ['struct_serv','Анализ структуры конкурентов + ТЗ на доработку структуры, ч',4],
   ['audit','Тех. аудит (услуги; магазин ×2), ч',3],
   ['eeat','Анализ E-E-A-T + ТЗ, ч',3],
   ['pm1','Управление, 1-й мес., ч',2],
@@ -190,7 +190,7 @@ const NORMS = [
 ];
 const normsBox = document.getElementById('norms');
 NORMS.forEach(([k,l,v])=>{
-  normsBox.insertAdjacentHTML('beforeend',`<label for="nm-${k}">${l}</label><input type="number" id="nm-${k}" step="0.025" min="0" value="${v}">`);
+  normsBox.insertAdjacentHTML('beforeend',`<label for="nm-${k}" data-norm="${k}">${l}</label><input type="number" id="nm-${k}" step="0.025" min="0" value="${v}">`);
 });
 
 const $ = id => document.getElementById(id);
@@ -221,12 +221,13 @@ function compute(s){
   const langUnits = s.langs.reduce((a,[,k])=>a+k,0);
   const langCount = s.langs.length;
   const sem = g => g * n.sem * langUnits * kType * s.niche;
-  const meta = g => g * n.meta * langCount;
+  const kMetaLang = langCount ? 1 + 0.25*(langCount-1) : 0;
+  const meta = g => g * n.meta * kMetaLang;
   const tz = c => c * n.tz * s.niche;
   const m1 = [
     ['Семантика', `${s.g1} гр × ${langUnits.toFixed(2)} яз. × ${kType} × ${s.niche}`, sem(s.g1)],
-    ['Мета-теги по семантике', `${s.g1} гр × ${langCount} яз.`, meta(s.g1)],
-    shop ? ['Шаблонные мета-теги товаров + ТЗ на структуру/фильтрацию','',n.struct_shop]
+    ['Мета-теги по семантике', `${s.g1} гр × ${kMetaLang.toFixed(2)}`, meta(s.g1)],
+    shop ? ['Шаблонные мета-теги товаров + ТЗ на функционал фильтрации','',n.struct_shop]
          : ['Анализ структуры конкурентов + ТЗ на доработку структуры','',n.struct_serv],
     ['ТЗ на тексты категорий', `${s.tz1} шт × ${s.niche}`, tz(s.tz1)],
     ['Тех. аудит + ТЗ программисту', shop?'магазин ×2':'', n.audit*(shop?2:1)],
@@ -237,7 +238,7 @@ function compute(s){
     ['Проверка внедрённых правок','',n.check],
     ['Контроль написанных текстов',`${s.tz1} шт`, s.tz1*n.ctrl],
     ['Семантика', `${s.g2} гр`, sem(s.g2)],
-    ['Мета-теги по семантике', `${s.g2} гр × ${langCount} яз.`, meta(s.g2)],
+    ['Мета-теги по семантике', `${s.g2} гр × ${kMetaLang.toFixed(2)}`, meta(s.g2)],
     ['ТЗ на тексты', `${s.tz2} шт × ${s.niche}`, tz(s.tz2)],
     ['Анализ ссылок конкурентов + стратегия','',n.lkstrat],
     ['Работа со ссылками','',n.lkwork],
@@ -245,7 +246,7 @@ function compute(s){
   ];
   const m3 = [
     ['Семантика', `${s.g2} гр`, sem(s.g2)],
-    ['Мета-теги', `${s.g2} гр × ${langCount} яз.`, meta(s.g2)],
+    ['Мета-теги', `${s.g2} гр × ${kMetaLang.toFixed(2)}`, meta(s.g2)],
     ['ТЗ на тексты', `${s.tz2} шт × ${s.niche}`, tz(s.tz2)],
     ['Контроль текстов', `${s.tz2} шт`, s.tz2*n.ctrl],
     ['Контроль тех. состояния','',n.tech],
@@ -277,7 +278,7 @@ function planText(s,r){
   const shop = s.type==='shop';
   const m1 = [
     `Збір семантичного ядра за пріоритетними категоріями - до ${s.g1} груп (мови - ${lang})`,
-    shop ? 'Формування ТЗ на розширення структури сайту (створення нових підрозділів, відкритих сторінок фільтрації, тощо), ТЗ на функціонал фільтрації'
+    shop ? 'Формування ТЗ на функціонал фільтрації (відкриті сторінки фільтрації, тощо)'
          : 'Аналіз структури сторінок конкурентів. Формування ТЗ на доопрацювання структури сайту',
     'Написання мета-тегів по зібраній семантиці',
     ...(shop ? ['Оптимізація шаблонних мета-тегів для сторінок товарів'] : []),
@@ -320,6 +321,8 @@ function render(){
   $('mp').hidden = !mp;
   ['out','sched-box','tasks-box','plan-box'].forEach(id=>$(id).hidden = mp);
   if(mp) return;
+  [['struct_shop',s.type!=='shop'],['struct_serv',s.type==='shop']].forEach(([k,hide])=>{
+    document.querySelector(`[data-norm=${k}]`).hidden=hide; $('nm-'+k).hidden=hide; });
   const r = compute(s);
   const mo = r.months;
   const lastWorks = mo[mo.length-1].works;
