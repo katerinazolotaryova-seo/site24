@@ -208,7 +208,8 @@ const NORMS = [
   ['struct_serv','Анализ структуры конкурентов + ТЗ на доработку структуры, ч',4],
   ['audit','SEO-аудит + ТЗ программисту (магазин), ч',14],
   ['audit_serv','SEO-аудит + ТЗ программисту (услуги), ч',8],
-  ['eeat','Анализ E-E-A-T + ТЗ, ч',3],
+  ['eeat','Анализ E-E-A-T + ТЗ (магазин), ч',2],
+  ['eeat_serv','Анализ E-E-A-T + ТЗ (услуги), ч',3],
   ['pm1','Управление, 1-й мес., ч',2],
   ['check','Проверка внедрённых правок, ч',2],
   ['lkstrat','Анализ ссылок конкурентов + стратегия, ч',4],
@@ -278,7 +279,7 @@ function compute(s){
              : [['Анализ структуры конкурентов + ТЗ на доработку структуры','',n.struct_serv]]),
     [shop?'ТЗ на тексты категорий':'ТЗ на тексты услуг', `${s.tz1} шт × ${tzN} ч × ${s.niche}`, tz(s.tz1)],
     ['SEO-аудит + ТЗ программисту', '', shop ? n.audit : n.audit_serv],
-    ['Анализ E-E-A-T + ТЗ','',n.eeat],
+    ['Анализ E-E-A-T + ТЗ','',shop ? n.eeat : n.eeat_serv],
     ['Управление проектом','',n.pm1],
   ];
   const m2 = [
@@ -367,7 +368,7 @@ function render(){
   const manual = document.querySelector('[name=lkmode]:checked').value==='manual';
   $('lk-formula').hidden = manual; $('lk-manual').hidden = !manual;
   if(mp) return;
-  [['tplmeta',s.type!=='shop'],['filters',s.type!=='shop'],['tz',s.type!=='shop'],['struct_serv',s.type==='shop'],['audit',s.type!=='shop'],['audit_serv',s.type==='shop'],['tz_serv',s.type==='shop']].forEach(([k,hide])=>{
+  [['tplmeta',s.type!=='shop'],['filters',s.type!=='shop'],['tz',s.type!=='shop'],['struct_serv',s.type==='shop'],['audit',s.type!=='shop'],['audit_serv',s.type==='shop'],['eeat',s.type!=='shop'],['eeat_serv',s.type==='shop'],['tz_serv',s.type==='shop']].forEach(([k,hide])=>{
     document.querySelector(`[data-norm=${k}]`).hidden=hide; $('nm-'+k).hidden=hide; });
   const r = compute(s);
   const mo = r.months;
