@@ -1,0 +1,355 @@
+<title>SEO калькулятор site24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: рабочий инструмент — слева параметры проекта, справа итог → помесячная разбивка → часы по задачам → план для КП */
+:root{
+  --bg:#F6F8F7; --surface:#FFFFFF; --ink:#1F2933; --muted:#5B6673; --line:#DDE3E0;
+  --accent:#16A34A; --accent-ink:#15803D; --accent-soft:#E7F6EC; --warn:#B45309; --warn-soft:#FEF3E2;
+  --font:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111614; --surface:#18201C; --ink:#E6ECE8; --muted:#9AA6A0; --line:#2A3530;
+  --accent:#22C55E; --accent-ink:#4ADE80; --accent-soft:#16301F; --warn:#F59E0B; --warn-soft:#33270F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111614; --surface:#18201C; --ink:#E6ECE8; --muted:#9AA6A0; --line:#2A3530;
+  --accent:#22C55E; --accent-ink:#4ADE80; --accent-soft:#16301F; --warn:#F59E0B; --warn-soft:#33270F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:28px 60px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;margin-bottom:22px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1 span{color:var(--accent-ink)}
+.sub{color:var(--muted);margin:0}
+h2{font-size:15px;font-weight:700;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.controls{display:flex;flex-direction:column;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:13px;user-select:none}
+.seg input:checked+label{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+.seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.hint{font-size:12px;color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=number],select{width:100%;font:inherit;font-variant-numeric:tabular-nums;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+input[type=number]:focus,select:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.check{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.check input{accent-color:var(--accent);margin-top:3px}
+details{border-top:1px solid var(--line);padding-top:14px}
+summary{cursor:pointer;font-weight:700}
+.norms{display:grid;grid-template-columns:1fr 84px;gap:6px 10px;align-items:center;margin-top:12px;font-size:13px}
+.results{display:flex;flex-direction:column;gap:20px;min-width:0}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--surface);padding:14px 16px}
+.tile .v{font-size:26px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tile.total{background:var(--accent-soft)} .tile.total .v{color:var(--accent-ink)}
+.notice{background:var(--warn-soft);color:var(--ink);border:1px solid var(--warn);border-radius:var(--r);padding:18px}
+.notice b{color:var(--warn)}
+.tablebox{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+td.n,th.n{text-align:right;white-space:nowrap}
+tr.sum td{font-weight:800;border-bottom:none}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tabs button{font:inherit;font-weight:600;font-size:13px;background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--ink);cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);margin-left:6px}
+.qty{color:var(--muted);font-family:var(--mono);font-size:12px}
+.plan{white-space:pre-wrap;font-size:13.5px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;max-height:460px;overflow:auto}
+.btn{font:inherit;font-weight:700;background:var(--accent);color:#06240F;border:none;border-radius:8px;padding:8px 14px;cursor:pointer}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.headrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.headrow h2{margin:0}
+.ok{font-size:12px;color:var(--accent-ink);font-weight:700}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>SEO калькулятор <span>site24</span></h1>
+    <p class="sub">Внутренний расчёт для КП · база: интернет-магазин, UA+RU, обычная ниша = 630$ / 550$</p>
+  </header>
+
+  <div class="grid">
+    <form class="panel controls" id="f" onsubmit="return false">
+      <div class="field">
+        <span class="label">Тип сайта</span>
+        <div class="seg">
+          <input type="radio" name="type" id="t-shop" value="shop" checked><label for="t-shop">Интернет-магазин</label>
+          <input type="radio" name="type" id="t-serv" value="services"><label for="t-serv">Услуги</label>
+          <input type="radio" name="type" id="t-mp" value="marketplace"><label for="t-mp">Маркетплейс / агрегатор</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="label">Ниша</span>
+        <div class="seg">
+          <input type="radio" name="niche" id="n-norm" value="1" checked><label for="n-norm">Обычная</label>
+          <input type="radio" name="niche" id="n-hard" value="2"><label for="n-hard">Сложная ×2</label>
+        </div>
+        <span class="hint">×2 к семантике и ТЗ на тексты</span>
+      </div>
+
+      <div class="field">
+        <span class="label">Языки</span>
+        <div class="seg">
+          <input type="checkbox" id="l-ua" checked><label for="l-ua">UA</label>
+          <input type="checkbox" id="l-ru" checked><label for="l-ru">RU</label>
+          <input type="checkbox" id="l-en"><label for="l-en">EN ×1.25</label>
+        </div>
+        <div class="row2" style="align-items:center">
+          <span class="hint">Другие языки ×1.75, шт.</span>
+          <input type="number" id="l-other" min="0" max="10" step="1" value="0">
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="label">Объём работ</span>
+        <div class="row2">
+          <label class="field"><span class="hint">Групп семантики, 1-й мес.</span><input type="number" id="g1" min="0" step="5" value="80"></label>
+          <label class="field"><span class="hint">Групп, со 2-го мес.</span><input type="number" id="g2" min="0" step="5" value="50"></label>
+          <label class="field"><span class="hint">ТЗ на тексты, 1-й мес.</span><input type="number" id="tz1" min="0" step="1" value="20"></label>
+          <label class="field"><span class="hint">ТЗ на тексты, со 2-го</span><input type="number" id="tz2" min="0" step="1" value="20"></label>
+        </div>
+      </div>
+
+      <label class="check"><input type="checkbox" id="ai"><span><b>AI-оптимизация с 3-го месяца</b><br><span class="hint">+40% к стоимости ежемесячных работ</span></span></label>
+
+      <div class="field">
+        <span class="label">Ссылки (бюджет со 2-го месяца)</span>
+        <div class="row2">
+          <label class="field"><span class="hint">Старт, $</span><input type="number" id="lk0" min="0" step="50" value="600"></label>
+          <label class="field"><span class="hint">Потолок, $</span><input type="number" id="lkmax" min="0" step="50" value="700"></label>
+          <label class="field"><span class="hint">Шаг роста, $</span><input type="number" id="lkstep" min="0" step="10" value="50"></label>
+          <label class="field"><span class="hint">Каждые N мес.</span><input type="number" id="lkevery" min="1" step="1" value="3"></label>
+        </div>
+      </div>
+
+      <div class="row2">
+        <label class="field"><span class="label">Срок, мес.</span>
+          <select id="term"><option>3</option><option selected>6</option><option>12</option></select></label>
+        <label class="field"><span class="label">Ставка, $/час</span><input type="number" id="rate" min="1" step="1" value="18"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="round" checked><span>Округлять цену работ до 10$</span></label>
+
+      <details>
+        <summary>Нормы часов</summary>
+        <div class="norms" id="norms"></div>
+        <p class="hint">Семантика — на группу на 1 язык (UA/RU). Мета-теги — на группу на язык. Меняйте, если реальные часы другие.</p>
+      </details>
+    </form>
+
+    <div class="results">
+      <div id="mp" class="notice" hidden><b>Индивидуальный просчёт.</b> Маркетплейсы и агрегаторы не считаются по шаблону: нужна оценка структуры, количества шаблонов страниц и объёма семантики.</div>
+      <div id="out">
+        <div class="tiles" id="tiles"></div>
+      </div>
+      <section class="panel" id="sched-box">
+        <h2>По месяцам</h2>
+        <div class="tablebox"><table id="sched"></table></div>
+      </section>
+      <section class="panel" id="tasks-box">
+        <h2>Часы по задачам</h2>
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <div class="tablebox"><table id="tasks"></table></div>
+      </section>
+      <section class="panel" id="plan-box">
+        <div class="headrow"><h2>План работ для КП</h2><span><span class="ok" id="copied" hidden>Скопировано</span> <button class="btn" type="button" id="copy">Скопировать</button></span></div>
+        <div class="plan" id="plan" tabindex="0"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const NORMS = [
+  ['sem','Семантика, ч/группа/язык',0.075],
+  ['meta','Мета-теги, ч/группа/язык',0.025],
+  ['tz','ТЗ на текст, ч/шт',0.25],
+  ['ctrl','Контроль текста, ч/шт',0.1],
+  ['struct_shop','Шаблонные мета + ТЗ на фильтрацию (магазин), ч',3],
+  ['struct_serv','Анализ структуры конкурентов + ТЗ (услуги), ч',4],
+  ['audit','Тех. аудит (услуги; магазин ×2), ч',3],
+  ['eeat','Анализ E-E-A-T + ТЗ, ч',3],
+  ['pm1','Управление, 1-й мес., ч',2],
+  ['check','Проверка внедрённых правок, ч',2],
+  ['lkstrat','Анализ ссылок конкурентов + стратегия, ч',4],
+  ['lkwork','Работа со ссылками (тексты, доноры, проверка, крауд), ч',6],
+  ['pm2','Управление и отчёт, 2-й мес., ч',1.5],
+  ['tech','Контроль тех. состояния, ч/мес',3],
+  ['other','Прочие работы по динамике, ч/мес',2],
+  ['report','Аналитические отчёты, ч/мес',2.5],
+];
+const normsBox = document.getElementById('norms');
+NORMS.forEach(([k,l,v])=>{
+  normsBox.insertAdjacentHTML('beforeend',`<label for="nm-${k}">${l}</label><input type="number" id="nm-${k}" step="0.025" min="0" value="${v}">`);
+});
+
+const $ = id => document.getElementById(id);
+const num = id => Math.max(0, parseFloat($(id).value) || 0);
+
+function readState(){
+  const n = {}; NORMS.forEach(([k])=> n[k] = num('nm-'+k));
+  const langs = [];
+  if($('l-ua').checked) langs.push(['ua',1]);
+  if($('l-ru').checked) langs.push(['ru',1]);
+  if($('l-en').checked) langs.push(['en',1.25]);
+  const other = Math.round(num('l-other'));
+  for(let i=0;i<other;i++) langs.push([other>1?'інша мова '+(i+1):'інша мова',1.75]);
+  return {
+    type: document.querySelector('[name=type]:checked').value,
+    niche: +document.querySelector('[name=niche]:checked').value,
+    langs, n,
+    g1:num('g1'), g2:num('g2'), tz1:num('tz1'), tz2:num('tz2'),
+    ai:$('ai').checked, rate:num('rate'), round:$('round').checked, term:+$('term').value,
+    lk0:num('lk0'), lkmax:num('lkmax'), lkstep:num('lkstep'), lkevery:Math.max(1,num('lkevery')),
+  };
+}
+
+// Чистая функция расчёта: часы по задачам для 1-го, 2-го и 3-го+ месяца
+function compute(s){
+  const n = s.n, shop = s.type==='shop';
+  const kType = shop ? 1 : 2;
+  const langUnits = s.langs.reduce((a,[,k])=>a+k,0);
+  const langCount = s.langs.length;
+  const sem = g => g * n.sem * langUnits * kType * s.niche;
+  const meta = g => g * n.meta * langCount;
+  const tz = c => c * n.tz * s.niche;
+  const m1 = [
+    ['Семантика', `${s.g1} гр × ${langUnits.toFixed(2)} яз. × ${kType} × ${s.niche}`, sem(s.g1)],
+    ['Мета-теги по семантике', `${s.g1} гр × ${langCount} яз.`, meta(s.g1)],
+    shop ? ['Шаблонные мета-теги товаров + ТЗ на структуру/фильтрацию','',n.struct_shop]
+         : ['Анализ структуры конкурентов + ТЗ на доработку структуры','',n.struct_serv],
+    ['ТЗ на тексты категорий', `${s.tz1} шт × ${s.niche}`, tz(s.tz1)],
+    ['Тех. аудит + ТЗ программисту', shop?'магазин ×2':'', n.audit*(shop?2:1)],
+    ['Анализ E-E-A-T + ТЗ','',n.eeat],
+    ['Управление проектом','',n.pm1],
+  ];
+  const m2 = [
+    ['Проверка внедрённых правок','',n.check],
+    ['Контроль написанных текстов',`${s.tz1} шт`, s.tz1*n.ctrl],
+    ['Семантика', `${s.g2} гр`, sem(s.g2)],
+    ['Мета-теги по семантике', `${s.g2} гр × ${langCount} яз.`, meta(s.g2)],
+    ['ТЗ на тексты', `${s.tz2} шт × ${s.niche}`, tz(s.tz2)],
+    ['Анализ ссылок конкурентов + стратегия','',n.lkstrat],
+    ['Работа со ссылками','',n.lkwork],
+    ['Управление и отчёт','',n.pm2],
+  ];
+  const m3 = [
+    ['Семантика', `${s.g2} гр`, sem(s.g2)],
+    ['Мета-теги', `${s.g2} гр × ${langCount} яз.`, meta(s.g2)],
+    ['ТЗ на тексты', `${s.tz2} шт × ${s.niche}`, tz(s.tz2)],
+    ['Контроль текстов', `${s.tz2} шт`, s.tz2*n.ctrl],
+    ['Контроль тех. состояния','',n.tech],
+    ['Работа со ссылками','',n.lkwork],
+    ['Прочие работы по динамике','',n.other],
+    ['Аналитические отчёты','',n.report],
+  ];
+  const hrs = t => t.reduce((a,r)=>a+r[2],0);
+  const price = h => { const p = h*s.rate; return s.round ? Math.round(p/10)*10 : Math.round(p); };
+  const h3 = hrs(m3), h3ai = s.ai ? h3*1.4 : h3;
+  const months = [];
+  for(let m=1;m<=s.term;m++){
+    const works = m===1 ? price(hrs(m1)) : m===2 ? price(hrs(m2)) : price(h3ai);
+    const links = m===1 ? 0 : Math.min(s.lkmax, s.lk0 + s.lkstep*Math.floor((m-2)/s.lkevery));
+    months.push({m, works, links});
+  }
+  return {m1,m2,m3,h1:hrs(m1),h2:hrs(m2),h3,h3ai,months,langCount,
+    total: months.reduce((a,x)=>a+x.works+x.links,0),
+    worksTotal: months.reduce((a,x)=>a+x.works,0),
+    linksTotal: months.reduce((a,x)=>a+x.links,0)};
+}
+
+const usd = v => v.toLocaleString('ru-RU').replace(/ /g,' ')+' $';
+const h = v => (Math.round(v*100)/100).toLocaleString('ru-RU')+' ч';
+let tab = 0;
+
+function planText(s,r){
+  const lang = s.langs.map(l=>l[0]).join(', ') || '—';
+  const shop = s.type==='shop';
+  const m1 = [
+    `Збір семантичного ядра за пріоритетними категоріями - до ${s.g1} груп (мови - ${lang})`,
+    shop ? 'Формування ТЗ на розширення структури сайту (створення нових підрозділів, відкритих сторінок фільтрації, тощо), ТЗ на функціонал фільтрації'
+         : 'Аналіз структури сторінок конкурентів. Формування ТЗ на доопрацювання структури сайту',
+    'Написання мета-тегів по зібраній семантиці',
+    ...(shop ? ['Оптимізація шаблонних мета-тегів для сторінок товарів'] : []),
+    `Написання ТЗ на написання текстів для сторінок ${shop?'категорій':'послуг'} - ${s.tz1} текстів (на основі зібраної семантики, аналізу конкурентів).`,
+    'Технічний SEO аудит сайту. Формування ТЗ програмісту на впровадження',
+    'Аналіз внутрішніх EEAT-факторів (факторів довіри). Формування ТЗ на впровадження на сайт',
+  ];
+  const links = '- замовлення текстів для статейних посилань\n- підбір сайтів-донорів\n- замовлення і перевірка посилань\n- замовлення крауд посилань';
+  const m2 = [
+    'Перевірка впроваджених правок на сайт','Контроль написаних текстів',
+    `Збір семантичного ядра за пріоритетними ${shop?'категоріями':'напрямками'} - до ${s.g2} груп (${lang})`,
+    'Написання мета-тегів по зібраній семантиці',
+    `Написання ТЗ на написання текстів для сторінок ${shop?'категорій':'послуг'} - ${s.tz2} текстів (на основі зібраної семантики, аналізу конкурентів).`,
+    'Аналіз посилань конкурентів по пріоритетних напрямках. Формування стратегії лінкбілдингу',
+    'Залучення якісних посилань на сайт:\n'+links,
+  ];
+  const m3 = [
+    'Збір семантичного ядра для сайту (на комерційні сторінки або в блог).',
+    'Формування мета-тегів і ТЗ на тексти',
+    'Контроль технічного стану сайту. Формування ТЗ на правки (за необхідності)',
+    'Формування якісної маси посилань на сайт:\n'+links,
+    ...(s.ai ? ['Дооптимізація сайту під AI - аналіз відповідей в AI сервісах, аналіз конкурентів, які мають видимість. Формування ТЗ на оптимізацію контента сайта.'] : []),
+    'Інші необхідні роботи, виходячи з динаміки проекту',
+    'Аналітичні звіти по динаміці позиції, трафіку, зростанню конкурентів. Формування наступних ТЗ для роботи.',
+  ];
+  const list = a => a.map((x,i)=>`${i+1}. ${x}`).join('\n');
+  const mo = r.months;
+  const lk = mo.length>1 ? mo[1].links : s.lk0;
+  const lkLast = mo[mo.length-1].links;
+  let t = `План робіт на 1-й місяць (SEO):\n\n${list(m1)}\n\n\nПлан робіт на 2-й місяць (SEO):\n\n${list(m2)}\n\n\nПлан роботи на 3-й місяць та далі щомісячно\n(загальний базовий набір задач, точний план на кожен місяць буде сформований на основі поточної ситуації в проекті)\n\n${list(m3)}\n\n\nВартість робіт\n1-ий місяць - ${mo[0].works}$\n`;
+  const w2 = mo[1]?.works ?? '', w3 = mo[2]?.works ?? w2;
+  t += w2===w3 ? `2-ий та наступні місяці:\n\n* Роботи - ${w2}$\n` : `2-ий місяць:\n* Роботи - ${w2}$\n\n3-ій та наступні місяці:\n* Роботи - ${w3}$\n`;
+  t += `* Посилання - від ${lk}$` + (lkLast>lk ? ` (далі треба буде підвищувати до ${lkLast}$)` : '');
+  return t;
+}
+
+function render(){
+  const s = readState();
+  const mp = s.type==='marketplace';
+  $('mp').hidden = !mp;
+  ['out','sched-box','tasks-box','plan-box'].forEach(id=>$(id).hidden = mp);
+  if(mp) return;
+  const r = compute(s);
+  const mo = r.months;
+  const lastWorks = mo[mo.length-1].works;
+  $('tiles').innerHTML = `
+    <div class="tile"><div class="label">1-й месяц</div><div class="v">${usd(mo[0].works)}</div><div class="s">${h(r.h1)}</div></div>
+    <div class="tile"><div class="label">Работы со 2-го</div><div class="v">${usd(mo[1]?.works ?? 0)}</div><div class="s">${h(r.h2)}${s.ai&&mo.length>2?` · с 3-го ${usd(lastWorks)}`:''}</div></div>
+    <div class="tile"><div class="label">Ссылки</div><div class="v">${usd(mo[1]?.links ?? 0)}</div><div class="s">до ${usd(mo[mo.length-1].links)}</div></div>
+    <div class="tile total"><div class="label">Итого за ${s.term} мес.</div><div class="v">${usd(r.total)}</div><div class="s">работы ${usd(r.worksTotal)} · ссылки ${usd(r.linksTotal)}</div></div>`;
+  $('sched').innerHTML = `<tr><th>Месяц</th><th class="n">Работы</th><th class="n">Ссылки</th><th class="n">Всего</th></tr>` +
+    mo.map(x=>`<tr><td>${x.m}${x.m>=3&&s.ai?'<span class="tag">AI +40%</span>':''}</td><td class="n">${usd(x.works)}</td><td class="n">${x.links?usd(x.links):'—'}</td><td class="n">${usd(x.works+x.links)}</td></tr>`).join('') +
+    `<tr class="sum"><td>Итого</td><td class="n">${usd(r.worksTotal)}</td><td class="n">${usd(r.linksTotal)}</td><td class="n">${usd(r.total)}</td></tr>`;
+  const sets = [['1-й месяц',r.m1,r.h1,0],['2-й месяц',r.m2,r.h2,0],['3-й и далее',r.m3,r.h3,s.ai?r.h3ai-r.h3:0]];
+  $('tabs').innerHTML = sets.map((x,i)=>`<button type="button" role="tab" aria-selected="${i===tab}" data-i="${i}">${x[0]}</button>`).join('');
+  const [,rows,hs,aiH] = sets[tab];
+  const total = hs+aiH;
+  const pr = v => usd(Math.round(v*s.rate));
+  $('tasks').innerHTML = `<tr><th>Задача</th><th>Объём</th><th class="n">Часы</th><th class="n">Стоимость</th></tr>` +
+    rows.map(([t,q,v])=>`<tr><td>${t}</td><td class="qty">${q}</td><td class="n">${h(v)}</td><td class="n">${pr(v)}</td></tr>`).join('') +
+    (aiH?`<tr><td>AI-оптимизация</td><td class="qty">+40%</td><td class="n">${h(aiH)}</td><td class="n">${pr(aiH)}</td></tr>`:'') +
+    `<tr class="sum"><td>Итого</td><td></td><td class="n">${h(total)}</td><td class="n">${pr(total)}</td></tr>`;
+  $('plan').textContent = planText(s,r);
+}
+
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){tab=+b.dataset.i;render();}});
+$('f').addEventListener('input',render);
+$('f').addEventListener('change',render);
+$('copy').addEventListener('click',()=>{
+  const txt=$('plan').textContent;
+  const done=()=>{$('copied').hidden=false;setTimeout(()=>$('copied').hidden=true,1500)};
+  navigator.clipboard?.writeText(txt).then(done).catch(()=>{const r=document.createRange();r.selectNodeContents($('plan'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);});
+});
+render();
+</script>
