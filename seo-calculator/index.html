@@ -200,7 +200,8 @@ tr.sum td{font-weight:800;border-bottom:none}
 const NORMS = [
   ['sem','Семантика, ч/группа/язык (0.1 ч = 6 мин; 2 языка = 12 мин)',0.1],
   ['meta','Мета-теги, ч/группа (1 язык; +25% за каждый следующий)',0.04],
-  ['tz','ТЗ на текст, ч/шт',0.25],
+  ['tz','ТЗ на текст (магазин), ч/шт',0.25],
+  ['tz_serv','ТЗ на текст (услуги), ч/шт',0.5],
   ['ctrl','Контроль текста, ч/шт',0.1],
   ['tplmeta','Шаблонные мета-теги товаров (магазин), ч',1],
   ['filters','ТЗ на функционал фильтрации (магазин), ч',2],
@@ -267,13 +268,14 @@ function compute(s){
   const sem = g => g * n.sem * langUnits * kType * s.niche;
   const kMetaLang = langCount ? 1 + 0.25*(langCount-1) : 0;
   const meta = g => g * n.meta * kMetaLang;
-  const tz = c => c * n.tz * kType * s.niche;
+  const tzN = shop ? n.tz : n.tz_serv;
+  const tz = c => c * tzN * s.niche;
   const m1 = [
     ['Семантика', `${s.g1} гр × ${langUnits.toFixed(2)} яз. × ${kType} × ${s.niche}`, sem(s.g1)],
     ['Мета-теги по семантике', `${s.g1} гр × ${kMetaLang.toFixed(2)}`, meta(s.g1)],
     ...(shop ? [['Шаблонные мета-теги товаров','',n.tplmeta], ['ТЗ на функционал фильтрации','',n.filters]]
              : [['Анализ структуры конкурентов + ТЗ на доработку структуры','',n.struct_serv]]),
-    [shop?'ТЗ на тексты категорий':'ТЗ на тексты услуг', `${s.tz1} шт × ${kType} × ${s.niche}`, tz(s.tz1)],
+    [shop?'ТЗ на тексты категорий':'ТЗ на тексты услуг', `${s.tz1} шт × ${tzN} ч × ${s.niche}`, tz(s.tz1)],
     ['Тех. аудит + ТЗ программисту', shop?'магазин ×2':'', n.audit*(shop?2:1)],
     ['Анализ E-E-A-T + ТЗ','',n.eeat],
     ['Управление проектом','',n.pm1],
@@ -283,7 +285,7 @@ function compute(s){
     ['Контроль написанных текстов',`${s.tz1} шт`, s.tz1*n.ctrl],
     ['Семантика', `${s.g2} гр`, sem(s.g2)],
     ['Мета-теги по семантике', `${s.g2} гр × ${kMetaLang.toFixed(2)}`, meta(s.g2)],
-    ['ТЗ на тексты', `${s.tz2} шт × ${kType} × ${s.niche}`, tz(s.tz2)],
+    ['ТЗ на тексты', `${s.tz2} шт × ${tzN} ч × ${s.niche}`, tz(s.tz2)],
     ['Анализ ссылок конкурентов + стратегия','',n.lkstrat],
     ['Работа со ссылками','',n.lkwork],
     ['Управление и отчёт','',n.pm2],
@@ -291,7 +293,7 @@ function compute(s){
   const m3 = [
     ['Семантика', `${s.g2} гр`, sem(s.g2)],
     ['Мета-теги', `${s.g2} гр × ${kMetaLang.toFixed(2)}`, meta(s.g2)],
-    ['ТЗ на тексты', `${s.tz2} шт × ${kType} × ${s.niche}`, tz(s.tz2)],
+    ['ТЗ на тексты', `${s.tz2} шт × ${tzN} ч × ${s.niche}`, tz(s.tz2)],
     ['Контроль текстов', `${s.tz2} шт`, s.tz2*n.ctrl],
     ['Контроль тех. состояния','',n.tech],
     ['Работа со ссылками','',n.lkwork],
@@ -364,7 +366,7 @@ function render(){
   const manual = document.querySelector('[name=lkmode]:checked').value==='manual';
   $('lk-formula').hidden = manual; $('lk-manual').hidden = !manual;
   if(mp) return;
-  [['tplmeta',s.type!=='shop'],['filters',s.type!=='shop'],['struct_serv',s.type==='shop']].forEach(([k,hide])=>{
+  [['tplmeta',s.type!=='shop'],['filters',s.type!=='shop'],['tz',s.type!=='shop'],['struct_serv',s.type==='shop'],['tz_serv',s.type==='shop']].forEach(([k,hide])=>{
     document.querySelector(`[data-norm=${k}]`).hidden=hide; $('nm-'+k).hidden=hide; });
   const r = compute(s);
   const mo = r.months;
