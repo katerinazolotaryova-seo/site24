@@ -130,19 +130,13 @@ tr.sum td{font-weight:800;border-bottom:none}
           <input type="radio" name="lkmode" id="lk-m" value="manual"><label for="lk-m">Вручную</label>
         </div>
         <div class="row2" id="lk-formula">
-          <label class="field"><span class="hint">Свои ссылающиеся домены (RD)</span><input type="number" id="rd-own" min="0" step="10" value="150"></label>
-          <label class="field"><span class="hint">Медиана ссылающихся доменов топ-5 конкурентов</span><input type="number" id="rd-comp" min="0" step="10" value="630"></label>
-          <label class="field"><span class="hint">Прирост ссылающихся доменов у конкурентов в мес.</span><input type="number" id="rd-vel" min="0" step="1" value="25"></label>
+          <label class="field"><span class="hint">Свои ссылающиеся домены (RD)</span><input type="number" id="rd-own" min="0" step="5" value="150"></label>
+          <label class="field"><span class="hint">Медиана ссылающихся доменов топ-5 конкурентов</span><input type="number" id="rd-comp" min="0" step="10" value="330"></label>
+          <label class="field"><span class="hint">Прирост ссылающихся доменов у конкурентов в мес.</span><input type="number" id="rd-vel" min="0" step="1" value="10"></label>
           <label class="field"><span class="hint">Догнать за, мес.</span><select id="catch"><option>6</option><option selected>12</option><option>24</option></select></label>
-          <label class="field"><span class="hint">Доля статейных, %</span><input type="number" id="art" min="0" max="100" step="5" value="30"></label>
           <label class="field"><span class="hint">Доноры</span><select id="donq"><option value="1" selected>Стандарт ×1</option><option value="1.5">Качественные ×1.5</option></select></label>
         </div>
-        <label class="field" id="lk-manual" hidden><span class="hint">Бюджет 2-го месяца, $</span><input type="number" id="lk0" min="0" step="50" value="600"></label>
-        <div class="row2">
-          <label class="field"><span class="hint">Рост, $</span><input type="number" id="lkstep" min="0" step="10" value="50"></label>
-          <label class="field"><span class="hint">Каждые N мес.</span><input type="number" id="lkevery" min="1" step="1" value="3"></label>
-          <label class="field"><span class="hint">Макс. рост, $</span><input type="number" id="lkmax" min="0" step="50" value="100"></label>
-        </div>
+        <label class="field" id="lk-manual" hidden><span class="hint">Бюджет на ссылки в месяц, $</span><input type="number" id="lk0" min="0" step="50" value="600"></label>
         <span class="hint">Ссылающиеся домены (RD) — из Ahrefs, считаем только домены с трафиком от 1000 в месяц. Цена статейной ссылки — по языкам сайта: язык = рынок донора.</span>
       </div>
       </div>
@@ -156,7 +150,6 @@ tr.sum td{font-weight:800;border-bottom:none}
           <label for="p-ua">Статейная UA/RU, $</label><input type="number" id="p-ua" min="0" step="5" value="40">
           <label for="p-en">Статейная EN, $</label><input type="number" id="p-en" min="0" step="5" value="200">
           <label for="p-oth">Статейная, другие языки, $</label><input type="number" id="p-oth" min="0" step="5" value="120">
-          <label for="p-crowd">Крауд, $</label><input type="number" id="p-crowd" min="0" step="1" value="4">
         </div>
         <p class="hint">Цена статейной — с текстом. При нескольких языках берётся средняя по языкам.</p>
       </details>
@@ -236,11 +229,11 @@ function readState(){
     langs, n,
     g1:num('g1'), g2:num('g2'), tz1:num('tz1'), tz2:num('tz2'),
     ai:$('ai').checked, rate:num('rate'), round:$('round').checked,
-    lk0:num('lk0'), lkmax:num('lkmax'), lkstep:num('lkstep'), lkevery:Math.max(1,num('lkevery')),
+    lk0:num('lk0'),
     lkmode: document.querySelector('[name=lkmode]:checked').value,
     rdOwn:num('rd-own'), rdComp:num('rd-comp'), rdVel:num('rd-vel'), catchM:+$('catch').value,
-    art:Math.min(100,num('art'))/100, donq:+$('donq').value,
-    pUa:num('p-ua'), pEn:num('p-en'), pOth:num('p-oth'), pCrowd:num('p-crowd'),
+    donq:+$('donq').value,
+    pUa:num('p-ua'), pEn:num('p-en'), pOth:num('p-oth'),
   };
 }
 
@@ -255,9 +248,8 @@ function linkBudget(s){
   const priceOf = {ua:s.pUa, ru:s.pUa, en:s.pEn};
   const pl = s.langs.map(([l])=>priceOf[l] ?? s.pOth);
   const artPrice = (pl.length ? pl.reduce((a,b)=>a+b,0)/pl.length : s.pUa) * s.donq;
-  const nArt = Math.round(need * s.art), nCrowd = need - nArt;
-  const raw = nArt*artPrice + nCrowd*s.pCrowd;
-  return {gap, catchUp, keep, cap, need, artPrice, nArt, nCrowd, raw, budget: Math.round(raw/50)*50};
+  const raw = need*artPrice;
+  return {gap, catchUp, keep, cap, need, artPrice, raw, budget: Math.round(raw/50)*50};
 }
 
 // Чистая функция расчёта: часы по задачам для 1-го, 2-го и 3-го+ месяца
@@ -304,11 +296,10 @@ function compute(s){
   const price = h => { const p = h*s.rate; return s.round ? Math.round(p/10)*10 : Math.round(p); };
   const h3 = hrs(m3), h3ai = s.ai ? h3*1.4 : h3;
   const lk = linkBudget(s);
-  const linksMax = lk.budget + (s.lkstep>0 ? s.lkmax : 0);
   const months = [
     {m:'1-й', works:price(hrs(m1)), links:0, linksMax:0},
     {m:'2-й', works:price(hrs(m2)), links:lk.budget, linksMax:lk.budget},
-    {m:'3-й и далее', works:price(h3ai), links:lk.budget, linksMax, ai:s.ai},
+    {m:'3-й и далее', works:price(h3ai), links:lk.budget, linksMax:lk.budget, ai:s.ai},
   ];
   return {lk,m1,m2,m3,h1:hrs(m1),h2:hrs(m2),h3,h3ai,months,langCount};
 }
@@ -380,14 +371,13 @@ function render(){
     <tr><td>Темп конкурентов × 1.2</td><td class="qty">${s.rdVel} × 1.2</td><td class="n">${f1(L.keep)}/мес.</td></tr>
     <tr><td>Потолок безопасности</td><td class="qty">свои ссылающиеся домены ${s.rdOwn<50?'< 50':s.rdOwn<=300?'50–300':'> 300'}</td><td class="n">${L.cap===Infinity?'нет':L.cap+'/мес.'}</td></tr>
     <tr><td><b>Ссылок в месяц</b></td><td class="qty">max(темпов), не выше потолка</td><td class="n"><b>${L.need}</b></td></tr>
-    <tr><td>Статейные</td><td class="qty">${L.nArt} × ${f1(L.artPrice)} $</td><td class="n">${usd(Math.round(L.nArt*L.artPrice))}</td></tr>
-    <tr><td>Крауд</td><td class="qty">${L.nCrowd} × ${s.pCrowd} $</td><td class="n">${usd(L.nCrowd*s.pCrowd)}</td></tr>
-    <tr class="sum"><td>Бюджет 2-го месяца</td><td class="qty">округл. до 50 $</td><td class="n">${usd(L.budget)}</td></tr>`;
+    <tr><td>Статейные ссылки</td><td class="qty">${L.need} × ${f1(L.artPrice)} $</td><td class="n">${usd(Math.round(L.raw))}</td></tr>
+    <tr class="sum"><td>Бюджет на ссылки в месяц</td><td class="qty">округл. до 50 $</td><td class="n">${usd(L.budget)}</td></tr>`;
   $('tiles').innerHTML = `
     <div class="tile"><div class="label">1-й месяц</div><div class="v">${usd(mo[0].works)}</div><div class="s">${h(r.h1)}</div></div>
     <div class="tile"><div class="label">Работы со 2-го</div><div class="v">${usd(mo[1]?.works ?? 0)}</div><div class="s">${h(r.h2)}${s.ai?` · с 3-го ${usd(lastWorks)}`:''}</div></div>
-    <div class="tile"><div class="label">Ссылки</div><div class="v">${usd(mo[1].links)}</div><div class="s">${mo[2].linksMax>mo[1].links?'далее до '+usd(mo[2].linksMax):'без роста'}</div></div>
-    <div class="tile total"><div class="label">В месяц с 3-го</div><div class="v">${usd(mo[2].works+mo[2].links)}</div><div class="s">${mo[2].linksMax>mo[2].links?'далее до '+usd(mo[2].works+mo[2].linksMax):'работы + ссылки'}</div></div>`;
+    <div class="tile"><div class="label">Ссылки</div><div class="v">${usd(mo[1].links)}</div><div class="s">${L.manual?'вручную':L.need+' статейных/мес.'}</div></div>
+    <div class="tile total"><div class="label">В месяц с 3-го</div><div class="v">${usd(mo[2].works+mo[2].links)}</div><div class="s">работы + ссылки</div></div>`;
   $('sched').innerHTML = `<tr><th>Месяц</th><th class="n">Работы</th><th class="n">Ссылки</th><th class="n">Всего</th></tr>` +
     mo.map(x=>{const rng=(a,b)=>b>a?`${usd(a)} → ${usd(b)}`:usd(a);
       return `<tr><td>${x.m}${x.ai?'<span class="tag">AI +40%</span>':''}</td><td class="n">${usd(x.works)}</td><td class="n">${x.links?rng(x.links,x.linksMax):'—'}</td><td class="n">${rng(x.works+x.links,x.works+x.linksMax)}</td></tr>`}).join('');
