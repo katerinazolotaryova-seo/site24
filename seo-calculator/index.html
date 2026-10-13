@@ -142,7 +142,6 @@ tr.sum td{font-weight:800;border-bottom:none}
         <div class="row2" id="lk-formula">
           <label class="field"><span class="hint">Свои ссылающиеся домены (RD)</span><input type="number" id="rd-own" min="0" step="5" value="150"></label>
           <label class="field"><span class="hint">Медиана ссылающихся доменов топ-5 конкурентов</span><input type="number" id="rd-comp" min="0" step="10" value="330"></label>
-          <label class="field"><span class="hint">Прирост ссылающихся доменов у конкурентов в мес.</span><input type="number" id="rd-vel" min="0" step="1" value="10"></label>
           <label class="field"><span class="hint">Догнать за, мес.</span><select id="catch"><option>6</option><option selected>12</option><option>24</option></select></label>
           <label class="field"><span class="hint">Доноры</span><select id="donq"><option value="1" selected>Стандарт ×1</option><option value="1.5">Качественные ×1.5</option></select></label>
         </div>
@@ -241,7 +240,7 @@ function readState(){
     ai:$('ai').checked, rate:num('rate'), round:$('round').checked,
     lk0:num('lk0'),
     lkmode: document.querySelector('[name=lkmode]:checked').value,
-    rdOwn:num('rd-own'), rdComp:num('rd-comp'), rdVel:num('rd-vel'), catchM:+$('catch').value,
+    rdOwn:num('rd-own'), rdComp:num('rd-comp'), catchM:+$('catch').value,
     donq:+$('donq').value, geo:document.querySelector('[name=geo]:checked').value,
     pUa:num('p-ua'), pEn:num('p-en'), pOth:num('p-oth'),
   };
@@ -252,12 +251,11 @@ function linkBudget(s){
   if(s.lkmode==='manual') return {budget:s.lk0, manual:true};
   const gap = Math.max(0, s.rdComp - s.rdOwn);
   const catchUp = gap / s.catchM;
-  const keep = s.rdVel * 1.2;
   const cap = s.rdOwn < 50 ? 15 : s.rdOwn <= 300 ? 40 : Infinity;
-  const need = Math.ceil(Math.min(cap, Math.max(catchUp, keep)));
+  const need = Math.ceil(Math.min(cap, catchUp));
   const artPrice = ({ua:s.pUa, us:s.pEn, eu:s.pOth}[s.geo]) * s.donq;
   const raw = need*artPrice;
-  return {gap, catchUp, keep, cap, need, artPrice, raw, budget: Math.round(raw/50)*50};
+  return {gap, catchUp, cap, need, artPrice, raw, budget: Math.round(raw/50)*50};
 }
 
 // Чистая функция расчёта: часы по задачам для 1-го, 2-го и 3-го+ месяца
@@ -376,9 +374,8 @@ function render(){
   if(!L.manual) $('lktab').innerHTML = `<tr><th>Показатель</th><th>Как считается</th><th class="n">Значение</th></tr>
     <tr><td>Отставание по ссылающимся доменам (трафик от 1000/мес.)</td><td class="qty">${s.rdComp} − ${s.rdOwn}</td><td class="n">${L.gap}</td></tr>
     <tr><td>Темп, чтобы догнать</td><td class="qty">${L.gap} / ${s.catchM} мес.</td><td class="n">${f1(L.catchUp)}/мес.</td></tr>
-    <tr><td>Темп конкурентов × 1.2</td><td class="qty">${s.rdVel} × 1.2</td><td class="n">${f1(L.keep)}/мес.</td></tr>
     <tr><td>Потолок безопасности</td><td class="qty">свои ссылающиеся домены ${s.rdOwn<50?'< 50':s.rdOwn<=300?'50–300':'> 300'}</td><td class="n">${L.cap===Infinity?'нет':L.cap+'/мес.'}</td></tr>
-    <tr><td><b>Ссылок в месяц</b></td><td class="qty">max(темпов), не выше потолка</td><td class="n"><b>${L.need}</b></td></tr>
+    <tr><td><b>Ссылок в месяц</b></td><td class="qty">темп догона, не выше потолка</td><td class="n"><b>${L.need}</b></td></tr>
     <tr><td>Статейные ссылки</td><td class="qty">${L.need} × ${f1(L.artPrice)} $</td><td class="n">${usd(Math.round(L.raw))}</td></tr>
     <tr class="sum"><td>Бюджет на ссылки в месяц</td><td class="qty">округл. до 50 $</td><td class="n">${usd(L.budget)}</td></tr>`;
   $('tiles').innerHTML = `
