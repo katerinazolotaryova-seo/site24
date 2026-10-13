@@ -124,13 +124,27 @@ tr.sum td{font-weight:800;border-bottom:none}
       <label class="check"><input type="checkbox" id="ai"><span><b>AI-оптимизация с 3-го месяца</b><br><span class="hint">+40% к стоимости ежемесячных работ</span></span></label>
 
       <div class="field">
-        <span class="label">Ссылки (бюджет со 2-го месяца)</span>
-        <div class="row2">
-          <label class="field"><span class="hint">Старт, $</span><input type="number" id="lk0" min="0" step="50" value="600"></label>
-          <label class="field"><span class="hint">Потолок, $</span><input type="number" id="lkmax" min="0" step="50" value="700"></label>
-          <label class="field"><span class="hint">Шаг роста, $</span><input type="number" id="lkstep" min="0" step="10" value="50"></label>
-          <label class="field"><span class="hint">Каждые N мес.</span><input type="number" id="lkevery" min="1" step="1" value="3"></label>
+        <span class="label">Ссылки (со 2-го месяца)</span>
+        <div class="seg">
+          <input type="radio" name="lkmode" id="lk-f" value="formula" checked><label for="lk-f">По конкурентам</label>
+          <input type="radio" name="lkmode" id="lk-m" value="manual"><label for="lk-m">Вручную</label>
         </div>
+        <div class="row2" id="lk-formula">
+          <label class="field"><span class="hint">Свои RD</span><input type="number" id="rd-own" min="0" step="10" value="150"></label>
+          <label class="field"><span class="hint">Медиана RD топ-5</span><input type="number" id="rd-comp" min="0" step="10" value="630"></label>
+          <label class="field"><span class="hint">Прирост RD конкурентов/мес.</span><input type="number" id="rd-vel" min="0" step="1" value="25"></label>
+          <label class="field"><span class="hint">Догнать за, мес.</span><select id="catch"><option>6</option><option selected>12</option><option>24</option></select></label>
+          <label class="field"><span class="hint">Доля статейных, %</span><input type="number" id="art" min="0" max="100" step="5" value="30"></label>
+          <label class="field"><span class="hint">Доноры</span><select id="donq"><option value="1" selected>Стандарт ×1</option><option value="1.5">Качественные ×1.5</option></select></label>
+        </div>
+        <label class="field" id="lk-manual" hidden><span class="hint">Бюджет 2-го месяца, $</span><input type="number" id="lk0" min="0" step="50" value="600"></label>
+        <div class="row2">
+          <label class="field"><span class="hint">Рост, $</span><input type="number" id="lkstep" min="0" step="10" value="50"></label>
+          <label class="field"><span class="hint">Каждые N мес.</span><input type="number" id="lkevery" min="1" step="1" value="3"></label>
+          <label class="field"><span class="hint">Макс. рост, $</span><input type="number" id="lkmax" min="0" step="50" value="100"></label>
+        </div>
+        <span class="hint">RD берём из Ahrefs. Цена статейной ссылки — по языкам сайта: язык = рынок донора.</span>
+      </div>
       </div>
 
       <div class="row2">
@@ -139,6 +153,17 @@ tr.sum td{font-weight:800;border-bottom:none}
         <label class="field"><span class="label">Ставка, $/час</span><input type="number" id="rate" min="1" step="1" value="18"></label>
       </div>
       <label class="check"><input type="checkbox" id="round" checked><span>Округлять цену работ до 10$</span></label>
+
+      <details>
+        <summary>Цены ссылок</summary>
+        <div class="norms">
+          <label for="p-ua">Статейная UA/RU, $</label><input type="number" id="p-ua" min="0" step="5" value="40">
+          <label for="p-en">Статейная EN, $</label><input type="number" id="p-en" min="0" step="5" value="200">
+          <label for="p-oth">Статейная, другие языки, $</label><input type="number" id="p-oth" min="0" step="5" value="120">
+          <label for="p-crowd">Крауд, $</label><input type="number" id="p-crowd" min="0" step="1" value="4">
+        </div>
+        <p class="hint">Цена статейной — с текстом. При нескольких языках берётся средняя по языкам.</p>
+      </details>
 
       <details>
         <summary>Нормы часов</summary>
@@ -152,6 +177,10 @@ tr.sum td{font-weight:800;border-bottom:none}
       <div id="out">
         <div class="tiles" id="tiles"></div>
       </div>
+      <section class="panel" id="lk-box">
+        <h2>Ссылки: расчёт бюджета</h2>
+        <div class="tablebox"><table id="lktab"></table></div>
+      </section>
       <section class="panel" id="sched-box">
         <h2>По месяцам</h2>
         <div class="tablebox"><table id="sched"></table></div>
@@ -211,7 +240,27 @@ function readState(){
     g1:num('g1'), g2:num('g2'), tz1:num('tz1'), tz2:num('tz2'),
     ai:$('ai').checked, rate:num('rate'), round:$('round').checked, term:+$('term').value,
     lk0:num('lk0'), lkmax:num('lkmax'), lkstep:num('lkstep'), lkevery:Math.max(1,num('lkevery')),
+    lkmode: document.querySelector('[name=lkmode]:checked').value,
+    rdOwn:num('rd-own'), rdComp:num('rd-comp'), rdVel:num('rd-vel'), catchM:+$('catch').value,
+    art:Math.min(100,num('art'))/100, donq:+$('donq').value,
+    pUa:num('p-ua'), pEn:num('p-en'), pOth:num('p-oth'), pCrowd:num('p-crowd'),
   };
+}
+
+// Бюджет ссылок: сколько доменов нужно в месяц × средняя цена ссылки
+function linkBudget(s){
+  if(s.lkmode==='manual') return {budget:s.lk0, manual:true};
+  const gap = Math.max(0, s.rdComp - s.rdOwn);
+  const catchUp = gap / s.catchM;
+  const keep = s.rdVel * 1.2;
+  const cap = s.rdOwn < 50 ? 15 : s.rdOwn <= 300 ? 40 : Infinity;
+  const need = Math.ceil(Math.min(cap, Math.max(catchUp, keep)));
+  const priceOf = {ua:s.pUa, ru:s.pUa, en:s.pEn};
+  const pl = s.langs.map(([l])=>priceOf[l] ?? s.pOth);
+  const artPrice = (pl.length ? pl.reduce((a,b)=>a+b,0)/pl.length : s.pUa) * s.donq;
+  const nArt = Math.round(need * s.art), nCrowd = need - nArt;
+  const raw = nArt*artPrice + nCrowd*s.pCrowd;
+  return {gap, catchUp, keep, cap, need, artPrice, nArt, nCrowd, raw, budget: Math.round(raw/50)*50};
 }
 
 // Чистая функция расчёта: часы по задачам для 1-го, 2-го и 3-го+ месяца
@@ -257,13 +306,14 @@ function compute(s){
   const hrs = t => t.reduce((a,r)=>a+r[2],0);
   const price = h => { const p = h*s.rate; return s.round ? Math.round(p/10)*10 : Math.round(p); };
   const h3 = hrs(m3), h3ai = s.ai ? h3*1.4 : h3;
+  const lk = linkBudget(s);
   const months = [];
   for(let m=1;m<=s.term;m++){
     const works = m===1 ? price(hrs(m1)) : m===2 ? price(hrs(m2)) : price(h3ai);
-    const links = m===1 ? 0 : Math.min(s.lkmax, s.lk0 + s.lkstep*Math.floor((m-2)/s.lkevery));
+    const links = m===1 ? 0 : lk.budget + Math.min(s.lkmax, s.lkstep*Math.floor((m-2)/s.lkevery));
     months.push({m, works, links});
   }
-  return {m1,m2,m3,h1:hrs(m1),h2:hrs(m2),h3,h3ai,months,langCount,
+  return {lk,m1,m2,m3,h1:hrs(m1),h2:hrs(m2),h3,h3ai,months,langCount,
     total: months.reduce((a,x)=>a+x.works+x.links,0),
     worksTotal: months.reduce((a,x)=>a+x.works,0),
     linksTotal: months.reduce((a,x)=>a+x.links,0)};
@@ -306,7 +356,7 @@ function planText(s,r){
   ];
   const list = a => a.map((x,i)=>`${i+1}. ${x}`).join('\n');
   const mo = r.months;
-  const lk = mo.length>1 ? mo[1].links : s.lk0;
+  const lk = mo.length>1 ? mo[1].links : r.lk.budget;
   const lkLast = mo[mo.length-1].links;
   let t = `План робіт на 1-й місяць (SEO):\n\n${list(m1)}\n\n\nПлан робіт на 2-й місяць (SEO):\n\n${list(m2)}\n\n\nПлан роботи на 3-й місяць та далі щомісячно\n(загальний базовий набір задач, точний план на кожен місяць буде сформований на основі поточної ситуації в проекті)\n\n${list(m3)}\n\n\nВартість робіт\n1-ий місяць - ${mo[0].works}$\n`;
   const w2 = mo[1]?.works ?? '', w3 = mo[2]?.works ?? w2;
@@ -319,13 +369,26 @@ function render(){
   const s = readState();
   const mp = s.type==='marketplace';
   $('mp').hidden = !mp;
-  ['out','sched-box','tasks-box','plan-box'].forEach(id=>$(id).hidden = mp);
+  ['out','lk-box','sched-box','tasks-box','plan-box'].forEach(id=>$(id).hidden = mp);
+  const manual = document.querySelector('[name=lkmode]:checked').value==='manual';
+  $('lk-formula').hidden = manual; $('lk-manual').hidden = !manual;
   if(mp) return;
   [['struct_shop',s.type!=='shop'],['struct_serv',s.type==='shop']].forEach(([k,hide])=>{
     document.querySelector(`[data-norm=${k}]`).hidden=hide; $('nm-'+k).hidden=hide; });
   const r = compute(s);
   const mo = r.months;
   const lastWorks = mo[mo.length-1].works;
+  const L = r.lk, f1 = v => (Math.round(v*10)/10).toLocaleString('ru-RU');
+  $('lk-box').hidden = !!L.manual;
+  if(!L.manual) $('lktab').innerHTML = `<tr><th>Показатель</th><th>Как считается</th><th class="n">Значение</th></tr>
+    <tr><td>Отставание по RD</td><td class="qty">${s.rdComp} − ${s.rdOwn}</td><td class="n">${L.gap}</td></tr>
+    <tr><td>Темп, чтобы догнать</td><td class="qty">${L.gap} / ${s.catchM} мес.</td><td class="n">${f1(L.catchUp)}/мес.</td></tr>
+    <tr><td>Темп конкурентов × 1.2</td><td class="qty">${s.rdVel} × 1.2</td><td class="n">${f1(L.keep)}/мес.</td></tr>
+    <tr><td>Потолок безопасности</td><td class="qty">свои RD ${s.rdOwn<50?'< 50':s.rdOwn<=300?'50–300':'> 300'}</td><td class="n">${L.cap===Infinity?'нет':L.cap+'/мес.'}</td></tr>
+    <tr><td><b>Ссылок в месяц</b></td><td class="qty">max(темпов), не выше потолка</td><td class="n"><b>${L.need}</b></td></tr>
+    <tr><td>Статейные</td><td class="qty">${L.nArt} × ${f1(L.artPrice)} $</td><td class="n">${usd(Math.round(L.nArt*L.artPrice))}</td></tr>
+    <tr><td>Крауд</td><td class="qty">${L.nCrowd} × ${s.pCrowd} $</td><td class="n">${usd(L.nCrowd*s.pCrowd)}</td></tr>
+    <tr class="sum"><td>Бюджет 2-го месяца</td><td class="qty">округл. до 50 $</td><td class="n">${usd(L.budget)}</td></tr>`;
   $('tiles').innerHTML = `
     <div class="tile"><div class="label">1-й месяц</div><div class="v">${usd(mo[0].works)}</div><div class="s">${h(r.h1)}</div></div>
     <div class="tile"><div class="label">Работы со 2-го</div><div class="v">${usd(mo[1]?.works ?? 0)}</div><div class="s">${h(r.h2)}${s.ai&&mo.length>2?` · с 3-го ${usd(lastWorks)}`:''}</div></div>
