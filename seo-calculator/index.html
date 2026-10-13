@@ -267,13 +267,13 @@ function compute(s){
   const sem = g => g * n.sem * langUnits * kType * s.niche;
   const kMetaLang = langCount ? 1 + 0.25*(langCount-1) : 0;
   const meta = g => g * n.meta * kMetaLang;
-  const tz = c => c * n.tz * s.niche;
+  const tz = c => c * n.tz * kType * s.niche;
   const m1 = [
     ['Семантика', `${s.g1} гр × ${langUnits.toFixed(2)} яз. × ${kType} × ${s.niche}`, sem(s.g1)],
     ['Мета-теги по семантике', `${s.g1} гр × ${kMetaLang.toFixed(2)}`, meta(s.g1)],
     ...(shop ? [['Шаблонные мета-теги товаров','',n.tplmeta], ['ТЗ на функционал фильтрации','',n.filters]]
              : [['Анализ структуры конкурентов + ТЗ на доработку структуры','',n.struct_serv]]),
-    ['ТЗ на тексты категорий', `${s.tz1} шт × ${s.niche}`, tz(s.tz1)],
+    [shop?'ТЗ на тексты категорий':'ТЗ на тексты услуг', `${s.tz1} шт × ${kType} × ${s.niche}`, tz(s.tz1)],
     ['Тех. аудит + ТЗ программисту', shop?'магазин ×2':'', n.audit*(shop?2:1)],
     ['Анализ E-E-A-T + ТЗ','',n.eeat],
     ['Управление проектом','',n.pm1],
@@ -283,7 +283,7 @@ function compute(s){
     ['Контроль написанных текстов',`${s.tz1} шт`, s.tz1*n.ctrl],
     ['Семантика', `${s.g2} гр`, sem(s.g2)],
     ['Мета-теги по семантике', `${s.g2} гр × ${kMetaLang.toFixed(2)}`, meta(s.g2)],
-    ['ТЗ на тексты', `${s.tz2} шт × ${s.niche}`, tz(s.tz2)],
+    ['ТЗ на тексты', `${s.tz2} шт × ${kType} × ${s.niche}`, tz(s.tz2)],
     ['Анализ ссылок конкурентов + стратегия','',n.lkstrat],
     ['Работа со ссылками','',n.lkwork],
     ['Управление и отчёт','',n.pm2],
@@ -291,7 +291,7 @@ function compute(s){
   const m3 = [
     ['Семантика', `${s.g2} гр`, sem(s.g2)],
     ['Мета-теги', `${s.g2} гр × ${kMetaLang.toFixed(2)}`, meta(s.g2)],
-    ['ТЗ на тексты', `${s.tz2} шт × ${s.niche}`, tz(s.tz2)],
+    ['ТЗ на тексты', `${s.tz2} шт × ${kType} × ${s.niche}`, tz(s.tz2)],
     ['Контроль текстов', `${s.tz2} шт`, s.tz2*n.ctrl],
     ['Контроль тех. состояния','',n.tech],
     ['Работа со ссылками','',n.lkwork],
