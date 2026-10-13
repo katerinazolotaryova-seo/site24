@@ -147,11 +147,7 @@ tr.sum td{font-weight:800;border-bottom:none}
       </div>
       </div>
 
-      <div class="row2">
-        <label class="field"><span class="label">Срок, мес.</span>
-          <select id="term"><option>3</option><option selected>6</option><option>12</option></select></label>
-        <label class="field"><span class="label">Ставка, $/час</span><input type="number" id="rate" min="1" step="1" value="18"></label>
-      </div>
+      <label class="field"><span class="label">Ставка, $/час</span><input type="number" id="rate" min="1" step="1" value="18"></label>
       <label class="check"><input type="checkbox" id="round" checked><span>Округлять цену работ до 10$</span></label>
 
       <details>
@@ -204,7 +200,8 @@ const NORMS = [
   ['meta','Мета-теги, ч/группа (1 язык; +25% за каждый следующий)',0.04],
   ['tz','ТЗ на текст, ч/шт',0.25],
   ['ctrl','Контроль текста, ч/шт',0.1],
-  ['struct_shop','Шаблонные мета-теги + ТЗ на функционал фильтрации, ч',3],
+  ['tplmeta','Шаблонные мета-теги товаров (магазин), ч',1],
+  ['filters','ТЗ на функционал фильтрации (магазин), ч',2],
   ['struct_serv','Анализ структуры конкурентов + ТЗ на доработку структуры, ч',4],
   ['audit','Тех. аудит (услуги; магазин ×2), ч',3],
   ['eeat','Анализ E-E-A-T + ТЗ, ч',3],
@@ -238,7 +235,7 @@ function readState(){
     niche: +document.querySelector('[name=niche]:checked').value,
     langs, n,
     g1:num('g1'), g2:num('g2'), tz1:num('tz1'), tz2:num('tz2'),
-    ai:$('ai').checked, rate:num('rate'), round:$('round').checked, term:+$('term').value,
+    ai:$('ai').checked, rate:num('rate'), round:$('round').checked,
     lk0:num('lk0'), lkmax:num('lkmax'), lkstep:num('lkstep'), lkevery:Math.max(1,num('lkevery')),
     lkmode: document.querySelector('[name=lkmode]:checked').value,
     rdOwn:num('rd-own'), rdComp:num('rd-comp'), rdVel:num('rd-vel'), catchM:+$('catch').value,
@@ -276,8 +273,8 @@ function compute(s){
   const m1 = [
     ['Семантика', `${s.g1} гр × ${langUnits.toFixed(2)} яз. × ${kType} × ${s.niche}`, sem(s.g1)],
     ['Мета-теги по семантике', `${s.g1} гр × ${kMetaLang.toFixed(2)}`, meta(s.g1)],
-    shop ? ['Шаблонные мета-теги товаров + ТЗ на функционал фильтрации','',n.struct_shop]
-         : ['Анализ структуры конкурентов + ТЗ на доработку структуры','',n.struct_serv],
+    ...(shop ? [['Шаблонные мета-теги товаров','',n.tplmeta], ['ТЗ на функционал фильтрации','',n.filters]]
+             : [['Анализ структуры конкурентов + ТЗ на доработку структуры','',n.struct_serv]]),
     ['ТЗ на тексты категорий', `${s.tz1} шт × ${s.niche}`, tz(s.tz1)],
     ['Тех. аудит + ТЗ программисту', shop?'магазин ×2':'', n.audit*(shop?2:1)],
     ['Анализ E-E-A-T + ТЗ','',n.eeat],
@@ -307,16 +304,13 @@ function compute(s){
   const price = h => { const p = h*s.rate; return s.round ? Math.round(p/10)*10 : Math.round(p); };
   const h3 = hrs(m3), h3ai = s.ai ? h3*1.4 : h3;
   const lk = linkBudget(s);
-  const months = [];
-  for(let m=1;m<=s.term;m++){
-    const works = m===1 ? price(hrs(m1)) : m===2 ? price(hrs(m2)) : price(h3ai);
-    const links = m===1 ? 0 : lk.budget + Math.min(s.lkmax, s.lkstep*Math.floor((m-2)/s.lkevery));
-    months.push({m, works, links});
-  }
-  return {lk,m1,m2,m3,h1:hrs(m1),h2:hrs(m2),h3,h3ai,months,langCount,
-    total: months.reduce((a,x)=>a+x.works+x.links,0),
-    worksTotal: months.reduce((a,x)=>a+x.works,0),
-    linksTotal: months.reduce((a,x)=>a+x.links,0)};
+  const linksMax = lk.budget + (s.lkstep>0 ? s.lkmax : 0);
+  const months = [
+    {m:'1-й', works:price(hrs(m1)), links:0, linksMax:0},
+    {m:'2-й', works:price(hrs(m2)), links:lk.budget, linksMax:lk.budget},
+    {m:'3-й и далее', works:price(h3ai), links:lk.budget, linksMax, ai:s.ai},
+  ];
+  return {lk,m1,m2,m3,h1:hrs(m1),h2:hrs(m2),h3,h3ai,months,langCount};
 }
 
 const usd = v => v.toLocaleString('ru-RU').replace(/ /g,' ')+' $';
@@ -357,7 +351,7 @@ function planText(s,r){
   const list = a => a.map((x,i)=>`${i+1}. ${x}`).join('\n');
   const mo = r.months;
   const lk = mo.length>1 ? mo[1].links : r.lk.budget;
-  const lkLast = mo[mo.length-1].links;
+  const lkLast = mo[2].linksMax;
   let t = `План робіт на 1-й місяць (SEO):\n\n${list(m1)}\n\n\nПлан робіт на 2-й місяць (SEO):\n\n${list(m2)}\n\n\nПлан роботи на 3-й місяць та далі щомісячно\n(загальний базовий набір задач, точний план на кожен місяць буде сформований на основі поточної ситуації в проекті)\n\n${list(m3)}\n\n\nВартість робіт\n1-ий місяць - ${mo[0].works}$\n`;
   const w2 = mo[1]?.works ?? '', w3 = mo[2]?.works ?? w2;
   t += w2===w3 ? `2-ий та наступні місяці:\n\n* Роботи - ${w2}$\n` : `2-ий місяць:\n* Роботи - ${w2}$\n\n3-ій та наступні місяці:\n* Роботи - ${w3}$\n`;
@@ -373,7 +367,7 @@ function render(){
   const manual = document.querySelector('[name=lkmode]:checked').value==='manual';
   $('lk-formula').hidden = manual; $('lk-manual').hidden = !manual;
   if(mp) return;
-  [['struct_shop',s.type!=='shop'],['struct_serv',s.type==='shop']].forEach(([k,hide])=>{
+  [['tplmeta',s.type!=='shop'],['filters',s.type!=='shop'],['struct_serv',s.type==='shop']].forEach(([k,hide])=>{
     document.querySelector(`[data-norm=${k}]`).hidden=hide; $('nm-'+k).hidden=hide; });
   const r = compute(s);
   const mo = r.months;
@@ -391,12 +385,12 @@ function render(){
     <tr class="sum"><td>Бюджет 2-го месяца</td><td class="qty">округл. до 50 $</td><td class="n">${usd(L.budget)}</td></tr>`;
   $('tiles').innerHTML = `
     <div class="tile"><div class="label">1-й месяц</div><div class="v">${usd(mo[0].works)}</div><div class="s">${h(r.h1)}</div></div>
-    <div class="tile"><div class="label">Работы со 2-го</div><div class="v">${usd(mo[1]?.works ?? 0)}</div><div class="s">${h(r.h2)}${s.ai&&mo.length>2?` · с 3-го ${usd(lastWorks)}`:''}</div></div>
-    <div class="tile"><div class="label">Ссылки</div><div class="v">${usd(mo[1]?.links ?? 0)}</div><div class="s">до ${usd(mo[mo.length-1].links)}</div></div>
-    <div class="tile total"><div class="label">Итого за ${s.term} мес.</div><div class="v">${usd(r.total)}</div><div class="s">работы ${usd(r.worksTotal)} · ссылки ${usd(r.linksTotal)}</div></div>`;
+    <div class="tile"><div class="label">Работы со 2-го</div><div class="v">${usd(mo[1]?.works ?? 0)}</div><div class="s">${h(r.h2)}${s.ai?` · с 3-го ${usd(lastWorks)}`:''}</div></div>
+    <div class="tile"><div class="label">Ссылки</div><div class="v">${usd(mo[1].links)}</div><div class="s">${mo[2].linksMax>mo[1].links?'далее до '+usd(mo[2].linksMax):'без роста'}</div></div>
+    <div class="tile total"><div class="label">В месяц с 3-го</div><div class="v">${usd(mo[2].works+mo[2].links)}</div><div class="s">${mo[2].linksMax>mo[2].links?'далее до '+usd(mo[2].works+mo[2].linksMax):'работы + ссылки'}</div></div>`;
   $('sched').innerHTML = `<tr><th>Месяц</th><th class="n">Работы</th><th class="n">Ссылки</th><th class="n">Всего</th></tr>` +
-    mo.map(x=>`<tr><td>${x.m}${x.m>=3&&s.ai?'<span class="tag">AI +40%</span>':''}</td><td class="n">${usd(x.works)}</td><td class="n">${x.links?usd(x.links):'—'}</td><td class="n">${usd(x.works+x.links)}</td></tr>`).join('') +
-    `<tr class="sum"><td>Итого</td><td class="n">${usd(r.worksTotal)}</td><td class="n">${usd(r.linksTotal)}</td><td class="n">${usd(r.total)}</td></tr>`;
+    mo.map(x=>{const rng=(a,b)=>b>a?`${usd(a)} → ${usd(b)}`:usd(a);
+      return `<tr><td>${x.m}${x.ai?'<span class="tag">AI +40%</span>':''}</td><td class="n">${usd(x.works)}</td><td class="n">${x.links?rng(x.links,x.linksMax):'—'}</td><td class="n">${rng(x.works+x.links,x.works+x.linksMax)}</td></tr>`}).join('');
   const sets = [['1-й месяц',r.m1,r.h1,0],['2-й месяц',r.m2,r.h2,0],['3-й и далее',r.m3,r.h3,s.ai?r.h3ai-r.h3:0]];
   $('tabs').innerHTML = sets.map((x,i)=>`<button type="button" role="tab" aria-selected="${i===tab}" data-i="${i}">${x[0]}</button>`).join('');
   const [,rows,hs,aiH] = sets[tab];
