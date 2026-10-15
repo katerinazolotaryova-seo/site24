@@ -166,7 +166,7 @@ tr.sum td{font-weight:800;border-bottom:none}
       <details>
         <summary>Нормы часов</summary>
         <div class="norms" id="norms"></div>
-        <p class="hint">Семантика — на группу на 1 язык (UA/RU; EN ×1.25, другие ×1.75). Мета-теги — на группу на 1 язык, каждый следующий язык +25%. Меняйте, если реальные часы другие.</p>
+        <p class="hint">Семантика — на группу на 1 язык; UA+RU вместе ×1.25, EN +1.25, другие +1.75. Мета-теги — на группу на 1 язык, каждый следующий язык +25%. Меняйте, если реальные часы другие.</p>
       </details>
     </form>
 
@@ -198,7 +198,7 @@ tr.sum td{font-weight:800;border-bottom:none}
 
 <script>
 const NORMS = [
-  ['sem','Семантика, ч/группа/язык (0.1 ч = 6 мин; 2 языка = 12 мин)',0.1],
+  ['sem','Семантика, ч/группа на 1 язык (0.16 ч; UA+RU ×1.25 = 12 мин)',0.16],
   ['meta','Мета-теги, ч/группа (1 язык; +25% за каждый следующий)',0.04],
   ['tz','ТЗ на текст (магазин), ч/шт',0.25],
   ['tz_serv','ТЗ на текст (услуги), ч/шт',0.5],
@@ -265,7 +265,9 @@ function linkBudget(s){
 function compute(s){
   const n = s.n, shop = s.type==='shop';
   const kType = shop ? 1 : 2;
-  const langUnits = s.langs.reduce((a,[,k])=>a+k,0);
+  const has = l => s.langs.some(([x])=>x===l);
+  // UA и RU вместе дают ×1.25, а не ×2
+  const langUnits = s.langs.reduce((a,[,k])=>a+k,0) - (has('ua') && has('ru') ? 0.75 : 0);
   const langCount = s.langs.length;
   const sem = g => g * n.sem * langUnits * kType * s.niche;
   const kMetaLang = langCount ? 1 + 0.25*(langCount-1) : 0;
