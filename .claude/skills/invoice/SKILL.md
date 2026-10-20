@@ -32,14 +32,18 @@ template/flow unless the user asks to change the layout.
    ```
    python3 .claude/skills/invoice/generate_invoice.py \
      --site <site> \
-     --service "<full service text, e.g. 'GEO консультація для frigat.net'>" \
-     --amount-usd <amount> --rate sale \
+     --amount-uah <amount> \
      --date <YYYY-MM-DD> --suffix <n> \
      --requisites <profile> \
      --out-dir <scratch dir>
    ```
-   Use `--amount-uah <amount>` instead of `--amount-usd`/`--rate` if the
-   user gives a fixed UAH amount directly.
+   Use `--amount-usd <amount> --rate sale` instead of `--amount-uah` if the
+   user gives the amount in USD.
+   - `--service` defaults to `"Консультування з питань інформатизації: SEO
+     просування сайту <site>"` — leave it out unless the user asks for a
+     different service text (e.g. a GEO consultation instead of SEO
+     promotion), then pass `--service "..."` explicitly.
+   - `--unit` defaults to `"місяць"` — leave it out unless told otherwise.
    - `--rate` is `sale` (курс продажу) by default — this is what was used
      the first time this skill was derived. Only use `buy` if the user
      explicitly asks for it.

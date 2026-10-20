@@ -3,12 +3,16 @@
 
 Usage example:
     python3 generate_invoice.py \
-        --site frigat.net \
-        --service "GEO консультація для frigat.net" \
-        --amount-usd 90 --rate sale \
-        --date 2026-10-07 --suffix 1 \
+        --site zvlegal.com \
+        --amount-uah 25339 \
+        --date 2026-10-20 --suffix 1 \
         --requisites turchykhin \
         --out-dir .
+
+If --service is omitted, it defaults to:
+    "Консультування з питань інформатизації: SEO просування сайту <site>"
+Pass --service explicitly to override (e.g. for a GEO consultation instead
+of SEO promotion).
 
 Either --amount-usd (converted via PrivatBank commercial rate) or
 --amount-uah (a fixed UAH amount) must be given.
@@ -153,10 +157,11 @@ def recalc_formulas(xlsx_path: Path):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--site", required=True, help="e.g. frigat.net")
-    p.add_argument("--service", required=True,
-                    help="Full service text written into the invoice row, "
-                         "e.g. \"GEO консультація для frigat.net\"")
-    p.add_argument("--unit", default="послуга")
+    p.add_argument("--service", default=None,
+                    help="Full service text written into the invoice row. "
+                         "Defaults to \"Консультування з питань інформатизації: "
+                         "SEO просування сайту <site>\" if omitted.")
+    p.add_argument("--unit", default="місяць")
     p.add_argument("--qty", type=float, default=1)
     p.add_argument("--amount-usd", type=float)
     p.add_argument("--amount-uah", type=float)
@@ -172,6 +177,9 @@ def main():
 
     if (args.amount_usd is None) == (args.amount_uah is None):
         sys.exit("Specify exactly one of --amount-usd or --amount-uah")
+
+    if args.service is None:
+        args.service = f"Консультування з питань інформатизації: SEO просування сайту {args.site}"
 
     invoice_date = datetime.date.fromisoformat(args.date)
 
@@ -218,7 +226,11 @@ def main():
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    service_label = args.service.replace(f"для {args.site}", "").strip()
+    # Strip the site name (wherever it appears: "для <site>", "сайту <site>", ...)
+    # and tidy up punctuation/whitespace left behind, for a filesystem-safe label.
+    service_label = args.service.replace(args.site, "")
+    service_label = service_label.replace(":", "").strip()
+    service_label = " ".join(service_label.split())
     filename = f"рахунок-{args.site}-{service_label}-{invoice_date.strftime('%d.%m.%Y')}.xlsx"
     out_path = out_dir / filename
     wb.save(out_path)
