@@ -5,21 +5,34 @@ description: Generate a Ukrainian рахунок-фактура (invoice) .xlsx 
 
 # Invoice generator
 
-Generates invoices matching the layout of `template.xlsx` (originally modeled
-after a real рахунок-фактура for ФОП Турчихін). Keep using this exact
-template/flow unless the user asks to change the layout.
+Generates invoices from one of several fixed templates — one per supplier
+(постачальник). Different suppliers' real invoices have different cell
+layouts (not just different values), so each requisites profile in
+`requisites.json` names both its own template file and a "layout" (a cell
+map in `generate_invoice.py`'s `LAYOUTS` dict). Keep using the exact
+template/layout for a given supplier unless the user asks to change it.
+
+Known profiles so far:
+- `turchykhin` (default) — `template.xlsx`, layout `turchykhin_v1`.
+- `zolotaryova` — `template_zolotaryova.xlsx`, layout `zolotaryova_v1`
+  (different requisites fields: no ЄДРПОУ, instead has ІПН + адреса +
+  телефони; different row positions for everything).
 
 ## Files in this skill
 
-- `template.xlsx` — the base workbook (sheet name is `"Счет "` — note the
-  trailing space, keep it exact). Requisites block (A1:C5) is already
-  formatted left-aligned, Times New Roman 11 — do not change this formatting
-  unless asked.
-- `requisites.json` — named profiles of "постачальник" details (ЄДРПОУ,
-  IBAN, bank, director signature). Currently only `turchykhin` exists. When
-  the user gives you a new set of requisites, add a new named entry here
-  (ask them for a short key name) instead of overwriting the existing one.
-- `generate_invoice.py` — fills the template and recalculates formulas.
+- `template.xlsx`, `template_zolotaryova.xlsx`, ... — one base workbook per
+  supplier (sheet name is always `"Счет "` — note the trailing space, keep
+  it exact). Don't change a template's formatting unless the user asks to —
+  it should match the real example invoice it was derived from.
+- `requisites.json` — named profiles of "постачальник" details, each with a
+  `"layout"` and `"template"` key picking which `LAYOUTS` entry / file to
+  use, plus whatever fields that layout needs (see `generate_invoice.py`'s
+  `LAYOUTS["<name>"]["requisite_cells"]` for the exact field names it reads).
+  When the user gives you a new set of requisites, add a new named entry
+  here (ask for a short key name, e.g. the FOP's surname) without touching
+  existing entries — see "Adding a new requisites profile / supplier" below.
+- `generate_invoice.py` — fills the right template per-profile and
+  recalculates formulas.
 
 ## Workflow
 
@@ -79,9 +92,25 @@ the original template's style. You should not need to write this by hand —
 if the wording looks off for an edge case, fix the `number_to_words_uk` /
 `amount_in_words_uah` functions rather than hardcoding text.
 
-## Adding a new requisites profile
+## Adding a new requisites profile / supplier
 
-When the user gives you a new "реквізити" (ЄДРПОУ, IBAN, bank name, bank
-MFO, director signature line), add it to `requisites.json` under a new short
-key (e.g. the FOP's surname), without touching existing entries. Then pass
-`--requisites <key>` to use it.
+If the user gives you new requisites for a **supplier (постачальник) already
+in `requisites.json`**, or a brand-new supplier whose invoice uses an
+**existing layout's exact cell positions**, just add/edit the entry in
+`requisites.json` with that layout's required fields (see the matching
+`LAYOUTS[...]["requisite_cells"]` keys) — no code change needed.
+
+If the user gives you an **example invoice for a new supplier** (a different
+real рахунок, not just different values), check whether its cell layout
+actually differs from the existing ones (row numbers, extra fields like
+address/phone, missing ЄДРПОУ, etc. — inspect with openpyxl, don't assume):
+1. Copy the example file into this directory as a new `template_<name>.xlsx`
+   (keep its original formatting — don't "fix" it unless asked).
+2. Add a new entry to `LAYOUTS` in `generate_invoice.py` with that template's
+   exact cell coordinates for every field (`requisite_cells`, `invoice_no_cell`,
+   `payer_cell`, the item row, the totals block, `date_cell`, ...).
+3. Add the new profile to `requisites.json` with `"layout"` and `"template"`
+   pointing at what you just added, plus the actual requisites values.
+4. Test both the new and an existing profile end-to-end before committing,
+   to make sure the shared code path (`main()` in `generate_invoice.py`)
+   still works for both.

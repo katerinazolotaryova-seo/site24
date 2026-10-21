@@ -1,10 +1,24 @@
 {
   "turchykhin": {
+    "layout": "turchykhin_v1",
+    "template": "template.xlsx",
     "label": "ФОП ТУРЧИХІН ЄВГЕНІЙ ЛЕОНІДОВИЧ",
     "edrpou": 3000215152,
     "iban": "UA933052990000026009036220643",
     "bank": "АТ КБ \"ПРИВАТБАНК\"",
     "bank_mfo": 14360570,
     "director": "Турчихін Є.Л.-"
+  },
+  "zolotaryova": {
+    "layout": "zolotaryova_v1",
+    "template": "template_zolotaryova.xlsx",
+    "label": "ФОП Золотарьова Катерина Володимирівна",
+    "iban": "UA073510050000026005450205200",
+    "bank": "АКІБ «Укрсіббанк»",
+    "mfo": 351005,
+    "inn": "3178815880",
+    "address": "м. Київ, пр. Глушкова, 24, кв.1",
+    "phone": "+38(050)900-14-80",
+    "director": "Золотарьова К.В.-"
   }
 }

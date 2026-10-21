@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Generate a УКР invoice (рахунок-фактура) .xlsx from template.xlsx.
+"""Generate a УКР invoice (рахунок-фактура) .xlsx from a requisites profile's
+template (see LAYOUTS / requisites.json — each supplier profile has its own
+template file and cell layout).
 
 Usage example:
     python3 generate_invoice.py \
@@ -32,11 +34,53 @@ from pathlib import Path
 from openpyxl import load_workbook
 
 SKILL_DIR = Path(__file__).resolve().parent
-TEMPLATE_PATH = SKILL_DIR / "template.xlsx"
 REQUISITES_PATH = SKILL_DIR / "requisites.json"
-SHEET_NAME = "Счет "  # NB: trailing space, matches the original template
+SHEET_NAME = "Счет "  # NB: trailing space, matches the original templates
 
 PRIVATBANK_COMMERCIAL_URL = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"
+
+# Each requisites profile (requisites.json) names a "layout" key below and a
+# "template" file in this directory. A layout is a different physical invoice
+# (different supplier => different cell positions/fields), not just different
+# values plugged into the same cells — so add a new layout here whenever a
+# new supplier's invoice has a different row/column structure, rather than
+# trying to force it into an existing layout's cell map.
+LAYOUTS = {
+    "turchykhin_v1": {
+        # requisite_cells: ordered (requisites.json key, cell) pairs for the
+        # top "Постачальник" block plus the "Керівник" signature cell.
+        "requisite_cells": [
+            ("label", "C1"), ("edrpou", "C2"), ("iban", "C3"),
+            ("bank", "C4"), ("bank_mfo", "C5"), ("director", "C20"),
+        ],
+        "invoice_no_cell": "A8",
+        "invoice_no_fmt": "РАХУНОК-ФАКТУРА №{}",
+        "payer_cell": "C10",
+        "item_num_cell": "A15", "item_desc_cell": "B15", "item_unit_cell": "C15",
+        "item_qty_cell": "D15", "item_price_cell": "E15", "item_sum_cell": "F15",
+        "total_label_cell": "D16", "total_label_value": "Всього ",
+        "total_sum_cell": "F16",
+        "sum_label_cell": "B18", "sum_label_value": "Сума без ПДВ",
+        "sum_value_cell": "D18", "sum_words_cell": "E18",
+        "date_cell": "B23",
+    },
+    "zolotaryova_v1": {
+        "requisite_cells": [
+            ("label", "C1"), ("iban", "C2"), ("bank", "C3"), ("mfo", "C4"),
+            ("inn", "C5"), ("address", "C6"), ("phone", "C7"), ("director", "C23"),
+        ],
+        "invoice_no_cell": "A11",
+        "invoice_no_fmt": "РАХУНОК-ФАКТУРА №{}",
+        "payer_cell": "C13",
+        "item_num_cell": "A18", "item_desc_cell": "B18", "item_unit_cell": "C18",
+        "item_qty_cell": "D18", "item_price_cell": "E18", "item_sum_cell": "F18",
+        "total_label_cell": "D19", "total_label_value": "Всього ",
+        "total_sum_cell": "F19",
+        "sum_label_cell": "B21", "sum_label_value": "Сума без ПДВ",
+        "sum_value_cell": "D21", "sum_words_cell": "E21",
+        "date_cell": "B26",
+    },
+}
 
 
 # ---- Ukrainian number-to-words (for the "сума словами" line) ----
@@ -188,6 +232,8 @@ def main():
         sys.exit(f"Unknown requisites profile '{args.requisites}'. "
                   f"Known: {', '.join(requisites)}")
     req = requisites[args.requisites]
+    layout = LAYOUTS[req["layout"]]
+    template_path = SKILL_DIR / req["template"]
 
     if args.amount_usd is not None:
         rate = fetch_usd_uah_rate(args.rate)
@@ -197,32 +243,27 @@ def main():
 
     invoice_no = f"{invoice_date.strftime('%d%m%y')}/{args.suffix}"
 
-    wb = load_workbook(TEMPLATE_PATH)
+    wb = load_workbook(template_path)
     ws = wb[SHEET_NAME]
 
-    ws["A1"] = "Постачальник:"
-    ws["C1"] = req["label"]
-    ws["C2"] = req["edrpou"]
-    ws["C3"] = req["iban"]
-    ws["C4"] = req["bank"]
-    ws["C5"] = req["bank_mfo"]
-    ws["C20"] = req["director"]
+    for key, cell in layout["requisite_cells"]:
+        ws[cell] = req[key]
 
-    ws["A8"] = f"РАХУНОК-ФАКТУРА №{invoice_no}"
-    ws["C10"] = args.payer or None
+    ws[layout["invoice_no_cell"]] = layout["invoice_no_fmt"].format(invoice_no)
+    ws[layout["payer_cell"]] = args.payer or None
 
-    ws["A15"] = 1
-    ws["B15"] = args.service
-    ws["C15"] = args.unit
-    ws["D15"] = args.qty
-    ws["E15"] = amount_uah
-    ws["F15"] = "=E15"
-    ws["D16"] = "Всього "
-    ws["F16"] = "=F15"
-    ws["B18"] = "Сума без ПДВ"
-    ws["D18"] = "=F16"
-    ws["E18"] = amount_in_words_uah(amount_uah)
-    ws["B23"] = datetime.datetime.combine(invoice_date, datetime.time())
+    ws[layout["item_num_cell"]] = 1
+    ws[layout["item_desc_cell"]] = args.service
+    ws[layout["item_unit_cell"]] = args.unit
+    ws[layout["item_qty_cell"]] = args.qty
+    ws[layout["item_price_cell"]] = amount_uah
+    ws[layout["item_sum_cell"]] = f"={layout['item_price_cell']}"
+    ws[layout["total_label_cell"]] = layout["total_label_value"]
+    ws[layout["total_sum_cell"]] = f"={layout['item_sum_cell']}"
+    ws[layout["sum_label_cell"]] = layout["sum_label_value"]
+    ws[layout["sum_value_cell"]] = f"={layout['total_sum_cell']}"
+    ws[layout["sum_words_cell"]] = amount_in_words_uah(amount_uah)
+    ws[layout["date_cell"]] = datetime.datetime.combine(invoice_date, datetime.time())
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
