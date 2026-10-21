@@ -61,9 +61,10 @@ Known profiles so far:
      the first time this skill was derived. Only use `buy` if the user
      explicitly asks for it.
    - The invoice number is always `DDMMYY/<suffix>` from `--date`.
-   - Output filename is `рахунок-<site>-<service>-<DD.MM.YYYY>.xlsx` (the
-     literal `для <site>` substring is stripped out of the service text
-     for the filename only, not from the cell content).
+   - Output filename is `рахунок_<service_code>_<site>_<MM-YYYY>.xlsx`.
+     `service_code` auto-detects `SEO`/`GEO` from `--service`; pass
+     `--service-code` explicitly if the service doesn't contain either (the
+     fallback otherwise slugs the full `--service` text, which gets long).
 3. Show the generated file to the user for review (`SendUserFile`) before
    uploading anywhere, unless they've already told you to skip that step
    for routine invoices.

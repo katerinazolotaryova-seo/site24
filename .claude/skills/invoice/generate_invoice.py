@@ -19,7 +19,7 @@ of SEO promotion).
 Either --amount-usd (converted via PrivatBank commercial rate) or
 --amount-uah (a fixed UAH amount) must be given.
 
-Output filename follows: рахунок-<site>-<service>-<DD.MM.YYYY>.xlsx
+Output filename follows: рахунок_<service_code>_<site>_<MM-YYYY>.xlsx
 """
 import argparse
 import datetime
@@ -206,6 +206,10 @@ def main():
                          "Defaults to \"Консультування з питань інформатизації: "
                          "SEO просування сайту <site>\" if omitted.")
     p.add_argument("--unit", default="місяць")
+    p.add_argument("--service-code", default=None,
+                    help="Short label for the filename (e.g. 'SEO', 'GEO'). "
+                         "Defaults to 'SEO'/'GEO' auto-detected from --service, "
+                         "else a slug of --service.")
     p.add_argument("--qty", type=float, default=1)
     p.add_argument("--amount-usd", type=float)
     p.add_argument("--amount-uah", type=float)
@@ -267,12 +271,19 @@ def main():
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    # Strip the site name (wherever it appears: "для <site>", "сайту <site>", ...)
-    # and tidy up punctuation/whitespace left behind, for a filesystem-safe label.
-    service_label = args.service.replace(args.site, "")
-    service_label = service_label.replace(":", "").strip()
-    service_label = " ".join(service_label.split())
-    filename = f"рахунок-{args.site}-{service_label}-{invoice_date.strftime('%d.%m.%Y')}.xlsx"
+    service_code = args.service_code
+    if service_code is None:
+        for code in ("SEO", "GEO"):
+            if code.lower() in args.service.lower():
+                service_code = code
+                break
+    if service_code is None:
+        # Fallback: strip the site name out of the service text, wherever it
+        # appears ("для <site>", "сайту <site>", ...), and tidy up leftover
+        # punctuation/whitespace for a filesystem-safe label.
+        service_code = args.service.replace(args.site, "").replace(":", "").strip()
+        service_code = " ".join(service_code.split())
+    filename = f"рахунок_{service_code}_{args.site}_{invoice_date.strftime('%m-%Y')}.xlsx"
     out_path = out_dir / filename
     wb.save(out_path)
 
