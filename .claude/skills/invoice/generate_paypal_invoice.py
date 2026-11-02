@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Generate an English-language PayPal invoice (.docx), modeled after a real
-example (INVOICE-SEO_coveredconnections.com_01_26.docx): plain text, a
-single line-item table, USD.
+"""Generate an English-language PayPal invoice (.docx) by filling in
+template_paypal.docx — a real example invoice
+(INVOICE-SEO_coveredconnections.com_01_26.docx), edited in place so the
+output keeps its exact compact formatting (Arial 11, 1.15 line spacing, no
+space-after-paragraph) instead of python-docx's much heavier blank-document
+defaults.
 
 Usage example:
     python3 generate_paypal_invoice.py \
@@ -25,55 +28,95 @@ import sys
 from pathlib import Path
 
 import docx
+from docx.opc.constants import RELATIONSHIP_TYPE
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 
 SKILL_DIR = Path(__file__).resolve().parent
+TEMPLATE_PATH = SKILL_DIR / "template_paypal.docx"
 REQUISITES_PATH = SKILL_DIR / "paypal_requisites.json"
+
+# Paragraph indices in template_paypal.docx (see SKILL.md if this ever needs
+# re-deriving: inspect example paragraphs with python-docx, don't guess).
+P_TITLE = 0
+P_DATE = 1
+P_INVOICE_NO = 2
+P_NAME = 4
+P_VAT = 5
+P_ADDRESS = 6
+P_EMAIL = 7
+P_PHONE = 8
+P_PAYPAL = 10
+P_SIG_NAME = 15
+P_SIG_CONTACT = 16
+
+
+def _add_hyperlink(paragraph, text, url):
+    part = paragraph.part
+    r_id = part.relate_to(url, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+    hyperlink = OxmlElement("w:hyperlink")
+    hyperlink.set(qn("r:id"), r_id)
+    run = OxmlElement("w:r")
+    rpr = OxmlElement("w:rPr")
+    color = OxmlElement("w:color")
+    color.set(qn("w:val"), "1155CC")
+    rpr.append(color)
+    underline = OxmlElement("w:u")
+    underline.set(qn("w:val"), "single")
+    rpr.append(underline)
+    run.append(rpr)
+    t = OxmlElement("w:t")
+    t.text = text
+    run.append(t)
+    hyperlink.append(run)
+    paragraph._p.append(hyperlink)
+
+
+def _clear_paragraph(paragraph):
+    for child in list(paragraph._p):
+        if child.tag in (qn("w:r"), qn("w:hyperlink")):
+            paragraph._p.remove(child)
+
+
+def _set_text(paragraph, text):
+    _clear_paragraph(paragraph)
+    paragraph.add_run(text)
+
+
+def _fmt_num(n):
+    return str(int(n)) if float(n) == int(n) else str(n)
 
 
 def build_invoice(site, service, price, qty, invoice_date, invoice_no, req):
     subtotal = price * qty
 
-    d = docx.Document()
+    d = docx.Document(TEMPLATE_PATH)
+    paras = d.paragraphs
 
-    d.add_paragraph(f"INVOICE for the SEO {site}")
-    d.add_paragraph(f"Date: {invoice_date.strftime('%d-%m-%Y')}")
-    d.add_paragraph(f"Invoice number: {invoice_no}")
-    d.add_paragraph("")
+    _clear_paragraph(paras[P_TITLE])
+    paras[P_TITLE].add_run("INVOICE for the SEO ")
+    _add_hyperlink(paras[P_TITLE], site, f"https://{site}")
+    paras[P_TITLE].add_run(" ")
 
-    d.add_paragraph(req["name"])
-    d.add_paragraph(f"VAT: {req['vat']}")
-    d.add_paragraph(f"Legal address: {req['address']}")
-    d.add_paragraph(f"E-mail: {req['email']}")
-    d.add_paragraph(f"Tel.: {req['phone']}")
-    d.add_paragraph("")
-    d.add_paragraph(f"PayPal: {req['paypal']}")
+    _set_text(paras[P_DATE], f"Date: {invoice_date.strftime('%d-%m-%Y')}")
+    _set_text(paras[P_INVOICE_NO], f"Invoice number: {invoice_no}")
+    _set_text(paras[P_NAME], req["name"])
+    _set_text(paras[P_VAT], f"VAT: {req['vat']}")
+    _set_text(paras[P_ADDRESS], f"Legal address: {req['address']}")
+    _set_text(paras[P_EMAIL], f"E-mail: {req['email']}")
+    _set_text(paras[P_PHONE], f"Tel.: {req['phone']}")
+    _set_text(paras[P_PAYPAL], f"PayPal: {req['paypal']}")
+    _set_text(paras[P_SIG_NAME], req["name"])
+    _set_text(paras[P_SIG_CONTACT], f"{req['phone']} | {req['email']}")
 
-    for _ in range(4):
-        d.add_paragraph("")
-
-    table = d.add_table(rows=3, cols=4)
-    table.style = "Table Grid"
-    header = table.rows[0].cells
-    header[0].text, header[1].text, header[2].text, header[3].text = (
-        "Description", "Price, $", "Quantity", "Subtotal, $",
-    )
+    table = d.tables[0]
     row = table.rows[1].cells
     row[0].text, row[1].text, row[2].text, row[3].text = (
         service, _fmt_num(price), _fmt_num(qty), _fmt_num(subtotal),
     )
-    total_row = table.rows[2].cells
-    total_row[0].text, total_row[1].text = "", ""
-    total_row[2].text, total_row[3].text = "Total:", _fmt_num(subtotal)
-
-    d.add_paragraph("")
-    d.add_paragraph(req["name"])
-    d.add_paragraph(f"{req['phone']} | {req['email']}")
+    table.rows[2].cells[3].text = _fmt_num(subtotal)
 
     return d
-
-
-def _fmt_num(n):
-    return str(int(n)) if float(n) == int(n) else str(n)
 
 
 def main():

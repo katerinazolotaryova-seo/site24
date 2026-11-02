@@ -96,9 +96,14 @@ if the wording looks off for an edge case, fix the `number_to_words_uk` /
 ## PayPal invoices (English, USD)
 
 For clients who pay via PayPal (as opposed to a UAH bank рахунок-фактура),
-use `generate_paypal_invoice.py` instead — it builds a plain English .docx
-with a single line-item table, modeled after a real example
-(`INVOICE-SEO_coveredconnections.com_01_26.docx`). Requisites live in
+use `generate_paypal_invoice.py` instead — it fills in `template_paypal.docx`
+(a copy of a real example, `INVOICE-SEO_coveredconnections.com_01_26.docx`)
+in place, editing paragraph/table text directly rather than building a new
+document from scratch. This keeps the output's exact formatting (Arial 11,
+1.15 line spacing, no space-after-paragraph, a real hyperlink on the site
+name in the title) and compact file size (~7KB) — python-docx's own
+blank-document template is ~5x bigger and visibly different (extra spacing),
+so don't switch back to building from scratch. Requisites live in
 `paypal_requisites.json` (name, VAT, address, e-mail, phone, PayPal address),
 separate from the UAH `requisites.json` since it's a different document kind
 entirely.
