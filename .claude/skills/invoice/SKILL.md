@@ -93,6 +93,32 @@ the original template's style. You should not need to write this by hand —
 if the wording looks off for an edge case, fix the `number_to_words_uk` /
 `amount_in_words_uah` functions rather than hardcoding text.
 
+## PayPal invoices (English, USD)
+
+For clients who pay via PayPal (as opposed to a UAH bank рахунок-фактура),
+use `generate_paypal_invoice.py` instead — it builds a plain English .docx
+with a single line-item table, modeled after a real example
+(`INVOICE-SEO_coveredconnections.com_01_26.docx`). Requisites live in
+`paypal_requisites.json` (name, VAT, address, e-mail, phone, PayPal address),
+separate from the UAH `requisites.json` since it's a different document kind
+entirely.
+
+```
+python3 .claude/skills/invoice/generate_paypal_invoice.py \
+  --site <site> \
+  --price <USD amount> \
+  --date <YYYY-MM-DD> \
+  --requisites <profile> \
+  --out-dir <scratch dir>
+```
+
+- `--service` defaults to `"SEO Consulting service for <site>"`.
+- Invoice number is `<YYYY>-<DDMM>` from `--date` (day then month — matches
+  the example, don't "fix" it to month-then-day).
+- Output filename: `INVOICE-SEO_<site>_<MM>_<YY>.docx` (matches the example's
+  own naming).
+- Same review-before-upload rule as the xlsx flow applies.
+
 ## Adding a new requisites profile / supplier
 
 If the user gives you new requisites for a **supplier (постачальник) already
