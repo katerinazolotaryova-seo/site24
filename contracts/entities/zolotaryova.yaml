@@ -17,3 +17,11 @@ requisites:
   - Р/р UA073510050000026005450205200 в АКІБ «Укрсіббанк»
   - "МФО: 351005"
   - "Вчасно: katerina.zolotaryova@gmail.com"
+# Для іноземних клієнтів (оплата в USD), надано 19.11.2026
+name_en: Kateryna Zolotarova
+address_en: 03168, Kyiv, Hlushkova 24, 1, Ukraine
+usd_account:
+  iban: UA073510050000026005450205200
+  bank: JSC UKRSIBBANK (code 07205696)
+  bank_address: 20 Beresteiskyi Ave, Kyiv, 04116, Ukraine
+  swift: KHABUA2K

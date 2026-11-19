@@ -185,7 +185,7 @@ CONDITIONS = [
 # Реквізити Виконавця англійською; UA-рядки беруться з entities/zolotaryova.yaml
 EXECUTOR_EN = {
     "ФОП Золотарьова Катерина Володимирівна": "Individual Entrepreneur Kateryna Zolotarova",
-    "Свідоцтво № 492659": "Certificate No. 492659",
+    "Свідоцтво № 492659": "Registration certificate No. 492659",
     "Від: «28» травня 2013 р.": "dated 28 May 2013",
     "Свідоцтво про сплату єдиного податку серія АВ № 342537": "Single tax certificate series AV No. 342537",
     "Від 3 липня 2013 р.": "dated 3 July 2013",
@@ -209,14 +209,14 @@ CUSTOMER = [
 FONT, SIZE = "Times New Roman", Pt(10)
 
 
-# Банківські дані USD-рахунку — латиницею, як просить Замовник. Поки не надані — порожні рядки.
+# Банківські дані USD-рахунку — латиницею, як просить Замовник (надані Виконавцем 19.11.2026)
 EXECUTOR_BANK = [
-    ("Адреса: ____________________", "Address: ____________________"),
-    ("USD-рахунок (IBAN): ____________________", "USD account (IBAN): ____________________"),
-    ("Банк: ____________________", "Bank: ____________________"),
-    ("SWIFT: ____________________", "SWIFT: ____________________"),
+    ("Адреса: 03168, м. Київ, Глушкова 24, 1, Україна", "Address: 03168, Kyiv, Hlushkova 24, 1, Ukraine"),
+    ("IBAN: UA073510050000026005450205200", "IBAN: UA073510050000026005450205200"),
+    ("Банк: АТ «УКРСИББАНК» (код ЄДРПОУ 07205696), просп. Берестейський, 20, м. Київ, 04116, Україна",
+     "Bank of beneficiary: JSC UKRSIBBANK (code 07205696), 20 Beresteiskyi Ave, Kyiv, 04116, Ukraine"),
+    ("SWIFT/BIC: KHABUA2K", "SWIFT/BIC: KHABUA2K"),
 ]
-
 
 def executor_lines():
     ent = yaml.safe_load((ROOT / "entities" / "zolotaryova.yaml").read_text(encoding="utf-8"))
