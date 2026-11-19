@@ -87,6 +87,10 @@ CONTRACT = [
      "5.1.2. The Customer shall make the payments provided for in clause 5.1.1 within 5 business days after receiving the invoice."),
     ("p", "5.1.3. При відсутності оплати рахунку протягом 10 робочих днів з моменту отримання рахунку-фактури Виконавець має право розірвання цього Договору в односторонньому порядку.",
      "5.1.3. If an invoice is not paid within 10 business days after its receipt, the Contractor has the right to terminate this Agreement unilaterally."),
+    ("p", "5.1.4. Рахунки виставляються, а оплата здійснюється в доларах США на валютний (USD) рахунок Виконавця, зазначений у розділі реквізитів. Банківські комісії сплачуються за схемою SHA: кожна Сторона сплачує комісії свого банку.",
+     "5.1.4. Invoices are issued and payments are made in US dollars to the Contractor's USD account specified in the Parties' details. Bank charges are shared (SHA): each Party pays the charges of its own bank."),
+    ("p", "5.1.5. До першої оплати Виконавець надає Замовнику заповнену та підписану форму IRS W-8BEN, що підтверджує статус Виконавця як нерезидента США, який надає послуги за межами США. Форма зберігається у Замовника і не подається до IRS.",
+     "5.1.5. Before the first payment, the Contractor provides the Customer with a completed and signed IRS Form W-8BEN confirming the Contractor's status as a non-US person providing services outside the United States. The form is kept by the Customer and is not filed with the IRS."),
     ("h", "6. ВІДПОВІДАЛЬНІСТЬ СТОРІН", "6. LIABILITY OF THE PARTIES"),
     ("p", "6.1. У разі часткового невиконання Виконавцем п. 3.1.3. даного Договору (неповне виконання щомісячного завдання) частка коштів, які Виконавець повинен повернути Замовнику, дорівнює оціночній вартості кожного пункту щомісячного плану робіт. Разом з рахунком Виконавець надає щомісячний план робіт з розписаною по пунктах вартістю робіт, узгоджений представниками сторін.",
      "6.1. In case of partial non-performance by the Contractor of clause 3.1.3 of this Agreement (incomplete performance of the monthly task), the amount the Contractor shall refund to the Customer equals the estimated cost of each item of the monthly work plan. Together with the invoice, the Contractor provides a monthly work plan with the cost itemized by tasks, agreed by the Parties' representatives."),
@@ -105,6 +109,8 @@ CONTRACT = [
      "7.3. Within 5 business days after receiving the Certificate of Acceptance of Services Rendered, the Customer shall send the Contractor the signed Certificate or a reasoned refusal to accept the work."),
     ("p", "7.4. У випадку відсутності письмових претензій з боку Замовника протягом терміну, визначеного в п. 7.3. Договору, послуги за даним Договором вважаються такими, що прийняті Замовником.",
      "7.4. If no written claims are received from the Customer within the period set out in clause 7.3 of the Agreement, the services under this Agreement are deemed accepted by the Customer."),
+    ("p", "7.5. Матеріали, передані Виконавцем Замовнику за цим Договором (семантичне ядро, аудити, технічні завдання, звіти), Замовник має право вільно використовувати для власних потреб, у тому числі після припинення Договору, з моменту оплати відповідних послуг.",
+     "7.5. The Customer may freely use the materials delivered by the Contractor under this Agreement (keyword research, audits, technical specifications, reports) for its own purposes, including after termination of the Agreement, from the moment the relevant services are paid for."),
     ("h", "8. ФОРС-МАЖОРНІ ОБСТАВИНИ", "8. FORCE MAJEURE"),
     ("p", "8.1. Сторони звільняються від відповідальності за часткове чи повне невиконання або неналежне виконання зобов'язань за Договором, якщо вони є наслідком непереборної сили (пожежі, повені, землетрусу, стихійного лиха, військових дій, а також нестабільної роботи електронних систем Інтернету та пошукових систем, дій зі сторони державних органів і інших обставин непереборної сили). Якщо ці обставини безпосередньо вплинули на виконання Сторонами умов Договору, то виконання продовжується відповідно на строк, протягом якого діяли ці обставини.",
      "8.1. The Parties are released from liability for partial or complete non-performance or improper performance of their obligations under the Agreement if it results from force majeure (fire, flood, earthquake, natural disaster, military action, as well as unstable operation of Internet systems and search engines, actions of government authorities and other circumstances beyond the Parties' control). If such circumstances directly affected the Parties' performance of the Agreement, the time for performance is extended for the period during which such circumstances continued."),
@@ -138,8 +144,8 @@ CONTRACT = [
      "12.3. In performing this Agreement, the Parties are guided by its terms and the applicable laws of Ukraine."),
     ("p", "12.4. Договір складений в двох примірниках, по одному для кожної із сторін, які мають однакову юридичну силу.",
      "12.4. The Agreement is executed in two counterparts, one for each Party, both having equal legal force."),
-    ("p", "12.5. Сторони домовилися про те, що з метою виконання умов Договору будуть здійснювати документообіг у формі електронних документів для підтвердження описаних у них господарських операцій із використанням системи ME.DOC або ВЧАСНО. Формування електронних документів Сторони здійснюють із урахуванням положень законів України «Про електронні документи та електронний документообіг», «Про електронні довірчі послуги» та інших чинних нормативно-правових актів України. Електронні документи, які Сторони відправили та підписали з використанням КЕП (удосконалений електронний підпис, який створюється з використанням засобу кваліфікованого електронного підпису і базується на кваліфікованому сертифікаті відкритого ключа), мають повну юридичну силу, породжують права та обов’язки для Сторін, можуть бути представлені до суду в якості належних доказів та визнаються рівнозначними документам, що складаються на паперовому носії. Підпис Сторони на електронному документі означає підтвердження участі такої Сторони в оформленні електронного документа. Підтвердження передання електронних документів (відправлення, отримання тощо) вважається легітимним підтвердженням фактичного приймання-передачі таких документів уповноваженими особами Сторін і не вимагає додаткового доказування. Датою електронного документу є дата його створення (зазначена в преамбулі) незалежно від дати його підписання Сторонами.",
-     "12.5. The Parties have agreed that, for the purpose of performing the Agreement, they will exchange documents in electronic form to confirm the business transactions described therein, using the ME.DOC or VCHASNO system. The Parties create electronic documents in accordance with the Laws of Ukraine “On Electronic Documents and Electronic Document Management”, “On Electronic Trust Services” and other applicable regulations of Ukraine. Electronic documents sent and signed by the Parties with a QES (an advanced electronic signature created using a qualified electronic signature creation device and based on a qualified public key certificate) have full legal force, create rights and obligations for the Parties, may be submitted to court as admissible evidence and are deemed equivalent to paper documents. A Party's signature on an electronic document confirms that Party's participation in executing the document. Confirmation of transmission of electronic documents (sending, receipt, etc.) is deemed legitimate confirmation of the actual delivery and acceptance of such documents by the Parties' authorized persons and requires no further proof. The date of an electronic document is the date of its creation (stated in the preamble), regardless of the date it is signed by the Parties."),
+    ("p", "12.5. Договір, Додатки, Акти приймання-передачі наданих послуг та інші документи за Договором підписуються Сторонами власноручно з обміном сканованими копіями електронною поштою або електронним підписом (зокрема, DocuSign). Такі документи мають повну юридичну силу та прирівнюються до оригіналів. Документи надсилаються на адреси електронної пошти, зазначені в реквізитах Сторін.",
+     "12.5. The Agreement, its Appendices, Certificates of Acceptance of Services Rendered and other documents under the Agreement are signed by the Parties by hand with scanned copies exchanged by e-mail, or by electronic signature (including DocuSign). Such documents have full legal force and are deemed equivalent to originals. Documents are sent to the e-mail addresses specified in the Parties' details."),
     ("p", "12.6. Договір складено українською та англійською мовами. У разі розбіжностей між текстами переважну силу має текст українською мовою.",
      "12.6. The Agreement is made in Ukrainian and English. In case of any discrepancy between the texts, the Ukrainian text shall prevail."),
 ]
@@ -191,8 +197,8 @@ EXECUTOR_EN = {
 CUSTOMER = [
     ("Crafttory LLC", "Crafttory LLC"),
     ("ТОВ, штат Південна Кароліна, США", "Limited Liability Company, South Carolina, USA"),
-    ("Адреса: 2218 Magnolia Manor Ln, Ste 206, Fort Mill, SC 29708, USA",
-     "Address: 2218 Magnolia Manor Ln, Ste 206, Fort Mill, SC 29708, USA"),
+    ("Адреса: 2218 Magnolia Manor Ln, Apt 206, Fort Mill, SC 29708, USA",
+     "Address: 2218 Magnolia Manor Ln, Apt 206, Fort Mill, SC 29708, USA"),
     ("EIN: ____________________", "EIN: ____________________"),
     ("Банк: ____________________", "Bank: ____________________"),
     ("Рахунок: ____________________", "Account: ____________________"),
@@ -203,12 +209,27 @@ CUSTOMER = [
 FONT, SIZE = "Times New Roman", Pt(10)
 
 
+# Банківські дані USD-рахунку — латиницею, як просить Замовник. Поки не надані — порожні рядки.
+EXECUTOR_BANK = [
+    ("Адреса: ____________________", "Address: ____________________"),
+    ("USD-рахунок (IBAN): ____________________", "USD account (IBAN): ____________________"),
+    ("Банк: ____________________", "Bank: ____________________"),
+    ("SWIFT: ____________________", "SWIFT: ____________________"),
+]
+
+
 def executor_lines():
     ent = yaml.safe_load((ROOT / "entities" / "zolotaryova.yaml").read_text(encoding="utf-8"))
     lines = []
     for ua in ent["requisites"]:
-        en = EXECUTOR_EN.get(ua) or ua.replace("Вчасно", "Vchasno")
-        lines.append((ua, en))
+        if ua.startswith(("Р/р", "МФО")):  # гривневий рахунок у цьому договорі не потрібен
+            continue
+        if ua.startswith("Вчасно"):  # КЕП не використовується — лишається e-mail для документів
+            lines += EXECUTOR_BANK
+            ua = ua.replace("Вчасно", "E-mail")
+            lines.append((ua, ua))
+            continue
+        lines.append((ua, EXECUTOR_EN[ua]))
     return lines
 
 
