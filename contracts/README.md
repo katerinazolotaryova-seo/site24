@@ -34,3 +34,8 @@
 `orders/2026-11-02_desktopgames.com.ua.yaml`. Сума = USD × комерційний курс продажу ПриватБанку
 (API: `https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=11`), округлення до гривні.
 Рядки з двокрапкою в YAML — у лапках.
+
+## Рахунки
+Базовий шаблон — `templates/invoice.xlsx` (рахунок-фактура mybox.ua, реквізити ФОП Золотарьової).
+Зразок заповнення: `orders/2026-11-20_kyivlogisticsschool.com_invoice.py`. Номер рахунку = номер
+договору; сума текстом з пробілом («28 182»), прописом — гривня жіночого роду («дві гривні»).
