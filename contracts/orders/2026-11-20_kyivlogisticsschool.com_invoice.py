@@ -34,7 +34,8 @@ def uah_words(n):
 
 
 def build():
-    uah = round(contract.STAGE["usd"] * contract.RATE)
+    # оплата 50/50 (фінальна редакція договору): цей рахунок — попередня оплата 50%
+    uah = round(contract.STAGE["usd"] * contract.RATE) // 2
     wb = openpyxl.load_workbook(ROOT / "templates" / "invoice.xlsx", rich_text=True)  # жирне ім'я в D1 — rich text
     ws = wb.active
 
@@ -43,7 +44,7 @@ def build():
     ws["B14"] = "р/р UA763510050000026002878973645 в АТ «УКРСИББАНК», МФО 351005"
     ws["B18"] = ("Консультування з питань інформатизації: SEO оптимізація сайту "
                  f"{contract.SITE} (Додаток 1 до Договору №{contract.NUMBER} "
-                 f"від {contract.DATE:%d.%m.%Y})")
+                 f"від {contract.DATE:%d.%m.%Y}), попередня оплата 50%")
     ws["C18"] = "послуга"
     ws["E18"] = fmt_amount(uah)  # як у шаблоні: текстом з пробілом («17 117»); F18/F19/D21 посилаються на E18
     ws["E21"] = f"грн ({uah_words(uah)})"
